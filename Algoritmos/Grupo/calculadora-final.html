@@ -50,9 +50,6 @@
     <div>
       <i>Multa por superlotação: <b>R$293.47</b> (Artigo 231, Código de Trânsito Brasileiro)</i>
     </div>
-    <div>
-      <i>Margem de possível aumento de passageiros: <b>3%</b> (Portal da Transparência SPTrans)</i>
-    </div>
   </div>
   <br>
   <button onclick="calcular()">Calcular</button>
@@ -75,18 +72,13 @@
     
     //valores pre definidos
     let gasto_por_km = 10.93
-    let margem = 1.03
     let valor_multa = 293.47 
 
-    //calculos das informações recebidas (SEM A NOSSA SOLUÇÃO)
-    let passageiros_margem = passageiros * margem
+    //calculos das informações recebidas (SEM A NOSSA SOLUÇÃO
     let viagens_totais = viagens * qtd_bus
     let dist_total = dist * viagens_totais
     let ganho_total = passageiros * passagem
     let ocupacao = (passageiros / viagens_totais)
-    let ocupacao_margem = (passageiros_margem / viagens_totais)
-    let perc_ocupacao = (ocupacao / capacidade) * 100
-    let perc_ocupacao_margem = (ocupacao_margem / capacidade) * 100
     let multa_total = 0
 
     if (ocupacao > capacidade) {
@@ -127,19 +119,15 @@
         <br>`
 
     // Calculo das informações ideais
-    let viagens_totais_depois = passageiros_margem / capacidade
+    let viagens_totais_depois = passageiros / capacidade
     let qtd_bus_depois = (viagens_totais_depois / viagens).toFixed(0) 
     let ocupacao_depois = (passageiros / viagens_totais_depois)
-    let ocupacao_depois_margem = (ocupacao_depois * margem)
 
     if (qtd_bus_depois == 0 ) {
       qtd_bus_depois ++
       ocupacao_depois = (passageiros / viagens_totais_depois)
-      ocupacao_depois_margem = (ocupacao_depois * margem)
     }
 
-    let perc_ocupacao_depois = (ocupacao_depois / capacidade) * 100
-    let perc_ocupacao_depois_margem = (ocupacao_depois_margem / capacidade) * 100
 
     let dist_total_depois = viagens_totais_depois * dist
     let gasto_total_depois = dist_total_depois * gasto_por_km
@@ -155,16 +143,7 @@
             Quantidade de ônibus: ${qtd_bus_depois} ônibus
           </div>
           <div>
-            Viagens totais: ${viagens_totais_depois} viagens
-          </div>
-          <div>
-            Quilometragem total: ${dist_total_depois}km
-          </div>
-          <div>
-            Passageiros por viagem: ${ocupacao_depois.toFixed(0) } pass. (margem: ${ocupacao_depois_margem.toFixed(0) } pass.)
-          </div>
-          <div>
-             Ocupação dos ônibus: ${perc_ocupacao_depois.toFixed(2)}% (margem: ${perc_ocupacao_depois_margem.toFixed(2)}%)
+            Passageiros por viagem: ${ocupacao_depois.toFixed(0) } pass.
           </div>
           <div>
             Ganho total: R$${ganho_total.toFixed(2)}
@@ -199,16 +178,7 @@
             Quantidade de ônibus: ${qtd_bus_depois} ônibus
           </div>
           <div>
-            Viagens totais: ${viagens_totais_depois} viagens
-          </div>
-          <div>
-            Quilometragem total: ${dist_total_depois}km
-          </div>
-          <div>
-            Passageiros por viagem: ${ocupacao_depois.toFixed(0) } pass. (margem: ${ocupacao_depois_margem.toFixed(0) } pass.)
-          </div>
-          <div>
-             Ocupação dos ônibus: ${perc_ocupacao_depois.toFixed(2)}% (margem: ${perc_ocupacao_depois_margem.toFixed(2)}%)
+            Passageiros por viagem: ${ocupacao_depois.toFixed(0) } pass.
           </div>
           <div>
             Ganho total: R$${ganho_total.toFixed(2)}
