@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Financeira - DataBus</title>
+  <style>
+    :root {
+      --azul-escuro: #0A3158;
+      --azul: #176BB8;
+      --azul-claro: #E7F1FB;
+      --dourado: #F2B954;
+      --dourado-escuro: #D89A35;
+      --cinza-fundo: #F4F6FA;
+      --branco: #FFFFFF;
+      --texto: #1F2A3C;
+      --texto-claro: #5B6B85;
+      --verde: #1E8E3E;
+      --vermelho: #C0392B;
+      --borda: #DCE4F0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: var(--texto);
+      background: var(--cinza-fundo);
+    }
+
+    header {
+      background: var(--azul-escuro);
+      padding: 28px 24px;
+      text-align: center;
+      position: relative;
+    }
+
+    .logo {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--branco);
+      font-family: Arial, sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+    }
+
+    .logo span {
+      color: var(--dourado);
+    }
+
+    @media (max-width: 480px) {
+      .logo {
+        position: static;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 12px;
+      }
+    }
+
+    header h2 {
+      color: var(--branco);
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+      font-size: 26px;
+      margin: 18px 0 8px;
+    }
+
+    header p {
+      color: #C6D6EF;
+      font-size: 15px;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    header p b {
+      color: var(--dourado);
+    }
+
+    .container {
+      max-width: 640px;
+      margin: 30px auto 60px;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: var(--branco);
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(15, 54, 96, 0.12);
+      padding: 30px;
+      margin-bottom: 24px;
+    }
+
+    .campo {
+      margin-bottom: 18px;
+    }
+
+    .campo label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: var(--azul-escuro);
+    }
+
+    .campo input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--borda);
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: Arial, sans-serif;
+      color: var(--texto);
+      background: var(--cinza-fundo);
+    }
+
+    .campo input:focus {
+      outline: none;
+      border-color: var(--dourado);
+      background: var(--branco);
+    }
+
+    .campo select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--borda);
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: Arial, sans-serif;
+      color: var(--texto);
+      background: var(--cinza-fundo);
+    }
+
+    .campo select:focus {
+      outline: none;
+      border-color: var(--dourado);
+      background: var(--branco);
+    }
+
+    .campo input::placeholder {
+      color: #A6B2C6;
+    }
+
+    .predefinidos {
+      background: var(--azul-claro);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-top: 8px;
+    }
+
+    .predefinidos p {
+      margin: 0 0 8px;
+      font-weight: 600;
+      color: var(--azul-escuro);
+      font-size: 14px;
+    }
+
+    .predefinidos ul {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 13.5px;
+      color: var(--texto-claro);
+      line-height: 1.6;
+    }
+
+    .predefinidos b {
+      color: var(--azul);
+    }
+
+    .botao-calcular {
+      width: 100%;
+      margin-top: 22px;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      background: var(--dourado);
+      color: var(--azul-escuro);
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .botao-calcular:hover {
+      background: var(--dourado-escuro);
+      color: var(--branco);
+    }
+
+    #div_mensagem {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    #div_mensagem .card {
+      flex: 1 1 380px;
+      max-width: 480px;
+      margin-bottom: 0;
+    }
+
+    .resultado h3 {
+      font-family: Arial, sans-serif;
+      color: var(--azul-escuro);
+      font-size: 18px;
+      margin: 0 0 14px;
+    }
+
+    .linha-resultado {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--borda);
+      font-size: 14.5px;
+    }
+
+    .linha-resultado:last-child {
+      border-bottom: none;
+    }
+
+    .linha-resultado span:first-child {
+      color: var(--texto-claro);
+    }
+
+    .linha-resultado span:last-child {
+      font-weight: 600;
+    }
+
+    .aviso {
+      background: var(--azul-claro);
+      color: var(--azul-escuro);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 14.5px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .alerta {
+      background: #FBEAEA;
+      color: var(--vermelho);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 14.5px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .diferenca {
+      background: #E9F7EF;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-top: 14px;
+    }
+
+    .diferenca .linha-resultado {
+      border: none;
+      padding: 4px 0;
+    }
+
+    .diferenca span {
+      color: var(--verde) !important;
+    }
+
+    .nota {
+      font-size: 12.5px;
+      color: var(--texto-claro);
+      font-weight: 400;
+      margin-top: 16px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h2>Calculadora Financeira de Remanejamento de Frotas</h2>
+    <p>Preencha as informações da linha considerando os valores referentes a <b>UM DIA</b> de operação e escolha o período (dia, mês ou ano) para ver os resultados.</p>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <div class="campo">
+        <label>Código da linha</label>
+        <input type="text" id="ipt_nome" placeholder="ex: Teste">
+      </div>
+      <div class="campo">
+        <label>Estimativa de passageiros</label>
+        <input type="text" id="ipt_passageiros" placeholder="ex: 8000">
+      </div>
+      <div class="campo">
+        <label>Quantidade de ônibus</label>
+        <input type="text" id="ipt_qtd_bus" placeholder="ex: 10">
+      </div>
+      <div class="campo">
+        <label>Capacidade máxima por ônibus</label>
+        <input type="text" id="ipt_capacidade" placeholder="ex: 80">
+      </div>
+      <div class="campo">
+        <label>Viagens por ônibus</label>
+        <input type="text" id="ipt_viagens" placeholder="ex: 12">
+      </div>
+      <div class="campo">
+        <label>Distância do trajeto (km)</label>
+        <input type="text" id="ipt_dist" placeholder="ex: 10">
+      </div>
+      <div class="campo">
+        <label>Valor da passagem (R$)</label>
+        <input type="text" id="ipt_passagem" placeholder="ex: 5.30">
+      </div>
+      <div class="campo">
+        <label>Ver resultados por</label>
+        <select id="ipt_periodo">
+          <option value="dia">Dia</option>
+          <option value="mes">Mês</option>
+          <option value="ano">Ano</option>
+        </select>
+      </div>
+
+      <div class="predefinidos">
+        <p>Valores pré-definidos usados no cálculo</p>
+        <ul>
+          <li>Gasto por km: <b>R$10.93</b> (Associação Nacional das Empresas de Transportes Urbanos)</li>
+          <li>Multa por superlotação: <b>R$293.47</b> (Artigo 231, Código de Trânsito Brasileiro)</li>
+          <li>Margem de possível aumento de passageiros: <b>3%</b> (Portal da Transparência SPTrans)</li>
+        </ul>
+      </div>
+
+      <button class="botao-calcular" onclick="calcular()">Calcular</button>
+    </div>
+  </div>
+
+  <div id="div_mensagem"></div>
+
+  <script>
+    function calcular() {
+      let nome = ipt_nome.value
+      let passageiros = Number(ipt_passageiros.value)
+      let capacidade = Number(ipt_capacidade.value)
+      let qtd_bus = Number(ipt_qtd_bus.value)
+      let viagens = Number(ipt_viagens.value)
+      let dist = Number(ipt_dist.value)
+      let passagem = Number(ipt_passagem.value)
+      let periodo = ipt_periodo.value
+
+      if (nome == "" || isNaN(passageiros) || isNaN(capacidade) || isNaN(qtd_bus) || isNaN(viagens) || isNaN(dist) || isNaN(passagem)) {
+        div_mensagem.innerHTML = `<div class="alerta">Preencha todos os campos antes de calcular.</div>`
+        return
+      }
+
+      if (passageiros <= 0 || capacidade <= 0 || qtd_bus <= 0 || viagens <= 0 || dist <= 0 || passagem <= 0) {
+        div_mensagem.innerHTML = `<div class="alerta">Os valores precisam ser maiores que zero.</div>`
+        return
+      }
+
+      //valores pre definidos
+      let gasto_por_km = 10.93
+      let margem = 1.03
+      let valor_multa = 293.47
+
+      //multiplicador de acordo com o periodo escolhido pelo usuario
+      let mult = 1
+      let periodo_texto = "dia"
+
+      if (periodo == "mes") {
+        mult = 30
+        periodo_texto = "mês"
+      } else if (periodo == "ano") {
+        mult = 365
+        periodo_texto = "ano"
+      }
+
+      //calculos das informações recebidas (SEM A NOSSA SOLUÇÃO)
+      let passageiros_margem = passageiros * margem
+      let viagens_totais = viagens * qtd_bus
+      let dist_total = dist * viagens_totais
+      let ganho_total = passageiros * passagem
+      let ocupacao = (passageiros / viagens_totais)
+      let ocupacao_margem = (passageiros_margem / viagens_totais)
+      let perc_ocupacao = (ocupacao / capacidade) * 100
+      let perc_ocupacao_margem = (ocupacao_margem / capacidade) * 100
+      let multa_total = 0
+
+      if (ocupacao > capacidade) {
+        multa_total = valor_multa * qtd_bus
+      }
+      let gasto_total = (dist_total * gasto_por_km) + multa_total
+      let lucro = ganho_total - gasto_total
+
+      div_mensagem.innerHTML = `
+        <div class="card resultado">
+          <h3>Resultados estimados da linha ${nome} em um ${periodo_texto}</h3>
+          <div class="linha-resultado"><span>Viagens totais</span><span>${(viagens_totais * mult).toFixed(0)} viagens</span></div>
+          <div class="linha-resultado"><span>Passageiros por viagem</span><span>${ocupacao.toFixed(0)} pass. (margem: ${ocupacao_margem.toFixed(0)} pass.)</span></div>
+          <div class="linha-resultado"><span>Ocupação dos ônibus</span><span>${perc_ocupacao.toFixed(2)}% (margem: ${perc_ocupacao_margem.toFixed(2)}%)</span></div>
+          <div class="linha-resultado"><span>Ganho total</span><span>R$${(ganho_total * mult).toFixed(2)}</span></div>
+          <div class="linha-resultado"><span>Gasto com multas</span><span>R$${(multa_total * mult).toFixed(2)}</span></div>
+          <div class="linha-resultado"><span>Gasto total</span><span>R$${(gasto_total * mult).toFixed(2)}</span></div>
+          <div class="linha-resultado"><span>Lucro total</span><span>R$${(lucro * mult).toFixed(2)}</span></div>
+        </div>`
+
+      // Calculo das informações ideais
+      let viagens_totais_depois = passageiros_margem / capacidade
+      let qtd_bus_depois = Math.ceil(viagens_totais_depois / viagens)
+
+      if (qtd_bus_depois == 0) {
+        qtd_bus_depois = 1
+      }
+
+      let ocupacao_depois = (passageiros / viagens_totais_depois)
+      let ocupacao_depois_margem = (ocupacao_depois * margem)
+      let perc_ocupacao_depois = (ocupacao_depois / capacidade) * 100
+      let perc_ocupacao_depois_margem = (ocupacao_depois_margem / capacidade) * 100
+
+      let dist_total_depois = viagens_totais_depois * dist
+      let gasto_total_depois = dist_total_depois * gasto_por_km
+      let lucro_depois = ganho_total - gasto_total_depois
+      let diferenca = lucro_depois - lucro
+
+      if (qtd_bus_depois < qtd_bus) {
+        div_mensagem.innerHTML += `
+        <div class="card resultado">
+          <div class="aviso">Essa linha pode retirar ${qtd_bus - qtd_bus_depois} ônibus da frota.</div>
+          <h3>Resultados estimados da linha ${nome} em um ${periodo_texto} pós mudanças</h3>
+          <div class="linha-resultado"><span>Quantidade de ônibus</span><span>${qtd_bus_depois} ônibus</span></div>
+          <div class="linha-resultado"><span>Viagens totais</span><span>${(viagens_totais_depois * mult).toFixed(0)} viagens</span></div>
+          <div class="linha-resultado"><span>Passageiros por viagem</span><span>${ocupacao_depois.toFixed(0)} pass. (margem: ${ocupacao_depois_margem.toFixed(0)} pass.)</span></div>
+          <div class="linha-resultado"><span>Ocupação dos ônibus</span><span>${perc_ocupacao_depois.toFixed(2)}% (margem: ${perc_ocupacao_depois_margem.toFixed(2)}%)</span></div>
+          <div class="linha-resultado"><span>Ganho total</span><span>R$${(ganho_total * mult).toFixed(2)}</span></div>
+          <div class="linha-resultado"><span>Gasto com multas</span><span>R$0.00</span></div>
+          <div class="linha-resultado"><span>Gasto total</span><span>R$${(gasto_total_depois * mult).toFixed(2)}</span></div>
+          <div class="linha-resultado"><span>Lucro total</span><span>R$${(lucro_depois * mult).toFixed(2)}</span></div>
+          <div class="diferenca">
+            <div class="linha-resultado"><span>Diferença de lucro por dia</span><span>R$${diferenca.toFixed(2)}</span></div>
+            <div class="linha-resultado"><span>Diferença de lucro no período selecionado (${periodo_texto})</span><span>R$${(diferenca * mult).toFixed(2)}</span></div>
+          </div>
+          <p class="nota">Todos os valores são estimados e se referem às alterações na frota que os dados coletados pelo nosso sistema possibilitariam.</p>
+        </div>`
+      } else if (qtd_bus_depois > qtd_bus) {
+        if (lucro_depois < lucro) {
+          div_mensagem.innerHTML += `<div class="card"><div class="alerta">As informações inseridas são muito exageradas e não podem ser calculadas.</div></div>`
+        } else {
+          div_mensagem.innerHTML += `
+          <div class="card resultado">
+            <div class="aviso">Essa linha está sujeita a pagar ${qtd_bus} multas no mínimo por superar a capacidade máxima de passageiros.<br>Essa linha deve aumentar ${qtd_bus_depois - qtd_bus} ônibus na frota.</div>
+            <h3>Resultados estimados da linha ${nome} em um ${periodo_texto} pós mudanças</h3>
+            <div class="linha-resultado"><span>Quantidade de ônibus</span><span>${qtd_bus_depois} ônibus</span></div>
+            <div class="linha-resultado"><span>Viagens totais</span><span>${(viagens_totais_depois * mult).toFixed(0)} viagens</span></div>
+            <div class="linha-resultado"><span>Passageiros por viagem</span><span>${ocupacao_depois.toFixed(0)} pass. (margem: ${ocupacao_depois_margem.toFixed(0)} pass.)</span></div>
+            <div class="linha-resultado"><span>Ocupação dos ônibus</span><span>${perc_ocupacao_depois.toFixed(2)}% (margem: ${perc_ocupacao_depois_margem.toFixed(2)}%)</span></div>
+            <div class="linha-resultado"><span>Ganho total</span><span>R$${(ganho_total * mult).toFixed(2)}</span></div>
+            <div class="linha-resultado"><span>Gasto com multas</span><span>R$0.00</span></div>
+            <div class="linha-resultado"><span>Gasto total</span><span>R$${(gasto_total_depois * mult).toFixed(2)}</span></div>
+            <div class="linha-resultado"><span>Lucro total</span><span>R$${(lucro_depois * mult).toFixed(2)}</span></div>
+            <div class="diferenca">
+              <div class="linha-resultado"><span>Diferença de lucro por dia</span><span>R$${diferenca.toFixed(2)}</span></div>
+              <div class="linha-resultado"><span>Diferença de lucro no período selecionado (${periodo_texto})</span><span>R$${(diferenca * mult).toFixed(2)}</span></div>
+            </div>
+            <p class="nota">Todos os valores são estimados e se referem às alterações na frota que os dados coletados pelo nosso sistema possibilitariam.</p>
+          </div>`
+        }
+      } else if (qtd_bus_depois == qtd_bus) {
+        div_mensagem.innerHTML += `<div class="card"><div class="aviso">Essa linha está operando com a quantidade necessária de ônibus.</div></div>`
+      }
+    }
+  </script>
+
+</body>
+</html>
