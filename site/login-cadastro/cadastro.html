@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGIN</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section class="section_container">
+        <h3>Cadastrar</h3>
+
+        <label for="ipt_nome">Nome completo</label>
+        <input type="text" id="ipt_nome" placeholder="Digite seu nome completo">
+
+        <label for="ipt_email">E-mail</label>
+        <input type="text" id="ipt_email" placeholder="nome@empresa.com">
+
+        <label for="ipt_senha">Senha</label>
+        <input type="password" id="ipt_senha" placeholder="Digite sua senha">
+
+        <label for="ipt_confirmarSenha">Confirmar senha</label>
+        <input type="password" id="ipt_confirmarSenha" placeholder="Confirme sua senha">
+
+        <section class="section_div">
+            <div>
+                <input type="checkbox"> Li e concordo com os <span>Termos de Uso</span> e <span>Política de Privacidade</span>
+            </div>
+        </section>
+
+        <button onclick="cadastrar()">CADASTRAR</button>
+
+        <span id="msg"></span>
+    </section>
+</body>
+</html>
+
+<script>
+    function cadastrar() {
+        let email = ipt_email.value.toLowerCase();
+        let senha = ipt_senha.value;
+        let nome = ipt_nome.value;
+        let confirmarSenha = ipt_confirmarSenha.value;
+        
+        msg.innerHTML = '';
+
+        let email_salvo = 'contato@databus.com';
+        let senha_salva = 'Urubu100';
+
+        // VALIDAÇÃO DE EMAIL
+
+        let indiceArroba = email.indexOf("@");
+
+        let comecaArroba = email.startsWith("@");
+
+        let contemEspaco = email.includes(" ");
+
+        let terminaValido = email.endsWith(".com") || email.endsWith(".br");
+
+        if (indiceArroba != -1 && comecaArroba == false && contemEspaco == false && terminaValido) {
+            msg.innerHTML += `E-mail válido<br>`;
+        } else {
+            msg.innerHTML += `E-mail inválido<br>`;
+        }
+
+
+        // VALIDAÇÃO DE SENHA
+
+        if (senha.length < 8) {
+            msg.innerHTML += `A senha precisa ter pelo menos 8 caracteres.<br>`;
+        }
+
+        if (senha == senha.toLowerCase()) {
+            msg.innerHTML += `A senha precisa ter pelo menos uma letra maiúscula.<br>`;
+        }
+
+        if (senha == senha.toUpperCase()) {
+            msg.innerHTML += `A senha precisa ter pelo menos uma letra minúscula.<br>`;
+        }
+
+        if (senha.length >= 8 && senha != senha.toLowerCase() && senha != senha.toUpperCase()) {
+            msg.innerHTML += `Senha válida!<br>`;
+        }
+
+        // COMPARAÇÃO DE SENHA
+
+        if (senha === confirmarSenha) {
+            msg.innerHTML += `Senha confirmada com sucesso<br>`;
+        } else {
+            msg.innerHTML += `As senhas são diferentes, verifique e tente novamente<br>`;
+        }
+    }
+</script>

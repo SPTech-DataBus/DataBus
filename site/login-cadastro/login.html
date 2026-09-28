@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGIN</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section class="section_container">
+        <h3>Bem-vindo de volta</h3>
+
+        <p>Entre com seus dados para acessar a plataforma</p>
+
+        <label for="ipt_email">E-mail</label>
+        <input type="text" id="ipt_email" placeholder="nome@empresa.com">
+
+        <label for="ipt_senha">Senha</label>
+        <input type="password" id="ipt_senha">
+
+        <section class="section_div">
+            <div>
+                <input type="checkbox"> Lembrar acesso
+            </div>
+
+            <a href="">Esqueci minha senha</a>
+        </section>
+
+        <button onclick="realizarLogin()">ENTRAR</button>
+
+        <p class="section_p">Ainda não tem acesso? <a href="" class="section_a">Cadastre seu interesse</a> </p>
+
+        <span id="msg"></span>
+    </section>
+</body>
+</html>
+
+<script>
+    let tentativas = 3;
+
+    function realizarLogin() {
+        let email = ipt_email.value.toLowerCase();
+        let senha = ipt_senha.value;
+
+        msg.innerHTML = '';
+
+        let email_salvo = 'contato@databus.com';
+        let senha_salva = 'Urubu100';
+
+        // VALIDAÇÃO DE EMAIL
+
+        let indiceArroba = email.indexOf("@");
+
+        let comecaArroba = email.startsWith("@");
+
+        let contemEspaco = email.includes(" ");
+
+        let terminaValido = email.endsWith(".com") || email.endsWith(".br");
+
+        if (indiceArroba != -1 && comecaArroba == false && contemEspaco == false && terminaValido) {
+            msg.innerHTML += `E-mail válido<br>`;
+        } else {
+            msg.innerHTML += `E-mail inválido<br>`;
+        }
+
+        // VALIDAÇÃO DE SENHA
+
+        if (senha.length < 8) {
+            msg.innerHTML += `A senha precisa ter pelo menos 8 caracteres.<br>`;
+        }
+
+        if (senha == senha.toLowerCase()) {
+            msg.innerHTML += `A senha precisa ter pelo menos uma letra maiúscula.<br>`;
+        }
+
+        if (senha == senha.toUpperCase()) {
+            msg.innerHTML += `A senha precisa ter pelo menos uma letra minúscula.<br>`;
+        }
+
+        if (senha.length >= 8 && senha != senha.toLowerCase() && senha != senha.toUpperCase()) {
+            msg.innerHTML += `Senha válida!<br>`;
+        }
+
+        // COMPARAÇÃO DE SENHA E EMAIL
+        
+        if (tentativas >= 1) {
+            if (senha === senha_salva && email === email_salvo) {
+                msg.innerHTML += `Login realizado com sucesso<br>`;
+
+                tentativas = 3;
+            } else {
+                msg.innerHTML += `Email ou senha incorretos<br>Restam ${tentativas}`;
+
+                tentativas --;
+            }   
+        } else {
+            msg.innerHTML = 'Número máximo de tentativas atingido';
+        }    
+    }
+</script>
