@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador Financeiro - DataBus</title>
+</head>
+
+<body>
+
+  <h2>Simulador Financeiro de Remanejamento de Frotas - DataBus</h2>
+
+  <p>
+    Informe os dados de uma linha para visualizar uma estimativa
+    de economia com um possível remanejamento da frota.
+  </p>
+
+  <div>
+
+    <div>
+      Código da linha:
+      <input type="text" id="ipt_nome" placeholder="Ex: Linha 101">
+      <br>
+      <small>
+        Identificação da linha que será analisada.
+      </small>
+    </div>
+
+    <br>
+
+    <div>
+      Passageiros por dia:
+      <input type="text" id="ipt_passageiros" placeholder="Ex: 8000">
+      <br>
+      <small>
+        Estimativa de passageiros transportados pela linha em um dia.
+      </small>
+    </div>
+
+    <br>
+
+    <div>
+      Quantidade atual de ônibus:
+      <input type="text" id="ipt_qtd_bus" placeholder="Ex: 10">
+      <br>
+      <small>
+        Quantidade de ônibus atualmente utilizada pela linha.
+      </small>
+    </div>
+
+    <br>
+
+    <div>
+      Capacidade máxima por ônibus:
+      <input type="text" id="ipt_capacidade" placeholder="Ex: 80">
+      <br>
+      <small>
+        Quantidade máxima de passageiros considerada para cada ônibus.
+      </small>
+    </div>
+
+    <br>
+
+    <div>
+      Viagens por ônibus no dia:
+      <input type="text" id="ipt_viagens" placeholder="Ex: 12">
+      <br>
+      <small>
+        Quantidade de viagens realizadas por cada ônibus durante o dia.
+      </small>
+    </div>
+
+    <br>
+
+    <div>
+      Distância de uma viagem (km):
+      <input type="text" id="ipt_dist" placeholder="Ex: 10">
+      <br>
+      <small>
+        Distância percorrida pelo ônibus em uma viagem completa.
+      </small>
+    </div>
+
+    <br>
+
+    <div>
+      Custo operacional por km (R$):
+      <input type="text" id="ipt_custo_km" value="10.93">
+      <br>
+      <small>
+        Valor utilizado para estimar o custo de cada quilômetro percorrido.
+        O valor padrão é R$ 10,93, mas pode ser alterado.
+      </small>
+    </div>
+
+  </div>
+
+  <br>
+
+  <div>
+    <b>Valores pré-definidos:</b>
+    <br>
+
+    <i>
+      Gasto por km:
+      <b>R$10,93</b>
+      (Associação Nacional das Empresas de Transportes Urbanos)
+    </i>
+    <br>
+    <i>
+      Multa por lotação excedente:
+      <b>R$ 293,47</b>
+    </i>
+
+    <br>
+
+    <small>
+      O valor da multa é utilizado automaticamente na simulação
+      quando a ocupação média ultrapassa a capacidade informada.
+    </small>
+  </div>
+
+  <br>
+
+  <button onclick="calcular()">Calcular simulação</button>
+
+  <br><br>
+
+  <div id="div_mensagem"></div>
+
+</body>
+
+<script>
+
+  function calcular() {
+
+    // Valores informados pelo cliente
+
+    let nome = ipt_nome.value
+    let passageiros = Number(ipt_passageiros.value)
+    let qtd_bus = Number(ipt_qtd_bus.value)
+    let capacidade = Number(ipt_capacidade.value)
+    let viagens = Number(ipt_viagens.value)
+    let dist = Number(ipt_dist.value)
+    let custo_km = Number(ipt_custo_km.value)
+
+
+    // Valores pré-definidos
+
+    let valor_multa = 293.47
+    let dias_mes = 30
+
+
+    // Validação dos dados
+
+    if (
+      passageiros <= 0 ||
+      qtd_bus <= 0 ||
+      capacidade <= 0 ||
+      viagens <= 0 ||
+      dist <= 0 ||
+      custo_km <= 0
+    ) {
+
+      div_mensagem.innerHTML = `
+        <h3>Preencha todos os campos corretamente.</h3>
+
+        <p>
+          Os valores informados precisam ser maiores que zero.
+        </p>
+      `
+
+    } else {
+
+
+      // ==========================================
+      // SITUAÇÃO ATUAL
+      // ==========================================
+
+      // Total de viagens realizadas pela frota
+
+      let viagens_totais = qtd_bus * viagens
+
+
+      // Total de quilômetros percorridos
+
+      let km_total = viagens_totais * dist
+
+
+      // Capacidade total de passageiros da operação
+
+      let capacidade_total = viagens_totais * capacidade
+
+
+      // Média de passageiros por viagem
+
+      let passageiros_por_viagem =
+        passageiros / viagens_totais
+
+
+      // Percentual de ocupação
+
+      let percentual_ocupacao =
+        (passageiros / capacidade_total) * 100
+
+
+      // Multa estimada por lotação excedente
+
+      let multa_total = 0
+
+      if (passageiros_por_viagem > capacidade) {
+
+        multa_total = valor_multa * qtd_bus
+
+      }
+
+
+      // Custo de rodagem
+
+      let custo_rodagem =
+        km_total * custo_km
+
+
+      // Custo total atual
+
+      let custo_atual =
+        custo_rodagem + multa_total
+
+
+
+      // ==========================================
+      // CENÁRIO SIMULADO
+      // ==========================================
+
+      // Quantidade de viagens necessárias
+
+      let viagens_necessarias =
+        passageiros / capacidade
+
+
+      // Quantidade estimada de ônibus necessária
+
+      let qtd_bus_depois =
+        Math.ceil(viagens_necessarias / viagens)
+
+
+      // Total de viagens no cenário simulado
+
+      let viagens_depois =
+        qtd_bus_depois * viagens
+
+
+      // Quilometragem no cenário simulado
+
+      let km_depois =
+        viagens_depois * dist
+
+
+      // Capacidade total no cenário simulado
+
+      let capacidade_depois =
+        viagens_depois * capacidade
+
+
+      // Passageiros por viagem no cenário simulado
+
+      let passageiros_por_viagem_depois =
+        passageiros / viagens_depois
+
+
+      // Ocupação no cenário simulado
+
+      let percentual_ocupacao_depois =
+        (passageiros / capacidade_depois) * 100
+
+
+      // Custo de rodagem no cenário simulado
+
+      let custo_rodagem_depois =
+        km_depois * custo_km
+
+
+      // Sem multa no cenário calculado
+
+      let multa_depois = 0
+
+
+      // Custo total no cenário simulado
+
+      let custo_depois =
+        custo_rodagem_depois + multa_depois
+
+
+
+      // ==========================================
+      // COMPARAÇÃO
+      // ==========================================
+
+      // Economia relacionada à rodagem
+
+      let economia_rodagem =
+        custo_rodagem - custo_rodagem_depois
+
+
+      // Economia relacionada às multas
+
+      let economia_multas =
+        multa_total - multa_depois
+
+
+      // Economia total por dia
+
+      let economia_dia =
+        custo_atual - custo_depois
+
+
+      // Economia estimada por mês
+
+      let economia_mes =
+        economia_dia * dias_mes
+
+
+      // Diferença na quantidade de ônibus
+
+      let diferenca_bus =
+        qtd_bus - qtd_bus_depois
+
+
+
+      // ==========================================
+      // RESULTADOS
+      // ==========================================
+
+      div_mensagem.innerHTML = `
+
+        <h2>Resultado da simulação</h2>
+
+        <h3>Situação atual da linha ${nome}</h3>
+
+        <div>
+          Quantidade de ônibus:
+          <b>${qtd_bus}</b>
+        </div>
+
+        <div>
+          Viagens realizadas no dia:
+          <b>${viagens_totais}</b>
+        </div>
+
+        <div>
+          Quilometragem percorrida:
+          <b>${km_total.toFixed(2)} km</b>
+        </div>
+
+        <div>
+          Passageiros por viagem:
+          <b>${passageiros_por_viagem.toFixed(0)}</b>
+        </div>
+
+        <div>
+          Ocupação estimada:
+          <b>${percentual_ocupacao.toFixed(2)}%</b>
+        </div>
+
+        <div>
+          Custo de rodagem:
+          <b>R$ ${custo_rodagem.toFixed(2)}</b>
+        </div>
+
+        <div>
+          Multa estimada por lotação excedente:
+          <b>R$ ${multa_total.toFixed(2)}</b>
+        </div>
+
+        <div>
+          <b>Custo total atual:</b>
+          R$ ${custo_atual.toFixed(2)}
+        </div>
+
+        <br>
+
+        <h3>Cenário simulado com remanejamento</h3>
+
+        <div>
+          Quantidade estimada de ônibus:
+          <b>${qtd_bus_depois}</b>
+        </div>
+
+        <div>
+          Viagens realizadas no dia:
+          <b>${viagens_depois}</b>
+        </div>
+
+        <div>
+          Quilometragem percorrida:
+          <b>${km_depois.toFixed(2)} km</b>
+        </div>
+
+        <div>
+          Passageiros por viagem:
+          <b>${passageiros_por_viagem_depois.toFixed(0)}</b>
+        </div>
+
+        <div>
+          Ocupação estimada:
+          <b>${percentual_ocupacao_depois.toFixed(2)}%</b>
+        </div>
+
+        <div>
+          Custo de rodagem:
+          <b>R$ ${custo_rodagem_depois.toFixed(2)}</b>
+        </div>
+
+        <div>
+          Multa estimada:
+          <b>R$ 0,00</b>
+        </div>
+
+        <div>
+          <b>Custo total simulado:</b>
+          R$ ${custo_depois.toFixed(2)}
+        </div>
+
+        <br>
+
+        <h3>Economia potencial</h3>
+      `
+
+
+      // ==========================================
+      // REDUÇÃO DE FROTA
+      // ==========================================
+
+      if (qtd_bus_depois < qtd_bus) {
+
+        div_mensagem.innerHTML += `
+
+          <div>
+            Ônibus que poderiam ser remanejados:
+            <b>${diferenca_bus}</b>
+          </div>
+
+          <br>
+
+          <div>
+            Economia estimada com a redução de rodagem:
+            R$ ${economia_rodagem.toFixed(2)} por dia
+          </div>
+
+          <div>
+            Economia estimada com multas:
+            R$ ${economia_multas.toFixed(2)} por dia
+          </div>
+
+          <br>
+
+          <div style="color: green; font-weight: 900; font-size: 22px;">
+            Economia potencial:
+            R$ ${economia_dia.toFixed(2)} por dia
+          </div>
+
+          <div style="color: green; font-weight: 900; font-size: 24px;">
+            Economia potencial:
+            R$ ${economia_mes.toFixed(2)} por mês
+          </div>
+
+          <br>
+
+          <h4>
+            A simulação indica uma possível redução de custos
+            caso a frota seja ajustada de acordo com a demanda estimada.
+          </h4>
+
+        `
+
+      }
+
+
+      // ==========================================
+      // AUMENTO DE FROTA
+      // ==========================================
+
+      else if (qtd_bus_depois > qtd_bus) {
+
+        let quantidade_aumentar =
+            qtd_bus_depois - qtd_bus
+
+        div_mensagem.innerHTML += `
+
+            <div>
+            <b>A linha está acima da capacidade máxima atual.</b>
+            </div>
+
+            <div>
+            Multas estimadas por lotação excedente:
+            <b>${qtd_bus} multas</b>
+            </div>
+
+            <div>
+            Valor estimado das multas:
+            <b>R$ ${multa_total.toFixed(2)}</b>
+            </div>
+
+            <br>
+
+            <div>
+            Ônibus adicionais estimados:
+            <b>${quantidade_aumentar}</b>
+            </div>
+
+            <br>
+
+            <h4>
+            A demanda informada ultrapassa a capacidade da frota atual.
+            Por isso, além da possibilidade de ocorrência de multas por
+            lotação excedente, o cenário simulado indica a necessidade
+            de mais ônibus para atender essa demanda.
+            </h4>
+
+            `
+
+      }
+
+
+      // ==========================================
+      // FROTA ADEQUADA
+      // ==========================================
+
+      else {
+
+        div_mensagem.innerHTML += `
+
+          <h4>
+            A quantidade atual de ônibus corresponde à quantidade
+            estimada para atender a demanda informada.
+          </h4>
+
+          <div style="color: green; font-weight: 900;">
+            Não foi identificada economia de remanejamento neste cenário.
+          </div>
+
+        `
+
+      }
+
+
+      // ==========================================
+      // COMO A SIMULAÇÃO FUNCIONA
+      // ==========================================
+
+      div_mensagem.innerHTML += `
+
+        <br>
+
+        <h3>Como a simulação funciona?</h3>
+
+        <p>
+          A simulação compara o custo da operação atual com um cenário
+          de distribuição da frota baseado na demanda estimada.
+          Primeiro, são considerados a quantidade de ônibus, as viagens
+          realizadas e a distância percorrida para estimar o custo atual.
+        </p>
+
+        <p>
+          Em seguida, o sistema estima quantos ônibus seriam necessários
+          para transportar os passageiros dentro da capacidade informada.
+          Com essa quantidade, recalcula as viagens, a quilometragem
+          e o custo da operação.
+        </p>
+
+        <p>
+          Quando a ocupação média ultrapassa a capacidade do ônibus,
+          a simulação também considera uma multa estimada por
+          lotação excedente.
+        </p>
+
+        <p>
+          A economia potencial corresponde à diferença entre o custo
+          estimado da operação atual e o custo estimado no cenário simulado.
+          A estimativa mensal considera 30 dias de operação.
+        </p>
+
+        <h4>
+          Os resultados são estimativas e servem como apoio à análise.
+          O remanejamento real deve considerar os dados de ocupação
+          coletados pelo DataBus e as condições da operação da empresa.
+        </h4>
+
+      `
+
+    }
+
+  }
+
+</script>
+
+</html>
