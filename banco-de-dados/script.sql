@@ -2,19 +2,23 @@ CREATE DATABASE DataBus;
 
 USE DataBus;
 
--- Criação das tabelas
+-- CRIAÇÃO DAS TABELAS --
+
+-- EMPRESA --
+
 CREATE TABLE empresa (
     id_empresa INT PRIMARY KEY AUTO_INCREMENT,
+    cnpj CHAR(18) NOT NULL UNIQUE,
+    codigo_verificacao CHAR(6) UNIQUE NOT NULL,
     razao_social VARCHAR(100) NOT NULL,
     nome_fantasia VARCHAR(60) NOT NULL,
-    cnpj CHAR(18) NOT NULL UNIQUE,
-    abrangencia_local VARCHAR(40),
-    CONSTRAINT chLocal CHECK (
-        abrangencia_local IN ('Intermunicipal', 'Municipal')
-    ),
-    email VARCHAR(100) NOT NULL UNIQUE,
-    telefone CHAR(15) NOT NULL UNIQUE
+    regiao VARCHAR(40),
+    CONSTRAINT ch_local CHECK (regiao IN ('Intermunicipal', 'Municipal'))
 );
+
+SELECT * FROM empresa;
+
+-- REPRESENTANTE DA EMPRESA --
 
 CREATE TABLE representante_empresa (
     id_representante INT PRIMARY KEY AUTO_INCREMENT,
@@ -22,9 +26,12 @@ CREATE TABLE representante_empresa (
     cpf CHAR(14) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
     fk_empresa INT NOT NULL,
-    FOREIGN KEY (fk_empresa)
-        REFERENCES empresa(id_empresa)
+    CONSTRAINT fk_empresa_representante FOREIGN KEY (fk_empresa) REFERENCES empresa(id_empresa)
 );
+
+SELECT * FROM representante_empresa;
+
+-- USUÁRIO --
 
 CREATE TABLE usuario (
     id_usuario INT PRIMARY KEY AUTO_INCREMENT,
@@ -32,13 +39,16 @@ CREATE TABLE usuario (
     email VARCHAR(100) NOT NULL UNIQUE,
     senha VARCHAR(100) NOT NULL,
     tipo_perfil VARCHAR(40) NOT NULL,
-    CONSTRAINT chTipo CHECK (
-        tipo_perfil IN ('Administrador', 'Operador')
-    ),
+    CONSTRAINT ch_tipo CHECK (tipo_perfil IN ('Administrador', 'Operador')), -- VERIFICAR SE É NECESSÁRIO O 'tipo'
+    fk_adm INT,
     fk_empresa INT NOT NULL,
-    FOREIGN KEY (fk_empresa)
-        REFERENCES empresa(id_empresa)
+    CONSTRAINT fk_empresa_usuario FOREIGN KEY (fk_empresa) REFERENCES empresa(id_empresa),
+    CONSTRAINT fk_usuario_adm FOREIGN KEY (fk_adm) REFERENCES usuario(id_usuario)
 );
+
+SELECT * FROM usuario;
+
+-- LINHA --
 
 CREATE TABLE linha (
     id_linha INT PRIMARY KEY AUTO_INCREMENT,
@@ -46,217 +56,128 @@ CREATE TABLE linha (
     nome VARCHAR(100) NOT NULL,
     tarifa DECIMAL(5,2) NOT NULL,
     fk_empresa INT NOT NULL,
-    FOREIGN KEY (fk_empresa)
-        REFERENCES empresa(id_empresa)
+    CONSTRAINT fk_linha_empresa FOREIGN KEY (fk_empresa) REFERENCES empresa(id_empresa)
 );
+
+SELECT * FROM linha;
+
+-- ÔNIBUS --
 
 CREATE TABLE onibus (
     id_onibus INT PRIMARY KEY AUTO_INCREMENT,
     placa CHAR(7) NOT NULL UNIQUE,
     capacidade_maxima INT NOT NULL,
-    passageiros_atual INT DEFAULT 0,
-    fk_linha INT NOT NULL,
-    FOREIGN KEY (fk_linha)
-        REFERENCES linha(id_linha)
+    status_onibus VARCHAR(20) NOT NULL,
+    CONSTRAINT ch_status_onibus CHECK (status_onibus IN ('Ativo', 'Manutenção', 'Desativado'))
 );
+
+SELECT * FROM onibus;
+
+-- VIAGEM --
+
+CREATE TABLE viagem (
+	id_viagem INT PRIMARY KEY AUTO_INCREMENT,
+    data_hora_inicio DATETIME NOT NULL,
+    data_hora_fim DATETIME NOT NULL,
+    fk_onibus INT NOT NULL,
+    fk_linha INT NOT NULL,
+    CONSTRAINT fk_onibus_viagem FOREIGN KEY (fk_onibus) REFERENCES onibus(id_onibus),
+    CONSTRAINT fk_linha_viagem FOREIGN KEY (fk_linha) REFERENCES linha(id_linha)
+);
+
+SELECT * FROM viagem;
+
+-- SENSOR --
 
 CREATE TABLE sensor (
     id_sensor INT PRIMARY KEY AUTO_INCREMENT,
+    modelo VARCHAR(20),
     data_instalacao DATE,
     status_sensor VARCHAR(20) NOT NULL,
     fk_onibus INT NOT NULL,
-    CONSTRAINT chStatusSensor CHECK (
-        status_sensor IN ('Ativo', 'Manutencao', 'Desativado')
-    ),
-    FOREIGN KEY (fk_onibus)
-        REFERENCES onibus(id_onibus)
+    CONSTRAINT ch_status_sensor CHECK (status_sensor IN ('Ativo', 'Manutencao', 'Desativado')),
+    CONSTRAINT fk_sensor_onibus FOREIGN KEY (fk_onibus) REFERENCES onibus(id_onibus)
 );
+
+SELECT * FROM sensor;
+
+-- REGISTRO DO SENSOR --
 
 CREATE TABLE registro_sensor (
     id_registro INT PRIMARY KEY AUTO_INCREMENT,
-    tipo_dado TINYINT NOT NULL,
+    tipo_movimento TINYINT NOT NULL,
     data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
+    passageiros_atual INT DEFAULT 0, -- 0 = entrada e 1 = saída --
     fk_sensor INT NOT NULL,
-    CONSTRAINT chTipoDado CHECK (
-        tipo_dado IN (0,1)
-    ),
-    FOREIGN KEY (fk_sensor)
-        REFERENCES sensor(id_sensor)
-);
-/* 0 = entrada e 1 = saída */
-
-CREATE TABLE relatorio_diario (
-    id_relatorio INT PRIMARY KEY AUTO_INCREMENT,
-    data_relatorio DATE NOT NULL,
-    horario_inicio TIME NOT NULL,
-    horario_fim TIME NOT NULL,
-    total_passageiros INT DEFAULT 0,
-    passageiros_manha INT DEFAULT 0,
-    passageiros_tarde INT DEFAULT 0,
-    passageiros_noite INT DEFAULT 0,
-    viagens INT DEFAULT 0,
     fk_onibus INT NOT NULL,
-    FOREIGN KEY (fk_onibus)
-        REFERENCES onibus(id_onibus)
+    CONSTRAINT ch_tipo_movimento CHECK (tipo_movimento IN (0,1)),
+    CONSTRAINT fk_registro_onibus FOREIGN KEY (fk_sensor) REFERENCES sensor(id_sensor),
+    CONSTRAINT fk_registro_sensor_onibus FOREIGN KEY (fk_onibus) REFERENCES onibus(id_onibus)
 );
 
-
--- Inserção de dados fictícios nas tabelas
-
-INSERT INTO empresa
-(cnpj, razao_social, nome_fantasia, email, abrangencia_local, telefone) VALUES
-('00.000.000/0001-91', 'Mobi Brasil Mobilidade Urbana Ltda.', 'Mobi Brasil', 'mobi@email.com', 'Intermunicipal', '(11) 98765-4321'),
-('00.121.011/0041-31', 'São Paulo Transporte S/A', 'SPTrans', 'sptrans@email.com', 'Municipal', '(11) 98765-4320'),
-('00.011.011/0011-11', 'Viação Mobi Rios S.A.', 'MobiRio', 'mobirio@email.com', 'Municipal', '(21) 98765-1520'),
-('12.713.901/1021-51', 'Transcon Transportes e Concessões S.A.', 'Transcon', 'transcon@email.com', 'Intermunicipal', '(31) 98325-4320');
-
-
-INSERT INTO linha
-(codigo, nome, tarifa, fk_empresa) VALUES
-('607C-10', 'Jardim Miriam - Itaim Bibi', 5.30, 1),
-('5106-10', 'Mar Paulista - São Francisco', 5.30, 2),
-('483', 'Penha - Ipanema', 5.00, 3),
-('8150', 'União - Serra', 6.25, 4);
-
-
-INSERT INTO onibus
-(placa, capacidade_maxima, passageiros_atual, fk_linha) VALUES
-('ABC1134', 120, 110, 1),
-('CBA1234', 120, 80, 2),
-('JCC3412', 80, 33, 3),
-('LEO6671', 80, 60, 4);
-
-
-INSERT INTO relatorio_diario
-(data_relatorio, horario_inicio, horario_fim, total_passageiros,
- passageiros_manha, passageiros_tarde, passageiros_noite,
- viagens, fk_onibus) VALUES
-('2026-09-21', '08:30:00', '18:30:00', 8000, 3000, 3200, 1800, 12, 1),
-('2026-09-21', '09:00:00', '19:00:00', 6000, 2200, 2500, 1300, 10, 2),
-('2026-09-21', '10:00:00', '18:00:00', 3500, 1300, 1400, 800, 10, 3),
-('2026-09-21', '07:30:00', '17:30:00', 4000, 1500, 1600, 900, 12, 4);
-
-INSERT INTO sensor
-(data_instalacao, status_sensor, fk_onibus) VALUES
-('2026-09-21', 'Ativo', 1),
-('2026-09-21', 'Ativo', 2),
-('2026-09-21', 'Ativo', 3),
-('2026-09-21', 'Ativo', 4);
-
-
-INSERT INTO registro_sensor
-(fk_sensor, tipo_dado) VALUES
-(1, 0),
-(2, 1),
-(3, 1),
-(4, 0);
-
-SELECT 
-    o.placa AS 'Placa do Ônibus',
-    l.codigo AS 'Código da Linha',
-    l.nome AS 'Nome da Linha',
-    e.nome_fantasia AS 'Empresa Responsável',
-    o.passageiros_atual AS 'Passageiros Atuais'
-FROM onibus AS o
-JOIN linha AS l ON o.fk_linha = l.id_linha
-JOIN empresa AS e ON l.fk_empresa = e.id_empresa;
-
--- Apresentação de registros de empresas no sistema
-SELECT * FROM empresa;
-
--- Apresentação dos sensores cadastrados
-SELECT * FROM sensor;
-
--- Apresentação de registros de entrada e saída de passageiros
 SELECT * FROM registro_sensor;
 
--- Apresentação da ocupação atual dos ônibus
-SELECT * FROM onibus;
 
--- Apresentação dos relatórios diários
-SELECT * FROM relatorio_diario;
+-- INSERÇÃO DE DADOS --
 
--- Apresentação das linhas
-SELECT * FROM linha;
+INSERT INTO empresa (cnpj, codigo_verificacao, razao_social, nome_fantasia, regiao) VALUES
+	('00.000.000/0001-91', 'A7K9Q2', 'Mobi Brasil Mobilidade Urbana Ltda.', 'Mobi Brasil', 'Intermunicipal'),
+	('00.121.011/0041-31', 'M4X8P1', 'São Paulo Transporte S/A', 'SPTrans', 'Municipal'),
+	('00.011.011/0011-11', 'R6T3Z9', 'Viação Mobi Rios S.A.', 'MobiRio', 'Municipal'),
+	('12.713.901/1021-51', 'B2N7L5', 'Transcon Transportes e Concessões S.A.', 'TransCon', 'Intermunicipal');
+    
+INSERT INTO representante_empresa (nome, cpf, email, fk_empresa) VALUES
+    ('Carlos Eduardo Silva', '123.456.789-01', 'carlos.silva@mobibrasil.com.br', 1),
+    ('Mariana Alves Santos', '234.567.890-12', 'mariana.santos@sptrans.com.br', 2),
+    ('Rafael Oliveira Costa', '345.678.901-23', 'rafael.costa@mobirio.com.br', 3),
+    ('Fernanda Martins Souza', '456.789.012-34', 'fernanda.souza@transcon.com.br', 4);
 
--- Apresentação formatada das empresas no sistema
-SELECT
-    cnpj AS 'Cnpj',
-    nome_fantasia AS 'Nome da Empresa',
-    email AS 'E-mail',
-    abrangencia_local AS 'Região',
-    telefone AS 'Telefone para Contato'
-FROM empresa;
+INSERT INTO usuario (nome, email, senha, tipo_perfil, fk_adm, fk_empresa) VALUES
+    ('João Pereira', 'joao@mobibrasil.com.br', 'Admin123', 'Administrador', NULL, 1),
+    ('Lucas Almeida', 'lucas@mobibrasil.com.br', 'Operador123', 'Operador', 1, 1),
+    ('Ana Souza', 'ana@sptrans.com.br', 'Operador456', 'Operador', 1, 2),
+    ('Pedro Costa', 'pedro@mobirio.com.br', 'Operador789', 'Operador', 1, 3);
 
--- Apresentação formatada dos registros de entrada e saída de passageiros
+INSERT INTO linha (codigo, nome, tarifa, fk_empresa) VALUES
+	('607C-10', 'Jardim Miriam - Itaim Bibi', 5.30, 1),
+	('5106-10', 'Mar Paulista - São Francisco', 5.30, 2),
+	('8144-22', 'Penha - Ipanema', 5.00, 3),
+	('2019-AC', 'União - Serra', 6.25, 4);
+
+INSERT INTO onibus (placa, capacidade_maxima, status_onibus) VALUES
+	('ABC1134', 120, 'Ativo'),
+	('CBA1234', 120, 'Ativo'),
+	('JCC3412', 80, 'Desativado'),
+	('LEO6671', 80, 'Manutenção');
+    
+INSERT INTO viagem (data_hora_inicio, data_hora_fim, fk_onibus, fk_linha) VALUES
+    ('2026-09-28 06:00:00', '2026-09-28 07:30:00', 1, 1),
+    ('2026-09-28 08:00:00', '2026-09-28 09:30:00', 2, 2),
+    ('2026-09-28 10:00:00', '2026-09-28 11:30:00', 3, 3),
+    ('2026-09-28 14:00:00', '2026-09-28 15:30:00', 4, 4);
+
+INSERT INTO sensor (modelo, data_instalacao, status_sensor, fk_onibus) VALUES
+	('HC-SR04', '2026-09-21', 'Ativo', 1),
+	('HC-SR04', '2026-09-21', 'Ativo', 2),
+	('HC-SR04', '2026-09-21', 'Ativo', 3),
+	('HC-SR04', '2026-09-21', 'Ativo', 4);
+
+INSERT INTO registro_sensor (tipo_movimento, data_hora, passageiros_atual, fk_sensor, fk_onibus) VALUES
+	(0, '2026-09-21 20:15:30', 80, 1, 1),
+	(1, '2026-09-21 20:16:30', 80, 2, 2),
+	(0, '2026-09-21 20:17:30', 100, 3, 3),
+	(1, '2026-09-21 20:18:30', 100, 4, 4);
+
+-- CONSULTA DE DADOS --
+
 SELECT 
-    rs.id_registro AS 'Identificação (ID)',
+    registro_sensor.id_registro 'ID',
     CASE
-        WHEN rs.tipo_dado = 0 THEN 'Entrada'
+        WHEN registro_sensor.tipo_movimento = 0 THEN 'Entrada'
         ELSE 'Saída'
-    END AS 'Tipo de registro',
-    o.placa AS 'Placa',
-    DATE_FORMAT(rs.data_hora, '%d/%m/%Y %H:%i:%s') AS 'Data e hora'
-FROM registro_sensor AS rs
-JOIN sensor AS s ON rs.fk_sensor = s.id_sensor
-JOIN onibus AS o ON s.fk_onibus = o.id_onibus;
-
-
--- Apresentação formatada da ocupação em tempo real dos ônibus
-SELECT
-    o.placa AS 'Placa',
-    l.codigo AS 'Cód. da Linha',
-    l.nome AS 'Nome da Linha',
-    o.passageiros_atual AS 'Quantidade de Passageiros',
-    o.capacidade_maxima AS 'Capacidade Máxima',
-    CONCAT('R$', l.tarifa) AS 'Valor da Tarifa'
-FROM onibus AS o
-JOIN linha AS l ON o.fk_linha = l.id_linha;
-
-
--- Apresentação formatada do relatório diário dos ônibus
-SELECT
-    o.placa AS 'Placa',
-    l.codigo AS 'Cód. da Linha',
-    rd.viagens AS 'Quantidade de Viagens',
-    rd.horario_inicio AS 'Horário de Início',
-    rd.horario_fim AS 'Horário de Fim',
-    rd.total_passageiros AS 'Total de Passageiros',
-    CONCAT('R$', l.tarifa) AS 'Valor da Tarifa',
-    CONCAT('R$', rd.total_passageiros * l.tarifa) AS 'Valor Arrecadado'
-FROM relatorio_diario AS rd
-JOIN onibus AS o ON rd.fk_onibus = o.id_onibus
-JOIN linha AS l ON o.fk_linha = l.id_linha;
-
-
--- Apresentação formatada dos dados das linhas
-SELECT 
-    l.codigo AS 'Código',
-    l.nome AS 'Nome da Linha',
-    CONCAT('R$', l.tarifa) AS 'Valor da Tarifa'
-FROM linha AS l;
-
-SELECT 
-    l.codigo AS 'Código',
-    l.nome AS 'Nome da Linha',
-    rd.data_relatorio AS 'Data',
-    rd.total_passageiros AS 'Total de Passageiros',
-    rd.passageiros_manha AS 'Passageiros - Manhã',
-    rd.passageiros_tarde AS 'Passageiros - Tarde',
-    rd.passageiros_noite AS 'Passageiros - Noite',
-    CONCAT('R$', l.tarifa) AS 'Valor da Tarifa',
-    CONCAT('R$', rd.total_passageiros * l.tarifa) AS 'Valor Arrecadado'
-FROM relatorio_diario AS rd
-JOIN onibus AS o ON rd.fk_onibus = o.id_onibus
-JOIN linha AS l ON o.fk_linha = l.id_linha;
-
-
-
-
-
-
-
-
-
-
-
+    END 'Tipo de registro',
+    onibus.placa 'Placa',
+    DATE_FORMAT(registro_sensor.data_hora, '%d/%m/%Y %H:%i:%s') 'Data e hora'
+FROM registro_sensor
+JOIN sensor ON registro_sensor.fk_sensor = sensor.id_sensor
+JOIN onibus ON sensor.fk_onibus = onibus.id_onibus;
