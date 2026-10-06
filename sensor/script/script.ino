@@ -1,7 +1,7 @@
 #include "Ultrasonic.h";
 
-int pinoTrigger = 13;
-int pinoEcho = 12;
+int pinoTrigger = 12;
+int pinoEcho = 13;
 
 HC_SR04 sensor(pinoTrigger, pinoEcho);
 
@@ -12,11 +12,11 @@ void setup() {
 void loop() {
   float distancia = sensor.distance();
 
-  if (distancia >= 15 && distancia <= 100) {
+  if (distancia >= 10 && distancia <= 100) {
     Serial.println("1");
   } else {
     Serial.println("0");
   }
 
-  delay(5000);
+  delay(1000);
 }
