@@ -68,6 +68,8 @@ CREATE TABLE onibus (
     placa CHAR(7) NOT NULL UNIQUE,
     capacidade_maxima INT NOT NULL,
     status_onibus VARCHAR(20) NOT NULL,
+    fk_empresa INT,
+    CONSTRAINT fk_empresa_onibus FOREIGN KEY (fk_empresa) REFERENCES empresa (id_empresa),
     CONSTRAINT ch_status_onibus CHECK (status_onibus IN ('Ativo', 'Manutenção', 'Desativado'))
 );
 
@@ -107,12 +109,10 @@ CREATE TABLE registro_sensor (
     id_registro INT PRIMARY KEY AUTO_INCREMENT,
     tipo_movimento TINYINT NOT NULL,
     data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
-    passageiros_atual INT DEFAULT 0, -- 0 = entrada e 1 = saída --
+    passageiros_atual INT DEFAULT 0,
     fk_sensor INT NOT NULL,
-    fk_onibus INT NOT NULL,
     CONSTRAINT ch_tipo_movimento CHECK (tipo_movimento IN (0,1)),
-    CONSTRAINT fk_registro_onibus FOREIGN KEY (fk_sensor) REFERENCES sensor(id_sensor),
-    CONSTRAINT fk_registro_sensor_onibus FOREIGN KEY (fk_onibus) REFERENCES onibus(id_onibus)
+    CONSTRAINT fk_registro_onibus FOREIGN KEY (fk_sensor) REFERENCES sensor(id_sensor)
 );
 
 SELECT * FROM registro_sensor;
