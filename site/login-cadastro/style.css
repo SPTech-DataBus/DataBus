@@ -4,20 +4,75 @@
     margin: 0;
     padding: 0;
     font-family: 'Inter';
+    box-sizing: border-box;
 }
 
-body {
+main {
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 92vh;
+    width: 100%;
+    overflow: hidden;
 }
 
 .section_container {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     gap: 10px;
     padding: 20px;
+    width: 60%;
+    height: 100%;
+    background-color: #F4F6F9;
+}
+
+.section_form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 30px;
+    border-radius: 10px;
+    background-color: #FFF;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.section_imagem {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    height: 95vh;
+    width: 40%;
+    gap: 50px;
+    background-color: #0A3158;
+}
+
+.img img {
+    width: 500px;
+    height: fit-content;
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.text .h1 {
+    font-size: 42px;
+    color: #FFF;
+    width: 450px;
+}
+
+.text .h4 {
+    font-size: 17px;
+    color: #C6D8E8;
+    width: 450px;
+    line-height: 1.5;
+}
+
+.section_form {
+    width: 400px;
 }
 
 .section_container h3 {
@@ -36,7 +91,7 @@ body {
 }
 
 .section_container input {
-    padding: 10px;
+    padding: 15px;
     border: 2px solid #D7E2EC;
     outline: none;
     border-radius: 8px;
@@ -66,7 +121,7 @@ button {
     color: #0A3158;
     border: none;
     border-radius: 8px;
-    padding: 10px;
+    padding: 15px;
     font-weight: bold;
     transition: 0.5s all;
     cursor: pointer;
@@ -95,4 +150,53 @@ button:hover {
     font-size: 13;
     color: #176BB8;
     text-align: center;
+}
+
+/* HEADER */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;           
+    padding: 15px 80px;
+    background-color: #FFF;
+    height: 8vh;
+}
+
+.navbar a {
+    text-decoration: none;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #176BB8;
+}
+
+.logo span {
+    color: #F2B84F;
+}
+
+.menu {
+    display: flex;
+    gap: 30px;
+}
+
+.menu a {
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    color: #0A3158;
+    transition: 0.5s all;
+}
+
+.menu a:hover {
+    color: #F2B84F;
+}
+
+.hr {
+    border: 1px solid #D7E2EC;
 }

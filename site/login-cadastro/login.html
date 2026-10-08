@@ -7,31 +7,63 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <section class="section_container">
-        <h3>Bem-vindo de volta</h3>
+    <header class="navbar">
+        <a href="Pagina.html" class="logo">
+            <img src="imgs/Símbolo.png" alt="Logo DATABUS" width="40" height="40">
+            <p>DATA<span>BUS</span></p>
+        </a>
 
-        <p>Entre com seus dados para acessar a plataforma</p>
+        <nav class="menu">
+            <a href="Pagina.html">Início</a>
+            <a href="calculadora.html">Simulador</a>
+            <a href="login.html">Login</a>
+            <a href="cadastro.html">Cadastro</a>
+        </nav>
+    </header>
 
-        <label for="ipt_email">E-mail</label>
-        <input type="text" id="ipt_email" placeholder="nome@empresa.com">
+    <main>
+        <section class="section_imagem">
+            <div class="text">
+                <p class="h1">Dados claros para uma mobilidade melhor</p>
 
-        <label for="ipt_senha">Senha</label>
-        <input type="password" id="ipt_senha" placeholder="Digite sua senha">
-
-        <section class="section_div">
-            <div>
-                <input type="checkbox"> Lembrar acesso
+                <p class="h4">Acesse seu ambiente DATABUS para acompanhar <br> informações da operação e apoiar decisões da equipe</p>
             </div>
 
-            <a href="">Esqueci minha senha</a>
+            <div class="img">
+                <img src="../img/img_login.png" alt="">
+            </div>
         </section>
+    
+        <section class="section_container">
+            <section class="section_form">
+                <h3>Bem-vindo de volta</h3>
+        
+                <p>Entre com seus dados para acessar a plataforma</p>
+        
+                <label for="ipt_email">E-mail</label>
+                <input type="text" id="ipt_email" placeholder="nome@empresa.com">
+        
+                <label for="ipt_senha">Senha</label>
+                <input type="password" id="ipt_senha" placeholder="Digite sua senha">
+        
+                <section class="section_div">
+                    <div>
+                        <input type="checkbox"> Lembrar acesso
+                    </div>
+        
+                    <a href="">Esqueci minha senha</a>
+                </section>
+        
+                <button onclick="realizarLogin()">ENTRAR</button>
 
-        <button onclick="realizarLogin()">ENTRAR</button>
-
-        <p class="section_p">Ainda não tem acesso? <a href="cadastro.html" class="section_a">Cadastre seu interesse</a> </p>
-
-        <span id="msg"></span>
-    </section>
+                <span class="hr"></span>
+        
+                <p class="section_p">Ainda não tem acesso? <a href="cadastro.html" class="section_a">Cadastre seu interesse</a> </p>
+        
+                <span id="msg"></span>
+            </section>
+        </section>
+    </main>
 </body>
 </html>
 
