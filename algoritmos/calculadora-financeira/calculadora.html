@@ -4,134 +4,221 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="calculadora.css">
   <title>Simulador Financeiro - DataBus</title>
 </head>
 
 <body>
+  <!-- cabecalho com os links das outras paginas do site -->
 
-  <h2>Simulador Financeiro de Remanejamento de Frotas - DataBus</h2>
+  <div class="cabecalho">
+    <div class="cabecalho_conteudo">
 
-  <p>
-    Informe os dados de uma linha para visualizar uma estimativa
-    de economia com um possível remanejamento da frota.
-  </p>
+      <div class="marca">
+        <img src="logo.png" alt="Logo DataBus" class="logo">
+        <span><span class="nome_data">DATA</span><span class="nome_bus">BUS</span></span>
+      </div>
 
-  <div>
+      <div class="menu">
+        <a href="../../site/login-cadastro/Pagina.html" class="link_menu">Início</a>
+        <a href="calculadora.html" class="link_menu_ativo">Simulador</a>
+        <a href="../../site/login-cadastro/login.html" class="link_menu">Login</a>
+        <a href="../../site/login-cadastro/cadastro.html" class="link_menu">Cadastro</a>
+      </div>
 
-    <div>
-      Código da linha:
-      <input type="text" id="ipt_nome" placeholder="Ex: Linha 101">
-      <br>
-      <small>
-        Identificação da linha que será analisada.
-      </small>
+    </div>
+  </div>
+
+  <!-- Faixa com o titulo -->
+
+  <div class="faixa_titulo">
+    <div class="faixa_conteudo">
+
+      <span class="etiqueta">SIMULADOR DATABUS</span>
+
+      <h1 class="titulo_pagina">Descubra o tamanho ideal da frota de cada linha</h1>
+
+      <p class="subtitulo">
+        Informe os dados de uma linha e veja se há ônibus sobrando ou faltando,
+        e quanto isso representa no custo do mês.
+      </p>
+
+    </div>
+  </div>
+
+  <!-- Conteudo da pagina -->
+
+  <div class="conteudo">
+
+    <div class="area_principal">
+
+      <!-- Coluna da esquerda -->
+
+      <div class="coluna_esquerda">
+
+        <div class="cartao_form">
+
+          <div class="form_topo">
+            <span class="form_titulo">Dados da linha</span>
+            <button class="botao_exemplo" onclick="preencherExemplo()">Preencher com exemplo</button>
+          </div>
+
+          <div class="campo_inteiro">
+            <span class="rotulo_campo">Código da linha (opcional)</span>
+            <input type="text" id="ipt_nome" placeholder="Ex: 175" class="entrada_inteira">
+          </div>
+
+          <div class="linha_campos">
+            <div class="campo">
+              <span class="rotulo_campo">Passageiros por dia</span>
+              <input type="text" id="ipt_passageiros" placeholder="Ex: 3120" class="entrada">
+            </div>
+            <div class="campo">
+              <span class="rotulo_campo">Ônibus em operação na linha</span>
+              <input type="text" id="ipt_qtd_bus" placeholder="Ex: 10" class="entrada">
+            </div>
+          </div>
+
+          <div class="linha_campos">
+            <div class="campo">
+              <span class="rotulo_campo">Lugares por ônibus</span>
+              <input type="text" id="ipt_capacidade" placeholder="Ex: 60" class="entrada">
+            </div>
+            <div class="campo">
+              <span class="rotulo_campo">Viagens de cada ônibus por dia</span>
+              <input type="text" id="ipt_viagens" placeholder="Ex: 10" class="entrada">
+            </div>
+          </div>
+
+          <div class="linha_campos">
+            <div class="campo">
+              <span class="rotulo_campo">Distância de uma viagem (km)</span>
+              <input type="text" id="ipt_dist" placeholder="Ex: 12" class="entrada">
+            </div>
+            <div class="campo">
+              <span class="rotulo_campo">Custo por km rodado (R$)</span>
+              <input type="text" id="ipt_custo_km" value="10.93" class="entrada">
+            </div>
+          </div>
+
+          <!-- Premissas do calculo -->
+          <div class="premissas">
+
+            <div class="premissas_titulo">Premissas da simulação</div>
+
+            <div class="premissas_linha">
+              <span>Meta de ocupação</span>
+              <b>100% (ônibus cheios)</b>
+            </div>
+
+            <div class="premissas_linha">
+              <span>Dias de operação no mês</span>
+              <b>30</b>
+            </div>
+
+            <div class="premissas_linha">
+              <span>Custo por km sugerido (NTU)</span>
+              <b>R$ 10,93</b>
+            </div>
+
+          </div>
+
+          <button onclick="calcular()">Calcular simulação</button>
+
+        </div>
+
+        <!-- Como funciona -->
+        <div class="cartao_como">
+
+          <div class="como_titulo">Como a simulação funciona?</div>
+
+          <div class="passo">
+            <span class="numero_passo">1</span>
+            <div class="texto_passo">
+              <b>Mede a ocupação</b><br>
+              Compara os passageiros com os lugares que a frota oferece no dia.
+            </div>
+          </div>
+
+          <div class="passo">
+            <span class="numero_passo">2</span>
+            <div class="texto_passo">
+              <b>Calcula a frota ideal</b><br>
+              O menor número de ônibus que leva todos os passageiros,
+              sem passar de 100% de ocupação.
+            </div>
+          </div>
+
+          <div class="passo">
+            <span class="numero_passo">3</span>
+            <div class="texto_passo">
+              <b>Compara os custos</b><br>
+              Km rodados × custo por km × 30 dias, hoje e com a frota ideal.
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Coluna da direita -->
+
+      <div class="resultados">
+
+        <div id="div_vazio" class="cartao_vazio">
+          <img src="logo.png" alt="Logo DataBus" class="logo_vazio">
+          <div class="vazio_titulo">Nenhuma simulação ainda</div>
+          <div class="vazio_texto">
+            Preencha os dados da linha e clique em "Calcular simulação".
+            Se preferir, use o botão "Preencher com exemplo".
+          </div>
+        </div>
+
+        <div id="div_erro" class="cartao_erro"></div>
+
+        <div id="div_resumo"></div>
+
+        <div id="div_detalhes" class="cartao_detalhes"></div>
+
+      </div>
+
     </div>
 
-    <br>
+    <!-- Cadastro -->
+    <div class="cartao_cadastro">
 
-    <div>
-      Passageiros por dia:
-      <input type="text" id="ipt_passageiros" placeholder="Ex: 8000">
-      <br>
-      <small>
-        Estimativa de passageiros transportados pela linha em um dia.
-      </small>
+      <div>
+        <div class="cadastro_titulo">Quer uma análise mais próxima da sua realidade?</div>
+        <div class="cadastro_texto">Cadastre seu interesse e converse com a equipe DATABUS.</div>
+      </div>
+
+      <a href="cadastro.html" class="botao_cadastro">Cadastrar interesse</a>
+
     </div>
 
-    <br>
-
-    <div>
-      Quantidade atual de ônibus:
-      <input type="text" id="ipt_qtd_bus" placeholder="Ex: 10">
-      <br>
-      <small>
-        Quantidade de ônibus atualmente utilizada pela linha.
-      </small>
-    </div>
-
-    <br>
-
-    <div>
-      Capacidade máxima por ônibus:
-      <input type="text" id="ipt_capacidade" placeholder="Ex: 80">
-      <br>
-      <small>
-        Quantidade máxima de passageiros considerada para cada ônibus.
-      </small>
-    </div>
-
-    <br>
-
-    <div>
-      Viagens por ônibus no dia:
-      <input type="text" id="ipt_viagens" placeholder="Ex: 12">
-      <br>
-      <small>
-        Quantidade de viagens realizadas por cada ônibus durante o dia.
-      </small>
-    </div>
-
-    <br>
-
-    <div>
-      Distância de uma viagem (km):
-      <input type="text" id="ipt_dist" placeholder="Ex: 10">
-      <br>
-      <small>
-        Distância percorrida pelo ônibus em uma viagem completa.
-      </small>
-    </div>
-
-    <br>
-
-    <div>
-      Custo operacional por km (R$):
-      <input type="text" id="ipt_custo_km" value="10.93">
-      <br>
-      <small>
-        Valor utilizado para estimar o custo de cada quilômetro percorrido.
-        O valor padrão é R$ 10,93, mas pode ser alterado.
-      </small>
+    <div class="aviso">
+      Os resultados são estimativas de apoio à decisão. O remanejamento deve
+      considerar os dados reais de ocupação coletados pelo DataBus e as condições da operação.
     </div>
 
   </div>
-
-  <br>
-
-  <div>
-    <b>Valores pré-definidos:</b>
-    <br>
-
-    <i>
-      Gasto por km:
-      <b>R$10,93</b>
-      (Associação Nacional das Empresas de Transportes Urbanos)
-    </i>
-    <br>
-    <i>
-      Multa por lotação excedente:
-      <b>R$ 293,47</b>
-    </i>
-
-    <br>
-
-    <small>
-      O valor da multa é utilizado automaticamente na simulação
-      quando a ocupação média ultrapassa a capacidade informada.
-    </small>
-  </div>
-
-  <br>
-
-  <button onclick="calcular()">Calcular simulação</button>
-
-  <br><br>
-
-  <div id="div_mensagem"></div>
 
 </body>
 
 <script>
+
+  function preencherExemplo() {
+
+    ipt_nome.value = "175"
+    ipt_passageiros.value = "3120"
+    ipt_qtd_bus.value = "10"
+    ipt_capacidade.value = "60"
+    ipt_viagens.value = "10"
+    ipt_dist.value = "12"
+    ipt_custo_km.value = "10.93"
+
+  }
+
 
   function calcular() {
 
@@ -145,451 +232,388 @@
     let dist = Number(ipt_dist.value)
     let custo_km = Number(ipt_custo_km.value)
 
-
-    // Valores pré-definidos
-
-    let valor_multa = 293.47
     let dias_mes = 30
 
 
     // Validação dos dados
 
     if (
-      passageiros <= 0 ||
-      qtd_bus <= 0 ||
-      capacidade <= 0 ||
-      viagens <= 0 ||
-      dist <= 0 ||
-      custo_km <= 0
+      passageiros > 0 &&
+      qtd_bus > 0 &&
+      capacidade > 0 &&
+      viagens > 0 &&
+      dist > 0 &&
+      custo_km > 0
     ) {
 
-      div_mensagem.innerHTML = `
-        <h3>Preencha todos os campos corretamente.</h3>
+      // SITUAÇÃO ATUAL
 
-        <p>
-          Os valores informados precisam ser maiores que zero.
-        </p>
+      let viagens_dia = qtd_bus * viagens
+      let km_dia = viagens_dia * dist
+
+      let custo_dia = km_dia * custo_km
+      let custo_mes = custo_dia * dias_mes
+
+      let lugares_dia = viagens_dia * capacidade
+      let ocupacao = (passageiros / lugares_dia) * 100
+
+
+      // FROTA IDEAL
+
+      // Quantos passageiros um ônibus cheio leva no dia
+      let passageiros_por_onibus = capacidade * viagens
+
+      let onibus_exatos = passageiros / passageiros_por_onibus
+
+      // Arredonda para cima (não existe meio ônibus)
+      let qtd_bus_ideal = Number(onibus_exatos.toFixed(0))
+
+      if (qtd_bus_ideal < onibus_exatos) {
+        qtd_bus_ideal = qtd_bus_ideal + 1
+      }
+
+
+      // CENÁRIO COM A FROTA IDEAL
+
+      let km_dia_ideal = qtd_bus_ideal * viagens * dist
+      let custo_dia_ideal = km_dia_ideal * custo_km
+      let custo_mes_ideal = custo_dia_ideal * dias_mes
+
+      let lugares_dia_ideal = qtd_bus_ideal * viagens * capacidade
+      let ocupacao_cenario = (passageiros / lugares_dia_ideal) * 100
+
+
+      // COMPARAÇÃO
+
+      let economia_mes = custo_mes - custo_mes_ideal
+      let economia_ano = economia_mes * 12
+
+
+      // Textos de cada caso
+
+      let titulo_linha = ""
+      let etiqueta_linha = ""
+
+      if (nome == "") {
+        titulo_linha = "Resultado da simulação"
+        etiqueta_linha = "Linha não informada"
+      } else {
+        titulo_linha = "Resultado para a linha " + nome
+        etiqueta_linha = "Linha " + nome
+      }
+
+      let classe_veredito = ""
+      let titulo_veredito = ""
+      let texto_veredito = ""
+      let valor_veredito = ""
+      let legenda_veredito = ""
+      let extra_veredito = ""
+      let classe_conclusao = ""
+      let texto_conclusao = ""
+      let texto_diferenca = ""
+      let cor_barra_hoje = "barra_normal"
+
+      // Sobram ônibus
+      if (qtd_bus_ideal < qtd_bus) {
+
+        let onibus_sobrando = qtd_bus - qtd_bus_ideal
+
+        classe_veredito = "veredito_positivo"
+        titulo_veredito = "Esta linha pode liberar " + onibus_sobrando + " ônibus"
+        texto_veredito = "Com " + qtd_bus_ideal + " ônibus, a ocupação média sobe de " +
+          ocupacao.toFixed(0) + "% para " + ocupacao_cenario.toFixed(0) +
+          "%. Os mesmos passageiros, com os ônibus mais cheios."
+        valor_veredito = "R$ " + economia_mes.toFixed(0)
+        legenda_veredito = "de economia por mês"
+        extra_veredito = "R$ " + economia_ano.toFixed(0) + " em 12 meses"
+
+        classe_conclusao = "conclusao_positiva"
+        texto_conclusao = "Com os ônibus mais cheios, cada viagem rende mais. Os " + onibus_sobrando +
+          " ônibus liberados podem ir para linhas lotadas, sem a empresa comprar veículos novos."
+        texto_diferenca = "Economia de R$ " + economia_mes.toFixed(0) + " por mês"
+
+        cor_barra_hoje = "barra_atencao"
+
+      }
+
+      // Faltam ônibus
+      else if (qtd_bus_ideal > qtd_bus) {
+
+        let onibus_faltando = qtd_bus_ideal - qtd_bus
+        let custo_extra_mes = custo_mes_ideal - custo_mes
+
+        classe_veredito = "veredito_alerta"
+        titulo_veredito = "Esta linha precisa de mais " + onibus_faltando + " ônibus"
+        texto_veredito = "Hoje a ocupação média é de " + ocupacao.toFixed(0) +
+          "%: há mais passageiros do que lugares nos ônibus."
+        valor_veredito = "+" + onibus_faltando + " ônibus"
+        legenda_veredito = "para atender a demanda"
+        extra_veredito = "Custo extra de R$ " + custo_extra_mes.toFixed(0) + " por mês"
+
+        classe_conclusao = "conclusao_alerta"
+        texto_conclusao = "Antes de comprar ônibus novos, vale trazer veículos de linhas com sobra. " +
+          "É exatamente isso que os dados do DataBus ajudam a encontrar."
+        texto_diferenca = "Custo extra de R$ " + custo_extra_mes.toFixed(0) + " por mês"
+
+        cor_barra_hoje = "barra_lotada"
+
+      }
+
+      // Frota ideal
+      else {
+
+        classe_veredito = "veredito_neutro"
+        titulo_veredito = "A frota desta linha está no tamanho certo"
+        texto_veredito = "Com " + qtd_bus + " ônibus, a ocupação média é de " +
+          ocupacao.toFixed(0) + "%. Com um ônibus a menos, faltaria lugar para os passageiros."
+        valor_veredito = "0 ônibus"
+        legenda_veredito = "para remanejar"
+        extra_veredito = "Sem diferença de custo"
+
+        classe_conclusao = "conclusao_neutra"
+        texto_conclusao = "Continue acompanhando: a demanda muda ao longo do ano, " +
+          "e os sensores do DataBus mostram quando for hora de ajustar."
+        texto_diferenca = "Sem diferença de custo"
+
+      }
+
+
+      // Tamanho das barras (não podem passar de 100%)
+
+      let barra_ocupacao = ocupacao
+
+      if (barra_ocupacao > 100) {
+        barra_ocupacao = 100
+      }
+
+      let barra_ocupacao_ideal = ocupacao_cenario
+
+      if (barra_ocupacao_ideal > 100) {
+        barra_ocupacao_ideal = 100
+      }
+
+      // No gráfico de custo, o maior custo fica com a barra cheia
+      let maior_custo = custo_mes
+
+      if (custo_mes_ideal > maior_custo) {
+        maior_custo = custo_mes_ideal
+      }
+
+      let barra_custo_hoje = (custo_mes / maior_custo) * 100
+      let barra_custo_ideal = (custo_mes_ideal / maior_custo) * 100
+
+
+      // RESUMO
+
+      div_resumo.innerHTML = `
+
+        <div class="${classe_veredito}">
+
+          <div class="veredito_esquerda">
+            <div class="veredito_etiqueta">${titulo_linha}</div>
+            <div class="veredito_titulo">${titulo_veredito}</div>
+            <div class="veredito_texto">${texto_veredito}</div>
+          </div>
+
+          <div class="veredito_direita">
+            <div class="veredito_valor">${valor_veredito}</div>
+            <div class="veredito_legenda">${legenda_veredito}</div>
+            <div class="veredito_extra">${extra_veredito}</div>
+          </div>
+
+        </div>
+
+        <div class="comparacao">
+
+          <div class="cartao_hoje">
+            <div class="cartao_titulo">HOJE</div>
+            <span class="numero_hoje">${qtd_bus}</span>
+            <span class="unidade">ônibus</span>
+
+            <div class="linha_info">
+              <span>Ocupação média</span>
+              <b>${ocupacao.toFixed(0)}%</b>
+            </div>
+            <div class="trilho">
+              <div class="${cor_barra_hoje}" style="width: ${barra_ocupacao}%"></div>
+            </div>
+
+            <div class="linha_custo">
+              <span>Custo por mês</span>
+              <b class="valor_custo">R$ ${custo_mes.toFixed(0)}</b>
+            </div>
+          </div>
+
+          <div class="cartao_ideal">
+            <div class="cartao_titulo">COM A FROTA IDEAL</div>
+            <span class="numero_ideal">${qtd_bus_ideal}</span>
+            <span class="unidade">ônibus</span>
+
+            <div class="linha_info">
+              <span>Ocupação média</span>
+              <b>${ocupacao_cenario.toFixed(0)}%</b>
+            </div>
+            <div class="trilho">
+              <div class="barra_ideal" style="width: ${barra_ocupacao_ideal}%"></div>
+            </div>
+
+            <div class="linha_custo">
+              <span>Custo por mês</span>
+              <b class="valor_custo">R$ ${custo_mes_ideal.toFixed(0)}</b>
+            </div>
+          </div>
+
+        </div>
+
+        <button class="botao_detalhes" onclick="mostrarDetalhes()">Ver o cálculo passo a passo</button>
       `
+
+
+      // CÁLCULO PASSO A PASSO
+
+      div_detalhes.innerHTML = `
+
+        <div class="detalhe_topo">
+          <button class="botao_voltar" onclick="voltarResumo()">← Voltar ao resumo</button>
+          <span class="detalhe_etiqueta">${etiqueta_linha}</span>
+        </div>
+
+        <div class="detalhe_titulo">Como chegamos nesse resultado</div>
+
+        <div class="passos_linha">
+
+          <div class="passo_cartao">
+            <div class="passo_topo"><span class="numero_passo">1</span> Quanto a linha custa hoje</div>
+            <div class="conta">
+              <span class="conta_texto">${qtd_bus} ônibus × ${viagens} viagens × ${dist} km</span>
+              <b class="conta_resultado">= ${km_dia.toFixed(0)} km por dia</b>
+            </div>
+            <div class="conta">
+              <span class="conta_texto">${km_dia.toFixed(0)} km × R$ ${custo_km.toFixed(2)}</span>
+              <b class="conta_resultado">= R$ ${custo_dia.toFixed(2)} por dia</b>
+            </div>
+            <div class="conta_final">
+              <span class="conta_texto">R$ ${custo_dia.toFixed(2)} × ${dias_mes} dias</span>
+              <b class="conta_resultado">= R$ ${custo_mes.toFixed(0)} por mês</b>
+            </div>
+          </div>
+
+          <div class="passo_cartao">
+            <div class="passo_topo"><span class="numero_passo">2</span> Quão cheios estão os ônibus</div>
+            <div class="conta">
+              <span class="conta_texto">${qtd_bus} ônibus × ${viagens} viagens × ${capacidade} lugares</span>
+              <b class="conta_resultado">= ${lugares_dia.toFixed(0)} lugares por dia</b>
+            </div>
+            <div class="conta_final">
+              <span class="conta_texto">${passageiros} passageiros ÷ ${lugares_dia.toFixed(0)} lugares</span>
+              <b class="conta_resultado">= ${ocupacao.toFixed(0)}% dos lugares ocupados</b>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="passos_linha">
+
+          <div class="passo_cartao">
+            <div class="passo_topo"><span class="numero_passo">3</span> Quantos ônibus bastam</div>
+            <div class="conta">
+              <span class="conta_texto">${capacidade} lugares × ${viagens} viagens (ônibus cheio)</span>
+              <b class="conta_resultado">= ${passageiros_por_onibus.toFixed(0)} passageiros por ônibus</b>
+            </div>
+            <div class="conta">
+              <span class="conta_texto">${passageiros} passageiros ÷ ${passageiros_por_onibus.toFixed(0)}</span>
+              <b class="conta_resultado">= ${onibus_exatos.toFixed(2)} ônibus</b>
+            </div>
+            <div class="conta_final">
+              <span class="conta_texto">Arredondando para cima (não existe meio ônibus)</span>
+              <b class="conta_resultado">= ${qtd_bus_ideal} ônibus</b>
+            </div>
+          </div>
+
+          <div class="passo_cartao">
+            <div class="passo_topo"><span class="numero_passo">4</span> Quanto custaria</div>
+            <div class="conta">
+              <span class="conta_texto">${qtd_bus_ideal} ônibus × ${viagens} viagens × ${dist} km</span>
+              <b class="conta_resultado">= ${km_dia_ideal.toFixed(0)} km por dia</b>
+            </div>
+            <div class="conta">
+              <span class="conta_texto">${km_dia_ideal.toFixed(0)} km × R$ ${custo_km.toFixed(2)}</span>
+              <b class="conta_resultado">= R$ ${custo_dia_ideal.toFixed(2)} por dia</b>
+            </div>
+            <div class="conta_final">
+              <span class="conta_texto">R$ ${custo_dia_ideal.toFixed(2)} × ${dias_mes} dias</span>
+              <b class="conta_resultado">= R$ ${custo_mes_ideal.toFixed(0)} por mês</b>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="resultado_final">
+
+          <div class="resultado_titulo">Custo por mês</div>
+
+          <div class="barra_linha">
+            <span class="barra_nome">Hoje</span>
+            <div class="barra_trilho">
+              <div class="barra_custo_hoje" style="width: ${barra_custo_hoje}%"></div>
+            </div>
+            <b class="barra_valor">R$ ${custo_mes.toFixed(0)}</b>
+          </div>
+
+          <div class="barra_linha">
+            <span class="barra_nome">Frota ideal</span>
+            <div class="barra_trilho">
+              <div class="barra_custo_ideal" style="width: ${barra_custo_ideal}%"></div>
+            </div>
+            <b class="barra_valor">R$ ${custo_mes_ideal.toFixed(0)}</b>
+          </div>
+
+          <div class="resultado_diferenca">${texto_diferenca}</div>
+
+        </div>
+
+        <div class="${classe_conclusao}">${texto_conclusao}</div>
+      `
+
+      div_vazio.style.display = "none"
+      div_erro.style.display = "none"
+      div_detalhes.style.display = "none"
+      div_resumo.style.display = "block"
 
     } else {
 
-
-      // ==========================================
-      // SITUAÇÃO ATUAL
-      // ==========================================
-
-      // Total de viagens realizadas pela frota
-
-      let viagens_totais = qtd_bus * viagens
-
-
-      // Total de quilômetros percorridos
-
-      let km_total = viagens_totais * dist
-
-
-      // Capacidade total de passageiros da operação
-
-      let capacidade_total = viagens_totais * capacidade
-
-
-      // Média de passageiros por viagem
-
-      let passageiros_por_viagem =
-        passageiros / viagens_totais
-
-
-      // Percentual de ocupação
-
-      let percentual_ocupacao =
-        (passageiros / capacidade_total) * 100
-
-
-      // Multa estimada por lotação excedente
-
-      let multa_total = 0
-
-      if (passageiros_por_viagem > capacidade) {
-
-        multa_total = valor_multa * qtd_bus
-
-      }
-
-
-      // Custo de rodagem
-
-      let custo_rodagem =
-        km_total * custo_km
-
-
-      // Custo total atual
-
-      let custo_atual =
-        custo_rodagem + multa_total
-
-
-
-      // ==========================================
-      // CENÁRIO SIMULADO
-      // ==========================================
-
-      // Quantidade de viagens necessárias
-
-      let viagens_necessarias =
-        passageiros / capacidade
-
-
-      // Quantidade estimada de ônibus necessária
-
-      let qtd_bus_depois =
-        Math.ceil(viagens_necessarias / viagens)
-
-
-      // Total de viagens no cenário simulado
-
-      let viagens_depois =
-        qtd_bus_depois * viagens
-
-
-      // Quilometragem no cenário simulado
-
-      let km_depois =
-        viagens_depois * dist
-
-
-      // Capacidade total no cenário simulado
-
-      let capacidade_depois =
-        viagens_depois * capacidade
-
-
-      // Passageiros por viagem no cenário simulado
-
-      let passageiros_por_viagem_depois =
-        passageiros / viagens_depois
-
-
-      // Ocupação no cenário simulado
-
-      let percentual_ocupacao_depois =
-        (passageiros / capacidade_depois) * 100
-
-
-      // Custo de rodagem no cenário simulado
-
-      let custo_rodagem_depois =
-        km_depois * custo_km
-
-
-      // Sem multa no cenário calculado
-
-      let multa_depois = 0
-
-
-      // Custo total no cenário simulado
-
-      let custo_depois =
-        custo_rodagem_depois + multa_depois
-
-
-
-      // ==========================================
-      // COMPARAÇÃO
-      // ==========================================
-
-      // Economia relacionada à rodagem
-
-      let economia_rodagem =
-        custo_rodagem - custo_rodagem_depois
-
-
-      // Economia relacionada às multas
-
-      let economia_multas =
-        multa_total - multa_depois
-
-
-      // Economia total por dia
-
-      let economia_dia =
-        custo_atual - custo_depois
-
-
-      // Economia estimada por mês
-
-      let economia_mes =
-        economia_dia * dias_mes
-
-
-      // Diferença na quantidade de ônibus
-
-      let diferenca_bus =
-        qtd_bus - qtd_bus_depois
-
-
-
-      // ==========================================
-      // RESULTADOS
-      // ==========================================
-
-      div_mensagem.innerHTML = `
-
-        <h2>Resultado da simulação</h2>
-
-        <h3>Situação atual da linha ${nome}</h3>
-
-        <div>
-          Quantidade de ônibus:
-          <b>${qtd_bus}</b>
+      div_erro.innerHTML = `
+        <div class="erro_titulo">Confira os dados</div>
+        <div class="erro_texto">
+          Preencha todos os campos com números maiores que zero.
+          Para decimais, use ponto (ex: 10.93).
         </div>
-
-        <div>
-          Viagens realizadas no dia:
-          <b>${viagens_totais}</b>
-        </div>
-
-        <div>
-          Quilometragem percorrida:
-          <b>${km_total.toFixed(2)} km</b>
-        </div>
-
-        <div>
-          Passageiros por viagem:
-          <b>${passageiros_por_viagem.toFixed(0)}</b>
-        </div>
-
-        <div>
-          Ocupação estimada:
-          <b>${percentual_ocupacao.toFixed(2)}%</b>
-        </div>
-
-        <div>
-          Custo de rodagem:
-          <b>R$ ${custo_rodagem.toFixed(2)}</b>
-        </div>
-
-        <div>
-          Multa estimada por lotação excedente:
-          <b>R$ ${multa_total.toFixed(2)}</b>
-        </div>
-
-        <div>
-          <b>Custo total atual:</b>
-          R$ ${custo_atual.toFixed(2)}
-        </div>
-
-        <br>
-
-        <h3>Cenário simulado com remanejamento</h3>
-
-        <div>
-          Quantidade estimada de ônibus:
-          <b>${qtd_bus_depois}</b>
-        </div>
-
-        <div>
-          Viagens realizadas no dia:
-          <b>${viagens_depois}</b>
-        </div>
-
-        <div>
-          Quilometragem percorrida:
-          <b>${km_depois.toFixed(2)} km</b>
-        </div>
-
-        <div>
-          Passageiros por viagem:
-          <b>${passageiros_por_viagem_depois.toFixed(0)}</b>
-        </div>
-
-        <div>
-          Ocupação estimada:
-          <b>${percentual_ocupacao_depois.toFixed(2)}%</b>
-        </div>
-
-        <div>
-          Custo de rodagem:
-          <b>R$ ${custo_rodagem_depois.toFixed(2)}</b>
-        </div>
-
-        <div>
-          Multa estimada:
-          <b>R$ 0,00</b>
-        </div>
-
-        <div>
-          <b>Custo total simulado:</b>
-          R$ ${custo_depois.toFixed(2)}
-        </div>
-
-        <br>
-
-        <h3>Economia potencial</h3>
       `
 
-
-      // ==========================================
-      // REDUÇÃO DE FROTA
-      // ==========================================
-
-      if (qtd_bus_depois < qtd_bus) {
-
-        div_mensagem.innerHTML += `
-
-          <div>
-            Ônibus que poderiam ser remanejados:
-            <b>${diferenca_bus}</b>
-          </div>
-
-          <br>
-
-          <div>
-            Economia estimada com a redução de rodagem:
-            R$ ${economia_rodagem.toFixed(2)} por dia
-          </div>
-
-          <div>
-            Economia estimada com multas:
-            R$ ${economia_multas.toFixed(2)} por dia
-          </div>
-
-          <br>
-
-          <div style="color: green; font-weight: 900; font-size: 22px;">
-            Economia potencial:
-            R$ ${economia_dia.toFixed(2)} por dia
-          </div>
-
-          <div style="color: green; font-weight: 900; font-size: 24px;">
-            Economia potencial:
-            R$ ${economia_mes.toFixed(2)} por mês
-          </div>
-
-          <br>
-
-          <h4>
-            A simulação indica uma possível redução de custos
-            caso a frota seja ajustada de acordo com a demanda estimada.
-          </h4>
-
-        `
-
-      }
-
-
-      // ==========================================
-      // AUMENTO DE FROTA
-      // ==========================================
-
-      else if (qtd_bus_depois > qtd_bus) {
-
-        let quantidade_aumentar =
-            qtd_bus_depois - qtd_bus
-
-        div_mensagem.innerHTML += `
-
-            <div>
-            <b>A linha está acima da capacidade máxima atual.</b>
-            </div>
-
-            <div>
-            Multas estimadas por lotação excedente:
-            <b>${qtd_bus} multas</b>
-            </div>
-
-            <div>
-            Valor estimado das multas:
-            <b>R$ ${multa_total.toFixed(2)}</b>
-            </div>
-
-            <br>
-
-            <div>
-            Ônibus adicionais estimados:
-            <b>${quantidade_aumentar}</b>
-            </div>
-
-            <br>
-
-            <h4>
-            A demanda informada ultrapassa a capacidade da frota atual.
-            Por isso, além da possibilidade de ocorrência de multas por
-            lotação excedente, o cenário simulado indica a necessidade
-            de mais ônibus para atender essa demanda.
-            </h4>
-
-            `
-
-      }
-
-
-      // ==========================================
-      // FROTA ADEQUADA
-      // ==========================================
-
-      else {
-
-        div_mensagem.innerHTML += `
-
-          <h4>
-            A quantidade atual de ônibus corresponde à quantidade
-            estimada para atender a demanda informada.
-          </h4>
-
-          <div style="color: green; font-weight: 900;">
-            Não foi identificada economia de remanejamento neste cenário.
-          </div>
-
-        `
-
-      }
-
-
-      // ==========================================
-      // COMO A SIMULAÇÃO FUNCIONA
-      // ==========================================
-
-      div_mensagem.innerHTML += `
-
-        <br>
-
-        <h3>Como a simulação funciona?</h3>
-
-        <p>
-          A simulação compara o custo da operação atual com um cenário
-          de distribuição da frota baseado na demanda estimada.
-          Primeiro, são considerados a quantidade de ônibus, as viagens
-          realizadas e a distância percorrida para estimar o custo atual.
-        </p>
-
-        <p>
-          Em seguida, o sistema estima quantos ônibus seriam necessários
-          para transportar os passageiros dentro da capacidade informada.
-          Com essa quantidade, recalcula as viagens, a quilometragem
-          e o custo da operação.
-        </p>
-
-        <p>
-          Quando a ocupação média ultrapassa a capacidade do ônibus,
-          a simulação também considera uma multa estimada por
-          lotação excedente.
-        </p>
-
-        <p>
-          A economia potencial corresponde à diferença entre o custo
-          estimado da operação atual e o custo estimado no cenário simulado.
-          A estimativa mensal considera 30 dias de operação.
-        </p>
-
-        <h4>
-          Os resultados são estimativas e servem como apoio à análise.
-          O remanejamento real deve considerar os dados de ocupação
-          coletados pelo DataBus e as condições da operação da empresa.
-        </h4>
-
-      `
+      div_vazio.style.display = "none"
+      div_resumo.style.display = "none"
+      div_detalhes.style.display = "none"
+      div_erro.style.display = "block"
 
     }
+
+  }
+
+
+  // Troca entre o resumo e o passo a passo
+
+  function mostrarDetalhes() {
+
+    div_resumo.style.display = "none"
+    div_detalhes.style.display = "block"
+
+  }
+
+
+  function voltarResumo() {
+
+    div_detalhes.style.display = "none"
+    div_resumo.style.display = "block"
 
   }
 
