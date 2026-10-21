@@ -22,31 +22,34 @@
             <a href="cadastro.html">Cadastro</a>
         </nav>
     </header>
-    <section class="section_container">
-        <h3>Cadastrar</h3>
+    <section class="section_container cadastro">
+        <section class="section_form">
+            <h3>Crie sua conta</h3>
+            <p>Preencha seus dados para acessar a plataforma DataBus</p>
 
-        <label for="ipt_nome">Nome completo</label>
-        <input type="text" id="ipt_nome" placeholder="Digite seu nome completo">
+            <label for="ipt_nome">Nome completo</label>
+            <input type="text" id="ipt_nome" placeholder="Digite seu nome completo">
 
-        <label for="ipt_email">E-mail</label>
-        <input type="text" id="ipt_email" placeholder="nome@empresa.com">
+            <label for="ipt_email">E-mail</label>
+            <input type="text" id="ipt_email" placeholder="nome@empresa.com">
 
-        <label for="ipt_senha">Senha</label>
-        <input type="password" id="ipt_senha" placeholder="Digite sua senha">
+            <label for="ipt_senha">Senha</label>
+            <input type="password" id="ipt_senha" placeholder="Digite sua senha">
 
-        <label for="ipt_confirmarSenha">Confirmar senha</label>
-        <input type="password" id="ipt_confirmarSenha" placeholder="Confirme sua senha">
+            <label for="ipt_confirmarSenha">Confirmar senha</label>
+            <input type="password" id="ipt_confirmarSenha" placeholder="Confirme sua senha">
 
-        <section class="section_div">
-            <div>
-                <input type="checkbox"> Li e concordo com os <span>Termos de Uso</span> e <span>Política de
-                    Privacidade</span>
-            </div>
+            <section class="section_div">
+                <div>
+                    <input type="checkbox"> Li e concordo com os <span>Termos de Uso</span> e <span>Política de
+                        Privacidade</span>
+                </div>
+            </section>
+
+            <button onclick="cadastrar()">CADASTRAR</button>
+
+            <span id="msg"></span>
         </section>
-
-        <button onclick="cadastrar()">CADASTRAR</button>
-
-        <span id="msg"></span>
     </section>
 </body>
 
@@ -106,5 +109,18 @@
         } else {
             msg.innerHTML += `As senhas são diferentes, verifique e tente novamente<br>`;
         }
+
+        // REDIRECIONAMENTO PARA A PAGINA LOGIN
+
+        let emailValido = indiceArroba != -1 && comecaArroba == false && contemEspaco == false && terminaValido;
+
+        let senhaValida = senha.length >= 8 && senha != senha.toLowerCase() && senha != senha.toUpperCase();
+
+        let senhasIguais = senha === confirmarSenha;
+
+        if (emailValido && senhaValida && senhasIguais && nome.trim() != "") {
+            location.href = "login.html";
+        }
+
     }
 </script>

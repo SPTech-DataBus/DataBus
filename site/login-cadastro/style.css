@@ -36,6 +36,20 @@ main {
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
+.section_container.cadastro {
+    width: 100%;
+    min-height: 92vh;
+    background-image: url("imgs/background-cadastro.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.section_form .section_div div {
+    display: block;
+    line-height: 20px;
+}
+
 .section_imagem {
     display: flex;
     justify-content: center;
@@ -99,6 +113,7 @@ main {
 .section_container label {
     color: #0A3158;
     font-size: 15px;
+    font-weight: bold;
 }
 
 .section_container input {
