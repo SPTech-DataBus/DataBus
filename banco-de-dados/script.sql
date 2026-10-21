@@ -110,6 +110,7 @@ CREATE TABLE registro_sensor (
     tipo_movimento TINYINT NOT NULL,
     data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
     passageiros_atual INT DEFAULT 0,
+    fk_onibus INT NOT NULL,
     fk_sensor INT NOT NULL,
     CONSTRAINT ch_tipo_movimento CHECK (tipo_movimento IN (0,1)),
     CONSTRAINT fk_registro_onibus FOREIGN KEY (fk_sensor) REFERENCES sensor(id_sensor)
