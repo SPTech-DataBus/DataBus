@@ -1,12 +1,27 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LOGIN</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+    <header class="navbar">
+        <a href="Pagina.html" class="logo">
+            <img src="imgs/Símbolo.png" alt="Logo DATABUS" width="40" height="40">
+            <p>DATA<span>BUS</span></p>
+        </a>
+
+        <nav class="menu">
+            <a href="Pagina.html">Início</a>
+            <a href="../../algoritmos/calculadora-financeira/calculadora.html">Simulador</a>
+            <a href="login.html">Login</a>
+            <a href="cadastro.html">Cadastro</a>
+        </nav>
+    </header>
     <section class="section_container">
         <h3>Cadastrar</h3>
 
@@ -24,7 +39,8 @@
 
         <section class="section_div">
             <div>
-                <input type="checkbox"> Li e concordo com os <span>Termos de Uso</span> e <span>Política de Privacidade</span>
+                <input type="checkbox"> Li e concordo com os <span>Termos de Uso</span> e <span>Política de
+                    Privacidade</span>
             </div>
         </section>
 
@@ -33,6 +49,7 @@
         <span id="msg"></span>
     </section>
 </body>
+
 </html>
 
 <script>
@@ -41,7 +58,7 @@
         let senha = ipt_senha.value;
         let nome = ipt_nome.value;
         let confirmarSenha = ipt_confirmarSenha.value;
-        
+
         msg.innerHTML = '';
 
         let email_salvo = 'contato@databus.com';
