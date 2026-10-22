@@ -42,6 +42,69 @@
         <main class="dashboard-content">
             <h1>Dashboard de Ocupação de Frota</h1>
             <p>Acompanhe a utilização da frota e identifique oportunidades de melhoria na operação.</p>
+            <h3 class="section-title">ANÁLISE GERAL</h3>
+
+            <div class="graficos">
+                <div class="grafico-tamanho">
+                    <h2>Ocupação média por linha</h2>
+                    <p>Laranja indica atenção: abaixo de 35% ou acima de 85%</p>
+
+                    <div class="chart-container">
+                        <canvas id="grafico_barra"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+            <script>
+                const ctxBarra = document.getElementById('grafico_barra');
+                new Chart(ctxBarra, {
+                    type: 'bar',
+                    data: {
+                        labels: ['2019-AC', '5106-10', '8144-22', '7702-10', '607C-10'],
+                        datasets: [{
+                            label: 'Ocupação média',
+                            data: [93, 87, 48, 41, 34],
+                            backgroundColor: [
+                                '#FCA814',
+                                '#FCA814',
+                                '#0050A0',
+                                '#0050A0',
+                                '#FCA814'
+                            ],
+                            borderRadius: 5
+
+                        }]
+                    },
+
+                    options: {
+                        indexAxis: 'y', // transforma em barras horizontais
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: { //linhas atrás das barras
+                                    display: true,
+                                    color: '#E8EDF2'
+                                },
+                                ticks: {
+                                    stepSize: 20, //coloca as marcações de 20 em 20%
+                                    callback: function (value) {
+                                        return value + '%';
+                                    }
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: false //tira as linhas horizontais atras das barras
+                                }
+                            }
+                        }
+                    }
+                });
+            </script>
+
         </main>
 
     </div>
