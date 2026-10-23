@@ -1,7 +1,6 @@
 CREATE DATABASE DataBus;
 
 USE DataBus;
-
 -- CRIAÇÃO DAS TABELAS --
 
 -- EMPRESA --
@@ -163,10 +162,10 @@ INSERT INTO sensor (modelo, data_instalacao, status_sensor, fk_onibus) VALUES
 	('HC-SR04', '2026-09-21', 'Ativo', 4);
 
 INSERT INTO registro_sensor (tipo_movimento, data_hora, passageiros_atual, fk_sensor) VALUES
-	(0, '2026-09-21 20:15:30', 80, 1, 1),
-	(1, '2026-09-21 20:16:30', 80, 2, 2),
-	(0, '2026-09-21 20:17:30', 100, 3, 3),
-	(1, '2026-09-21 20:18:30', 100, 4, 4);
+	(0, '2026-09-21 20:15:30', 80, 1),
+	(1, '2026-09-21 20:16:30', 80, 2),
+	(0, '2026-09-21 20:17:30', 100, 3),
+	(1, '2026-09-21 20:18:30', 100, 4);
 
 
 -- CONSULTA DE DADOS --
@@ -185,23 +184,6 @@ JOIN onibus ON sensor.fk_onibus = onibus.id_onibus;
 
 
 SELECT
-    linha.codigo 'Código da linha',
-    linha.nome 'Linha',
-    onibus.placa 'Placa',
-    onibus.capacidade_maxima 'Capacidade máxima',
-    registro_sensor.passageiros_atual 'Passageiros atuais',
-    CASE
-        WHEN registro_sensor.passageiros_atual < 40 THEN 'Baixa ocupação'
-        WHEN registro_sensor.passageiros_atual < 70 THEN 'Ocupação média'
-        ELSE 'Alta ocupação'
-    END 'Situação'
-FROM registro_sensor
-JOIN onibus ON registro_sensor.fk_onibus = onibus.id_onibus
-JOIN viagem ON onibus.id_onibus = viagem.fk_onibus
-JOIN linha ON viagem.fk_linha = linha.id_linha;
-
-
-SELECT
     CONCAT(
         empresa.nome_fantasia,
         ' - Linha ', linha.codigo,
@@ -209,49 +191,3 @@ SELECT
     ) 'Informações da linha'
 FROM empresa
 JOIN linha ON empresa.id_empresa = linha.fk_empresa;
-
-
-SELECT
-    CONCAT(
-        'Ônibus ', onibus.placa,
-        ' - Linha ', linha.codigo,
-        ' - ', registro_sensor.passageiros_atual,
-        ' passageiros'
-    ) AS 'Resumo da ocupação'
-FROM registro_sensor
-JOIN onibus ON registro_sensor.fk_onibus = onibus.id_onibus
-JOIN viagem ON onibus.id_onibus = viagem.fk_onibus
-JOIN linha ON viagem.fk_linha = linha.id_linha;
-
-
-SELECT
-    CONCAT(
-        'Ônibus ', onibus.placa,
-        ' | Linha ', linha.codigo,
-        ' - ', linha.nome,
-        ' | Passageiros: ', registro_sensor.passageiros_atual,
-        ' de ', onibus.capacidade_maxima,
-        ' | Situação: ',
-        CASE
-            WHEN registro_sensor.passageiros_atual < 40 THEN 'Baixa ocupação'
-            WHEN registro_sensor.passageiros_atual < 70 THEN 'Ocupação média'
-            ELSE 'Alta ocupação'
-        END
-    ) AS 'Resumo Operacional'
-FROM registro_sensor
-JOIN onibus ON registro_sensor.fk_onibus = onibus.id_onibus
-JOIN viagem ON onibus.id_onibus = viagem.fk_onibus
-JOIN linha ON viagem.fk_linha = linha.id_linha;
-
-
-SELECT
-    linha.codigo AS 'Linha',
-    linha.nome AS 'Nome da linha',
-    onibus.placa AS 'Ônibus',
-    registro_sensor.passageiros_atual AS 'Passageiros atuais',
-    linha.tarifa AS 'Tarifa',
-    registro_sensor.passageiros_atual * linha.tarifa AS 'Valor total estimado'
-FROM registro_sensor
-JOIN onibus ON registro_sensor.fk_onibus = onibus.id_onibus
-JOIN viagem ON onibus.id_onibus = viagem.fk_onibus
-JOIN linha ON viagem.fk_linha = linha.id_linha;
