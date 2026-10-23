@@ -110,7 +110,6 @@ CREATE TABLE registro_sensor (
     tipo_movimento TINYINT NOT NULL,
     data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
     passageiros_atual INT DEFAULT 0,
-    fk_onibus INT NOT NULL,
     fk_sensor INT NOT NULL,
     CONSTRAINT ch_tipo_movimento CHECK (tipo_movimento IN (0,1)),
     CONSTRAINT fk_registro_onibus FOREIGN KEY (fk_sensor) REFERENCES sensor(id_sensor)
@@ -163,7 +162,7 @@ INSERT INTO sensor (modelo, data_instalacao, status_sensor, fk_onibus) VALUES
 	('HC-SR04', '2026-09-21', 'Ativo', 3),
 	('HC-SR04', '2026-09-21', 'Ativo', 4);
 
-INSERT INTO registro_sensor (tipo_movimento, data_hora, passageiros_atual, fk_sensor, fk_onibus) VALUES
+INSERT INTO registro_sensor (tipo_movimento, data_hora, passageiros_atual, fk_sensor) VALUES
 	(0, '2026-09-21 20:15:30', 80, 1, 1),
 	(1, '2026-09-21 20:16:30', 80, 2, 2),
 	(0, '2026-09-21 20:17:30', 100, 3, 3),
