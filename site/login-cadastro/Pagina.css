@@ -17,9 +17,9 @@ a {
 
 ul {
     margin-top: 10px;
-    padding-left: 18px;
-    font-size: 12px;
-    line-height: 24px;
+    padding-left: 24px;
+    font-size: 18px;
+    line-height: 32px;
 }
 
 .secao {
@@ -37,7 +37,7 @@ ul {
 
 .titulo {
     text-align: center;
-    margin-bottom: 35px;
+    margin-bottom: 45px;
 }
 
 .titulo h2 {
@@ -45,13 +45,15 @@ ul {
 }
 
 .eyebrow {
-    font-size: 10px;
+    font-size: 15px;
+    letter-spacing: 1px;
     font-weight: 800;
     color: #176BB8;
 }
 
 h2 {
-    font-size: 30px;
+    font-size: 38px;
+    line-height: 1.25;
     font-weight: 500;
 }
 
@@ -65,24 +67,23 @@ h2 {
 }
 
 .pequeno {
-    font-size: 11px;
+    font-size: 14px;
     color: #607286;
 }
 
 .texto {
-    font-size: 13px;
-    line-height: 20px;
-    color: #607286;
+    font-size: 18px;
+    line-height: 28px;
+    color: #4A5D72;
 }
 
-/*  BOTÕES  */
 
 .botao {
     display: inline-block;
-    padding: 12px 24px;
+    padding: 14px 28px;
     border: none;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: 17px;
     font-weight: bold;
     text-align: center;
     cursor: pointer;
@@ -109,21 +110,20 @@ h2 {
     color: #FFF;
 }
 
-/*  1. NAVBAR  */
 
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;           
-    padding: 15px 80px;
+    padding: 18px 80px;
     background-color: #FFF;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 20px;
+    gap: 12px;
+    font-size: 26px;
     font-weight: 800;
     color: #176BB8;
 }
@@ -134,11 +134,11 @@ h2 {
 
 .menu {
     display: flex;
-    gap: 30px;
+    gap: 40px;
 }
 
 .menu a {
-    font-size: 13px;
+    font-size: 18px;
     font-weight: 600;
     color: #0A3158;
     transition: 0.5s all;
@@ -148,7 +148,6 @@ h2 {
     color: #F2B84F;
 }
 
-/*  2. HERO  */
 
 .hero {
     display: flex;
@@ -166,22 +165,24 @@ h2 {
 }
 
 .tag {
-    padding: 6px 14px;
+    padding: 8px 18px;
     border-radius: 20px;
     background-color: rgba(255, 255, 255, 0.25);
-    font-size: 10px;
+    font-size: 15px;
     font-weight: bold;
 }
 
 .hero h1 {
-    font-size: 46px;
+    font-size: 58px;
+    line-height: 1.15;
     font-weight: 800;
 }
 
 .hero_texto {
-    width: 600px;
-    font-size: 15px;
-    line-height: 24px;
+    width: 720px;
+    max-width: 100%;
+    font-size: 21px;
+    line-height: 32px;
 }
 
 .botoes {
@@ -189,65 +190,64 @@ h2 {
     gap: 12px;
 }
 
-/*  CENÁRIO  */
 
 .numero_card {
     flex: 1; 
-    padding: 20px;
+    padding: 28px 24px;
     border-radius: 10px;
     background-color: #E7F4FB;
 }
 
 .numero_card h3 {
-    font-size: 26px;
+    font-size: 42px;
     font-weight: 800;
     color: #176BB8;
 }
 
 .numero_card p {
-    font-size: 11px;
-    color: #607286;
+    margin-top: 6px;
+    font-size: 18px;
+    line-height: 26px;
+    color: #4A5D72;
 }
 
-/*  4. DESAFIO */
 
 .desafio {
     display: flex;
     align-items: center;
-    gap: 50px;
+    gap: 60px;
 }
 
 .desafio_foto {
-    width: 50%;
+    width: 40%;
     border-radius: 18px;
 }
 
 .desafio_texto {
-    width: 50%;
+    width: 60%;
 }
 
 .desafio_texto h2 {
-    margin: 10px 0;
+    margin: 12px 0 16px;
 }
 
-/* CARDS (solução, passos, quem somos) */
 
 .card {
     flex: 1;
-    padding: 24px;
+    padding: 32px 28px;
     border-radius: 12px;
     background-color: #FFF;
 }
 
 .card h3 {
-    margin: 8px 0;
-    font-size: 15px;
+    margin: 12px 0;
+    font-size: 23px;
 }
 
 .card p {
-    font-size: 12px;
-    line-height: 20px;
-    color: #607286;
+    font-size: 18px;
+    line-height: 28px;
+    color: #4A5D72;
 }
 
 .card_sombra {
@@ -268,47 +268,46 @@ h2 {
     color: #FFF;
 }
 
-/* Quadradinho azul claro com o emoji dentro */
+
 .icone {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
     background-color: #EAF4FC;
-    font-size: 18px;
+    font-size: 28px;
 }
 
 .passo {
     display: block;
-    font-size: 10px;
+    font-size: 16px;
     font-weight: bold;
     color: #F2B84F;
 }
 
-/*  8. FAIXA AZUL ESCURA  */
 
 .faixa {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 45px 80px;
+    padding: 55px 80px;
     background-color: #0A3158;
     color: #FFF;
 }
 
 .faixa h2 {
-    width: 550px;
-    font-size: 26px;
+    width: 750px;
+    max-width: 100%;
+    font-size: 34px;
 }
 
 .faixa p {
-    margin-top: 8px;
-    font-size: 11px;
+    margin-top: 12px;
+    font-size: 18px;
 }
 
-/*  11. FOOTER  */
 
 .footer {
     padding: 40px 80px 25px;
@@ -327,12 +326,12 @@ h2 {
 
 .footer_topo p,
 .footer_topo a {
-    font-size: 11px;
+    font-size: 16px;
     color: #FFF;
 }
 
 .footer .logo p {
-    font-size: 20px;
+    font-size: 26px;
 }
 
 .footer .logo img {
