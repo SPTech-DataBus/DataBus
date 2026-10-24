@@ -8,7 +8,7 @@
 }
 
 body {
-    color: #0A3158;
+    color: #063B70;
 }
 
 a {
@@ -48,7 +48,7 @@ ul {
     font-size: 15px;
     letter-spacing: 1px;
     font-weight: 800;
-    color: #176BB8;
+    color: #0879D1;
 }
 
 h2 {
@@ -91,22 +91,22 @@ h2 {
 }
 
 .botao_amarelo {
-    background-color: #F2B84F;
-    color: #0A3158;
+    background-color: #FFC329;
+    color: #063B70;
 }
 
 .botao_amarelo:hover {
-    background-color: #0A3158;
+    background-color: #063B70;
     color: #FFF;
 }
 
 .botao_branco {
     background-color: #FFF;
-    color: #0A3158;
+    color: #063B70;
 }
 
 .botao_branco:hover {
-    background-color: #176BB8;
+    background-color: #0879D1;
     color: #FFF;
 }
 
@@ -125,11 +125,11 @@ h2 {
     gap: 12px;
     font-size: 26px;
     font-weight: 800;
-    color: #176BB8;
+    color: #0879D1;
 }
 
 .logo span {
-    color: #F2B84F;
+    color: #FFC329;
 }
 
 .menu {
@@ -140,12 +140,12 @@ h2 {
 .menu a {
     font-size: 18px;
     font-weight: 600;
-    color: #0A3158;
+    color: #063B70;
     transition: 0.5s all;
 }
 
 .menu a:hover {
-    color: #F2B84F;
+    color: #FFC329;
 }
 
 
@@ -158,8 +158,8 @@ h2 {
     height: 590px;
     padding: 0 80px;
     color: #FFF;
-    background-color: #0A3158;
-    background-image: url('imgs/Hero.png');
+    background-color: #063B70;
+    background-image: url('imgs/hero2.webp');
     background-size: cover; 
     background-position: center;
 }
@@ -201,7 +201,7 @@ h2 {
 .numero_card h3 {
     font-size: 42px;
     font-weight: 800;
-    color: #176BB8;
+    color: #0879D1;
 }
 
 .numero_card p {
@@ -260,7 +260,7 @@ h2 {
 }
 
 .card_azul {
-    background-color: #176BB8;
+    background-color: #0879D1;
 }
 
 .card_azul h3,
@@ -292,8 +292,8 @@ h2 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 55px 80px;
-    background-color: #0A3158;
+    padding: 45px 80px;
+    background-color: #063B70;
     color: #FFF;
 }
 
@@ -311,7 +311,7 @@ h2 {
 
 .footer {
     padding: 40px 80px 25px;
-    background-color: #0A3158;
+    background-color: #063B70;
     color: #FFF;
 }
 
