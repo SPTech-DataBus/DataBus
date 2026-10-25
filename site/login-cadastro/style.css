@@ -349,3 +349,25 @@ button:hover {
     height: 300px;
     margin-top: 20px;
 }
+
+.mensagem-erro {
+    margin-top: 18px;
+    padding: 14px 16px;
+    background-color: #fff1f1;
+    border: 1px solid #e5a3a3;
+    border-radius: 8px;
+    color: #b42318;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.mensagem-erro b {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.mensagem-erro span {
+    display: block;
+    color: #7a3b3b;
+    font-size: 13px;
+}

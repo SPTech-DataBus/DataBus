@@ -80,42 +80,36 @@
         let senha = ipt_senha.value;
 
         msg.innerHTML = '';
+        let erros = '';
 
         let email_salvo = 'contato@databus.com';
         let senha_salva = 'Urubu100';
 
+
         // VALIDAÇÃO DE EMAIL
 
         let indiceArroba = email.indexOf("@");
-
         let comecaArroba = email.startsWith("@");
-
         let contemEspaco = email.includes(" ");
-
         let terminaValido = email.endsWith(".com") || email.endsWith(".br");
 
-        if (indiceArroba != -1 && comecaArroba == false && contemEspaco == false && terminaValido) {
-            msg.innerHTML += `E-mail válido<br>`;
-        } else {
-            msg.innerHTML += `E-mail inválido<br>`;
+        if (indiceArroba == -1 || comecaArroba == true ||
+            contemEspaco == true || terminaValido == false) {
+            erros += `E-mail inválido<br>`;
         }
 
         // VALIDAÇÃO DE SENHA
 
         if (senha.length < 8) {
-            msg.innerHTML += `A senha precisa ter pelo menos 8 caracteres.<br>`;
+            erros += `A senha precisa ter pelo menos 8 caracteres.<br>`;
         }
 
         if (senha == senha.toLowerCase()) {
-            msg.innerHTML += `A senha precisa ter pelo menos uma letra maiúscula.<br>`;
+            erros += `A senha precisa ter pelo menos uma letra maiúscula.<br>`;
         }
 
         if (senha == senha.toUpperCase()) {
-            msg.innerHTML += `A senha precisa ter pelo menos uma letra minúscula.<br>`;
-        }
-
-        if (senha.length >= 8 && senha != senha.toLowerCase() && senha != senha.toUpperCase()) {
-            msg.innerHTML += `Senha válida!<br>`;
+            erros += `A senha precisa ter pelo menos uma letra minúscula.<br>`;
         }
 
         // COMPARAÇÃO DE SENHA E EMAIL
@@ -125,6 +119,7 @@
             tentativas = 0;
             // redireciona para a pagina de dashboard quando o login estiver ok
             location.href = "dashboard.html";
+
         } else {
             tentativas++;
             let restantes = 0;
@@ -133,11 +128,20 @@
             }
 
             if (restantes > 0) {
-                msg.innerHTML += `Email ou senha incorretos<br>
-                    Restam ${restantes} tentativa(s).`;
-
+                msg.innerHTML += `
+                    <div class="mensagem-erro"> 
+                        <b>Email ou senha incorretos</b>
+                        <span>Restam ${restantes} tentativa(s).</span>
+                    </div>`;
             } else {
-                msg.innerHTML = `Você atingiu o limite de 3 tentativas. Login bloqueado.`;
+                msg.innerHTML = `
+                <div class="mensagem-erro">
+                    <b>Login bloqueado</b>
+                    <span>Você atingiu o limite de 3 tentativas.</span>
+                </div>`;
+                /* desabilita a pessoa clicar em email e senha, por estar bloqueado*/
+                ipt_email.disabled = true;
+                ipt_senha.disabled = true;
             }
         }
     }
