@@ -73,7 +73,7 @@
 </html>
 
 <script>
-    let tentativas = 3;
+    let tentativas = 0;
 
     function realizarLogin() {
         let email = ipt_email.value.toLowerCase();
@@ -120,20 +120,25 @@
 
         // COMPARAÇÃO DE SENHA E EMAIL
 
-        if (tentativas >= 1) {
-            if (senha === senha_salva && email === email_salvo) {
-                msg.innerHTML += `Login realizado com sucesso<br>`;
-
-                tentativas = 3;
-                // redireciona para a pagina de dashboard quando o login estiver ok
-                location.href = "dashboard.html";
-            } else {
-                msg.innerHTML += `Email ou senha incorretos<br>Restam ${tentativas}`;
-
-                tentativas--;
-            }
+        if (senha === senha_salva && email === email_salvo) {
+            msg.innerHTML += `Login realizado com sucesso<br>`;
+            tentativas = 0;
+            // redireciona para a pagina de dashboard quando o login estiver ok
+            location.href = "dashboard.html";
         } else {
-            msg.innerHTML = 'Número máximo de tentativas atingido';
+            tentativas++;
+            let restantes = 0;
+            for (let contador = tentativas; contador < 3; contador++) {
+                restantes++;
+            }
+
+            if (restantes > 0) {
+                msg.innerHTML += `Email ou senha incorretos<br>
+                    Restam ${restantes} tentativa(s).`;
+
+            } else {
+                msg.innerHTML = `Você atingiu o limite de 3 tentativas. Login bloqueado.`;
+            }
         }
     }
 </script>
