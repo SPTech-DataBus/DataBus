@@ -371,3 +371,11 @@ button:hover {
     color: #7a3b3b;
     font-size: 13px;
 }
+
+.tentativas {
+    display: block;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #e7b4b4;
+    font-weight: 600;
+}

@@ -112,36 +112,55 @@
             erros += `A senha precisa ter pelo menos uma letra minúscula.<br>`;
         }
 
-        // COMPARAÇÃO DE SENHA E EMAIL
-
-        if (senha === senha_salva && email === email_salvo) {
-            msg.innerHTML += `Login realizado com sucesso<br>`;
-            tentativas = 0;
-            // redireciona para a pagina de dashboard quando o login estiver ok
-            location.href = "dashboard.html";
-
+        if (erros != '') {
+            msg.innerHTML = `
+            <div class="mensagem-erro">
+                <b>Verifique os dados informados</b>
+                <span>${erros}</span>
+            </div>`;
         } else {
-            tentativas++;
-            let restantes = 0;
-            for (let contador = tentativas; contador < 3; contador++) {
-                restantes++;
-            }
 
-            if (restantes > 0) {
-                msg.innerHTML += `
-                    <div class="mensagem-erro"> 
-                        <b>Email ou senha incorretos</b>
-                        <span>Restam ${restantes} tentativa(s).</span>
-                    </div>`;
+            // COMPARAÇÃO DE SENHA E EMAIL
+
+            if (senha === senha_salva && email === email_salvo) {
+                msg.innerHTML += `Login realizado com sucesso<br>`;
+                tentativas = 0;
+                // redireciona para a pagina de dashboard quando o login estiver ok
+                location.href = "dashboard.html";
+
             } else {
-                msg.innerHTML = `
-                <div class="mensagem-erro">
-                    <b>Login bloqueado</b>
-                    <span>Você atingiu o limite de 3 tentativas.</span>
-                </div>`;
-                /* desabilita a pessoa clicar em email e senha, por estar bloqueado*/
-                ipt_email.disabled = true;
-                ipt_senha.disabled = true;
+                tentativas++;
+                let restantes = 0;
+                for (let contador = tentativas; contador < 3; contador++) {
+                    restantes++;
+                }
+
+                if (restantes > 0) {
+                    msg.innerHTML = `
+                    <div class="mensagem-erro">
+                        <b>Verifique os dados informados</b>
+                        <span>
+                            ${erros}
+                        </span>
+                        <span class="tentativas">
+                            Restam ${restantes} tentativa(s).
+                        </span>
+                    </div>`;
+                } else {
+                    msg.innerHTML = `
+                        <div class="mensagem-erro">
+                            <b>Login bloqueado</b>
+                            <span>
+                                ${erros}
+                            </span>
+                            <span class="tentativas">
+                                 Você atingiu o limite de 3 tentativas.
+                            </span>
+                        </div>`;
+                    /* desabilita a pessoa clicar em email e senha, por estar bloqueado*/
+                    ipt_email.disabled = true;
+                    ipt_senha.disabled = true;
+                }
             }
         }
     }
