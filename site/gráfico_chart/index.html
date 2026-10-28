@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráfico 5</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section class="tabela_oportunidade_remanejamento">
+        <section class="titulos_subtitulos">
+            <p class="titulo">Possíveis oportunidades de remanejamento</p>
+            <p class="subtitulo">
+                Simulação do impacto de redistribuir veículos entre linhas com baixa e alta ocupação no mesmo período.
+            </p>
+        </section>
+
+        <section class="tabela">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Origem</th>
+                        <th>Ocupação atual</th>
+                        <th>Após retirar 1 ônibus</th>
+                        <th></th>
+                        <th>Destino potencial</th>
+                        <th>Ocupação atual</th>
+                        <th>Após adicionar 1 ônibus</th>
+                        <th>Janela de horário</th>
+                        <th>Análise</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td class="linha">8144-22</td>
+                        <td>
+                            <p class="valor">35%</p>
+                            <p class="detalhe">4 ônibus · 112 passageiros</p>
+                        </td>
+                        <td>
+                            <p class="valor_simulado">
+                                <span class="badge">47%</span>
+                                <span class="variacao">+12 p.p.</span>
+                            </p>
+                            <p class="detalhe">3 ônibus · capacidade 240</p>
+                        </td>
+                        <td class="seta">
+                            <span class="icone_seta">
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.8473 9.30684L3.77628 8.24505L6.58771 5.43362H0V3.87325H6.58771L3.77628 1.06643L4.8473 2.19345e-05L9.50071 4.65343L4.8473 9.30684Z" fill="#163B57"/>
+                                </svg>
+                            </span>
+                        </td>
+                        <td class="linha">5106-10</td>
+                        <td>
+                            <p class="valor">89%</p>
+                            <p class="detalhe">4 ônibus · 285 passageiros</p>
+                        </td>
+                        <td>
+                            <p class="valor_simulado">
+                                <span class="badge">71%</span>
+                                <span class="variacao">−18 p.p.</span>
+                            </p>
+                            <p class="detalhe">5 ônibus · capacidade 400</p>
+                        </td>
+                        <td><span class="janela">07h–09h</span></td>
+                        <td><button type="button" class="botao">Avaliar remanejamento</button></td>
+                    </tr>
+
+                    <tr>
+                        <td class="linha">607C-10</td>
+                        <td>
+                            <p class="valor">28%</p>
+                            <p class="detalhe">4 ônibus · 90 passageiros</p>
+                        </td>
+                        <td>
+                            <p class="valor_simulado">
+                                <span class="badge">38%</span>
+                                <span class="variacao">+10 p.p.</span>
+                            </p>
+                            <p class="detalhe">3 ônibus · capacidade 240</p>
+                        </td>
+                        <td class="seta">
+                            <span class="icone_seta">
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.8473 9.30684L3.77628 8.24505L6.58771 5.43362H0V3.87325H6.58771L3.77628 1.06643L4.8473 2.19345e-05L9.50071 4.65343L4.8473 9.30684Z" fill="#163B57"/>
+                                </svg>
+                            </span>
+                        </td>
+                        <td class="linha">2019-AC</td>
+                        <td>
+                            <p class="valor">93%</p>
+                            <p class="detalhe">4 ônibus · 297 passageiros</p>
+                        </td>
+                        <td>
+                            <p class="valor_simulado">
+                                <span class="badge">74%</span>
+                                <span class="variacao">−19 p.p.</span>
+                            </p>
+                            <p class="detalhe">5 ônibus · capacidade 400</p>
+                        </td>
+                        <td><span class="janela">17h–19h</span></td>
+                        <td><button class="botao">Avaliar remanejamento</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="notas">
+            <p>
+                Cálculo: nova ocupação = passageiros estimados ÷ nova capacidade total (80 lugares por ônibus). A análise só aparece quando a origem fica abaixo de 70% após perder 1 ônibus, o destino reduz ao menos 10 p.p. após receber 1 ônibus e as janelas de horário são compatíveis.
+            </p>
+            <p>
+                As sugestões são estimativas de apoio à decisão. O remanejamento deve considerar itinerários, disponibilidade operacional, horários, capacidade dos veículos e regras da empresa.
+            </p>
+        </section>
+    </section>
+</body>
+</html>
