@@ -831,6 +831,152 @@ button:hover {
     margin-top: 20px;
 }
 
+/* TABELA DE OPORTUNIDADES DE REMANEJAMENTO
+   as regras começam com .tabela_oportunidade_remanejamento para não mudar as outras tabelas
+   e para ganhar da regra ".dashboard-content p", que deixaria todos os textos cinza */
+.tabela_oportunidade_remanejamento {
+    margin-top: 20px;
+    background-color: #ffffff;
+    border: 1px solid #dfe3ea;
+    border-radius: 12px;
+    padding: 24px 24px 22px;
+}
+
+.tabela_oportunidade_remanejamento .titulos_subtitulos {
+    margin-bottom: 18px;
+}
+
+.tabela_oportunidade_remanejamento .titulo {
+    font-size: 18px;
+    font-weight: 700;
+    color: #163b57;
+    margin-bottom: 4px;
+}
+
+.tabela_oportunidade_remanejamento .subtitulo {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.tabela_oportunidade_remanejamento .tabela {
+    overflow-x: auto; /* se a tela for pequena, a tabela ganha uma barra de rolagem */
+}
+
+.tabela_oportunidade_remanejamento table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+.tabela_oportunidade_remanejamento th {
+    font-size: 13px;
+    font-weight: 400;
+    color: #6b7280;
+    text-align: left;
+    padding: 0 8px 10px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.tabela_oportunidade_remanejamento td {
+    padding: 14px 8px;
+    vertical-align: middle;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.tabela_oportunidade_remanejamento .linha {
+    font-size: 13px;
+    font-weight: 700;
+    color: #163b57;
+}
+
+.tabela_oportunidade_remanejamento .valor {
+    font-size: 18px;
+    font-weight: 700;
+    color: #163b57;
+    line-height: 1.2;
+}
+
+.tabela_oportunidade_remanejamento .detalhe {
+    font-size: 11px;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+.tabela_oportunidade_remanejamento .valor_simulado {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tabela_oportunidade_remanejamento .badge {
+    display: inline-block;
+    background-color: #e3edf9;
+    color: #0b4a99;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+    padding: 3px 8px;
+    border-radius: 6px;
+}
+
+.tabela_oportunidade_remanejamento .variacao {
+    font-size: 11px;
+    font-weight: 600;
+    color: #0b4a99;
+}
+
+.tabela_oportunidade_remanejamento .seta {
+    text-align: center;
+}
+
+.tabela_oportunidade_remanejamento .icone_seta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #f5a623;
+}
+
+.tabela_oportunidade_remanejamento .janela {
+    display: inline-block;
+    background-color: #163b57;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 5px;
+}
+
+.tabela_oportunidade_remanejamento .botao {
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #0b4a99;
+    border: none;
+    border-radius: 6px;
+    padding: 9px 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.tabela_oportunidade_remanejamento .botao:hover {
+    background-color: #083a7a;
+}
+
+.tabela_oportunidade_remanejamento .notas {
+    margin-top: 16px;
+}
+
+.tabela_oportunidade_remanejamento .notas p {
+    margin-top: 8px;
+    font-size: 11px;
+    line-height: 1.5;
+    color: #6b7280;
+}
+
 .mensagem-erro {
     margin-top: 18px;
     padding: 14px 16px;

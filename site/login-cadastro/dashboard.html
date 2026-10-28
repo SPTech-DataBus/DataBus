@@ -147,6 +147,112 @@
                 </div>
             </div>
 
+            <section class="tabela_oportunidade_remanejamento">
+                <section class="titulos_subtitulos">
+                    <p class="titulo">Possíveis oportunidades de remanejamento</p>
+                    <p class="subtitulo">
+                        Simulação do impacto de redistribuir veículos entre linhas com baixa e alta ocupação no mesmo período.
+                    </p>
+                </section>
+
+                <section class="tabela">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Origem</th>
+                                <th>Ocupação atual</th>
+                                <th>Após retirar 1 ônibus</th>
+                                <th></th>
+                                <th>Destino potencial</th>
+                                <th>Ocupação atual</th>
+                                <th>Após adicionar 1 ônibus</th>
+                                <th>Janela de horário</th>
+                                <th>Análise</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td class="linha">8144-22</td>
+                                <td>
+                                    <p class="valor">30%</p>
+                                    <p class="detalhe">4 ônibus · 96 passageiros</p>
+                                </td>
+                                <td>
+                                    <p class="valor_simulado">
+                                        <span class="badge">40%</span>
+                                        <span class="variacao">+10 p.p.</span>
+                                    </p>
+                                    <p class="detalhe">3 ônibus · capacidade 240</p>
+                                </td>
+                                <td class="seta">
+                                    <span class="icone_seta">
+                                        <img src="imgs/icone-seta-direita.svg" alt="Seta para a direita" width="14" height="14">
+                                    </span>
+                                </td>
+                                <td class="linha">1721-10</td>
+                                <td>
+                                    <p class="valor">87%</p>
+                                    <p class="detalhe">4 ônibus · 278 passageiros</p>
+                                </td>
+                                <td>
+                                    <p class="valor_simulado">
+                                        <span class="badge">70%</span>
+                                        <span class="variacao">−17 p.p.</span>
+                                    </p>
+                                    <p class="detalhe">5 ônibus · capacidade 400</p>
+                                </td>
+                                <td><span class="janela">07h–09h</span></td>
+                                <td><button type="button" class="botao">Avaliar remanejamento</button></td>
+                            </tr>
+
+                            <tr>
+                                <td class="linha">607C-10</td>
+                                <td>
+                                    <p class="valor">31%</p>
+                                    <p class="detalhe">4 ônibus · 99 passageiros</p>
+                                </td>
+                                <td>
+                                    <p class="valor_simulado">
+                                        <span class="badge">41%</span>
+                                        <span class="variacao">+10 p.p.</span>
+                                    </p>
+                                    <p class="detalhe">3 ônibus · capacidade 240</p>
+                                </td>
+                                <td class="seta">
+                                    <span class="icone_seta">
+                                        <img src="imgs/icone-seta-direita.svg" alt="Seta para a direita" width="14" height="14">
+                                    </span>
+                                </td>
+                                <td class="linha">2019-AC</td>
+                                <td>
+                                    <p class="valor">92%</p>
+                                    <p class="detalhe">4 ônibus · 294 passageiros</p>
+                                </td>
+                                <td>
+                                    <p class="valor_simulado">
+                                        <span class="badge">74%</span>
+                                        <span class="variacao">−18 p.p.</span>
+                                    </p>
+                                    <p class="detalhe">5 ônibus · capacidade 400</p>
+                                </td>
+                                <td><span class="janela">17h–19h</span></td>
+                                <td><button type="button" class="botao">Avaliar remanejamento</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section class="notas">
+                    <p>
+                        Cálculo: nova ocupação = passageiros estimados ÷ nova capacidade total (80 lugares por ônibus). A análise só aparece quando a origem fica abaixo de 70% após perder 1 ônibus, o destino reduz ao menos 10 p.p. após receber 1 ônibus e as janelas de horário são compatíveis.
+                    </p>
+                    <p>
+                        As sugestões são estimativas de apoio à decisão. O remanejamento deve considerar itinerários, disponibilidade operacional, horários, capacidade dos veículos e regras da empresa.
+                    </p>
+                </section>
+            </section>
+
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
             <script>
