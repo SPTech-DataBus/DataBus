@@ -2,28 +2,63 @@
 <html>
 
 <head>
-    <title>Graphics</title>
+    <meta charset="UTF-8">
+    <title>DataBus | Sensor</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="grafico.css">
 </head>
 
-<body>
+<body class="sem-rolagem">
 
-    <h1>Graphics</h1>
-    <div>
-        <canvas id="sensorDigital"></canvas>
-    </div>
+    <header class="barra-topo">
+        <div class="logo">
+            <img src="../../site/login-cadastro/imgs/Símbolo.png" alt="Logo DataBus">
+            <p>DATA<span>BUS</span></p>
+        </div>
+        <p class="barra-topo-texto">Monitoramento em tempo real</p>
+    </header>
+
+    <main class="conteudo">
+        <span class="etiqueta">SENSOR DE PRESENÇA</span>
+        <h1 class="titulo-pagina">Leituras do sensor</h1>
+        <p class="texto">
+            Cada ponto é uma leitura enviada pelo Arduino. A linha sobe quando o sensor
+            detecta alguém (1) e desce quando não detecta nada (0).
+        </p>
+
+        <div class="cartao-grafico">
+            <h2 class="titulo-grafico">Gráfico em tempo real</h2>
+            <div class="area-grafico">
+                <canvas id="sensorDigital"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <footer class="rodape">DataBus - Monitoramento da ocupação de ônibus</footer>
 
     <script>
+        // textos cinza e linhas de grade claras para o fundo branco
+        Chart.defaults.color = 'slategray';
+        Chart.defaults.borderColor = 'gainsboro';
+        Chart.defaults.font.family = 'Inter';
+
         var sensorDigital = new Chart(document.getElementById('sensorDigital').getContext('2d'), {
             type: 'line',
             data: {
                 datasets: [{
-                    label: 'Digital',
-                    borderColor: '#63B1BC',
-                    backgroundColor: '#0762C8'
+                    label: 'Presença detectada',
+                    borderColor: 'royalblue',
+                    borderWidth: 3,
+                    backgroundColor: 'aliceblue',
+                    fill: true,
+                    pointBackgroundColor: 'goldenrod',
+                    pointBorderColor: 'goldenrod',
+                    pointRadius: 5
                 }]
             },
             options: {
+                maintainAspectRatio: false,
                 scales: {
                     x: {
                         beginAtZero: true
@@ -33,7 +68,11 @@
                             display: true,
                             text: '(0-1)'
                         },
-                        beginAtZero: true
+                        beginAtZero: true,
+                        max: 1,
+                        ticks: {
+                            stepSize: 1
+                        }
                     }
                 }
             }

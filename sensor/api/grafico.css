@@ -1,0 +1,147 @@
+/* cores do projeto (as mesmas do site DataBus) */
+:root {
+    --azul-marinho: #0a3158; /* barra do topo e titulos */
+    --fundo: #f8fafb; /* fundo quase branco da pagina */
+    --borda: #e3ebf2; /* borda cinza clara dos cartoes */
+    --texto-cinza: #607286; /* textos de explicacao */
+    --amarelo: goldenrod;
+    --branco: white;
+}
+
+/* remove margens padrao do navegador e usa a fonte do site */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+/* pagina com fundo claro */
+body {
+    background-color: var(--fundo);
+    color: var(--azul-marinho);
+}
+
+/* barra azul no topo, igual a do site */
+.barra-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 40px;
+    background-color: var(--azul-marinho);
+}
+
+/* logo + "DATABUS" */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--branco);
+}
+
+.logo img {
+    width: 40px;
+    height: 40px;
+}
+
+/* parte "BUS" em amarelo */
+.logo span {
+    color: var(--amarelo);
+}
+
+/* texto do lado direito da barra do topo */
+.barra-topo-texto {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--branco);
+}
+
+/* area do meio da pagina, centralizada */
+.conteudo {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* etiqueta amarela pequena acima do titulo */
+.etiqueta {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background-color: var(--amarelo);
+    color: var(--azul-marinho);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* titulo da pagina */
+.titulo-pagina {
+    margin-top: 12px;
+    margin-bottom: 6px;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+/* texto de explicacao abaixo do titulo */
+.texto {
+    margin-bottom: 24px;
+    font-size: 15px;
+    line-height: 24px;
+    color: var(--texto-cinza);
+}
+
+/* cartao branco onde fica o grafico */
+.cartao-grafico {
+    margin-bottom: 24px;
+    padding: 25px;
+    background-color: var(--branco);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+}
+
+/* espaco do grafico: altura da tela menos o espaco do resto da pagina
+   (barra do topo, titulo, texto e rodape), assim tudo cabe na tela */
+.area-grafico {
+    position: relative;
+    height: calc(100vh - 460px);
+}
+
+/* pagina que nao deixa descer (sem barra de rolagem) */
+.sem-rolagem {
+    overflow: hidden;
+}
+
+/* titulo dentro do cartao */
+.titulo-grafico {
+    margin-bottom: 16px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* texto embaixo do grafico dizendo se a API respondeu */
+.status {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--texto-cinza);
+}
+
+/* API respondeu */
+.ok {
+    color: green;
+}
+
+/* API nao respondeu */
+.erro {
+    color: firebrick;
+}
+
+/* rodape no final da pagina */
+.rodape {
+    padding: 20px;
+    border-top: 1px solid var(--borda);
+    text-align: center;
+    font-size: 13px;
+    color: var(--texto-cinza);
+}
