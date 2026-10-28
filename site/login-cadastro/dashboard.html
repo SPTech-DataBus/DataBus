@@ -42,6 +42,18 @@
         <main class="dashboard-content">
             <h1>Dashboard de Ocupação de Frota</h1>
             <p>Acompanhe a utilização da frota e identifique oportunidades de melhoria na operação.</p>
+
+            <div class="kpis">
+                <div class="kpi kpi-amarela">
+                    <div class="kpi-titulo">
+                        <span class="kpi-icone icone-amarelo">🚌</span>
+                        <h4>Oportunidades de remanejamento</h4>
+                    </div>
+                    <h2 id="kpi_remanejamento"></h2>
+                    <p>Realocações para amanhã que aliviam linhas lotadas sem aumentar a frota.</p>
+                </div>
+            </div>
+
             <h3 class="section-title">ANÁLISE GERAL</h3>
 
             <div class="graficos">
@@ -58,6 +70,10 @@
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
             <script>
+                // KPI: dados mocados (depois virão do banco de dados)
+                const oportunidadesRemanejamento = 5;
+                document.getElementById('kpi_remanejamento').innerHTML = oportunidadesRemanejamento;
+
                 const ctxBarra = document.getElementById('grafico_barra');
                 new Chart(ctxBarra, {
                     type: 'bar',
