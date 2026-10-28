@@ -1,64 +1,64 @@
 CREATE DATABASE DataBus;
-
 USE DataBus;
--- CRIAÇÃO DAS TABELAS --
 
 -- EMPRESA --
 
 CREATE TABLE empresa (
     id_empresa INT PRIMARY KEY AUTO_INCREMENT,
     cnpj CHAR(18) NOT NULL UNIQUE,
-    codigo_verificacao CHAR(6) UNIQUE NOT NULL,
+    codigo_verificacao CHAR(6) NOT NULL UNIQUE,
     razao_social VARCHAR(100) NOT NULL,
     nome_fantasia VARCHAR(60) NOT NULL,
     regiao VARCHAR(40),
-    CONSTRAINT ch_local CHECK (regiao IN ('Intermunicipal', 'Municipal'))
+
+    CONSTRAINT ch_regiao CHECK (
+        regiao IN ('Intermunicipal', 'Municipal')
+    )
 );
 
-SELECT * FROM empresa;
-
--- REPRESENTANTE DA EMPRESA --
-
-CREATE TABLE representante_empresa (
-    id_representante INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(100) NOT NULL,
-    cpf CHAR(14) NOT NULL UNIQUE,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    fk_empresa INT NOT NULL,
-    CONSTRAINT fk_empresa_representante FOREIGN KEY (fk_empresa) REFERENCES empresa(id_empresa)
-);
-
-SELECT * FROM representante_empresa;
 
 -- USUÁRIO --
 
 CREATE TABLE usuario (
     id_usuario INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(100) NOT NULL,
+    nome VARCHAR(50) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     senha VARCHAR(100) NOT NULL,
-    tipo_perfil VARCHAR(40) NOT NULL,
-    CONSTRAINT ch_tipo CHECK (tipo_perfil IN ('Administrador', 'Operador')), -- VERIFICAR SE É NECESSÁRIO O 'tipo'
-    fk_adm INT,
+    tipo_perfil VARCHAR(45) NOT NULL,
+
     fk_empresa INT NOT NULL,
-    CONSTRAINT fk_empresa_usuario FOREIGN KEY (fk_empresa) REFERENCES empresa(id_empresa),
-    CONSTRAINT fk_usuario_adm FOREIGN KEY (fk_adm) REFERENCES usuario(id_usuario)
+    fk_adm INT,
+
+    CONSTRAINT ch_tipo_perfil CHECK (
+        tipo_perfil IN ('Administrador', 'Operador')
+    ),
+
+    CONSTRAINT fk_usuario_empresa
+        FOREIGN KEY (fk_empresa)
+        REFERENCES empresa(id_empresa),
+
+    CONSTRAINT fk_usuario_adm
+        FOREIGN KEY (fk_adm)
+        REFERENCES usuario(id_usuario)
 );
 
-SELECT * FROM usuario;
 
 -- LINHA --
 
 CREATE TABLE linha (
     id_linha INT PRIMARY KEY AUTO_INCREMENT,
     codigo CHAR(7) NOT NULL UNIQUE,
-    nome VARCHAR(100) NOT NULL,
-    tarifa DECIMAL(5,2) NOT NULL,
+    nome VARCHAR(45) NOT NULL,
+    hora_inicio DATETIME NOT NULL,
+    hora_fim DATETIME NOT NULL,
+    total_passageiros INT NOT NULL,
     fk_empresa INT NOT NULL,
-    CONSTRAINT fk_linha_empresa FOREIGN KEY (fk_empresa) REFERENCES empresa(id_empresa)
+
+    CONSTRAINT fk_linha_empresa
+        FOREIGN KEY (fk_empresa)
+        REFERENCES empresa(id_empresa)
 );
 
-SELECT * FROM linha;
 
 -- ÔNIBUS --
 
@@ -66,128 +66,122 @@ CREATE TABLE onibus (
     id_onibus INT PRIMARY KEY AUTO_INCREMENT,
     placa CHAR(7) NOT NULL UNIQUE,
     capacidade_maxima INT NOT NULL,
-    status_onibus VARCHAR(20) NOT NULL,
-    fk_empresa INT,
-    CONSTRAINT fk_empresa_onibus FOREIGN KEY (fk_empresa) REFERENCES empresa (id_empresa),
-    CONSTRAINT ch_status_onibus CHECK (status_onibus IN ('Ativo', 'Manutenção', 'Desativado'))
+    status_onibus VARCHAR(45) NOT NULL,
+
+    fk_empresa INT NOT NULL,
+
+    CONSTRAINT ch_status_onibus CHECK (
+        status_onibus IN ('Ativo', 'Manutencao', 'Desativado')
+    ),
+
+    CONSTRAINT fk_onibus_empresa
+        FOREIGN KEY (fk_empresa)
+        REFERENCES empresa(id_empresa)
 );
 
-SELECT * FROM onibus;
 
--- VIAGEM --
+-- OPERAÇÃO --
 
-CREATE TABLE viagem (
-	id_viagem INT PRIMARY KEY AUTO_INCREMENT,
-    data_hora_inicio DATETIME NOT NULL,
-    data_hora_fim DATETIME NOT NULL,
-    fk_onibus INT NOT NULL,
+CREATE TABLE operacao (
+    id_operacao INT PRIMARY KEY AUTO_INCREMENT,
+    dt_operacao DATE NOT NULL,
+
     fk_linha INT NOT NULL,
-    CONSTRAINT fk_onibus_viagem FOREIGN KEY (fk_onibus) REFERENCES onibus(id_onibus),
-    CONSTRAINT fk_linha_viagem FOREIGN KEY (fk_linha) REFERENCES linha(id_linha)
+    fk_onibus INT NOT NULL,
+
+    CONSTRAINT fk_operacao_linha
+        FOREIGN KEY (fk_linha)
+        REFERENCES linha(id_linha),
+
+    CONSTRAINT fk_operacao_onibus
+        FOREIGN KEY (fk_onibus)
+        REFERENCES onibus(id_onibus)
 );
 
-SELECT * FROM viagem;
 
 -- SENSOR --
 
 CREATE TABLE sensor (
     id_sensor INT PRIMARY KEY AUTO_INCREMENT,
-    modelo VARCHAR(20),
+    modelo VARCHAR(10),
     data_instalacao DATE,
     status_sensor VARCHAR(20) NOT NULL,
+
     fk_onibus INT NOT NULL,
-    CONSTRAINT ch_status_sensor CHECK (status_sensor IN ('Ativo', 'Manutencao', 'Desativado')),
-    CONSTRAINT fk_sensor_onibus FOREIGN KEY (fk_onibus) REFERENCES onibus(id_onibus)
+
+    CONSTRAINT ch_status_sensor CHECK (
+        status_sensor IN ('Ativo', 'Manutencao', 'Desativado')
+    ),
+
+    CONSTRAINT fk_sensor_onibus
+        FOREIGN KEY (fk_onibus)
+        REFERENCES onibus(id_onibus)
 );
 
-SELECT * FROM sensor;
 
 -- REGISTRO DO SENSOR --
 
 CREATE TABLE registro_sensor (
     id_registro INT PRIMARY KEY AUTO_INCREMENT,
-    tipo_movimento TINYINT NOT NULL,
+
+    registro_entrada TINYINT NOT NULL,
+
     data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
-    passageiros_atual INT DEFAULT 0,
+
     fk_sensor INT NOT NULL,
-    CONSTRAINT ch_tipo_movimento CHECK (tipo_movimento IN (0,1)),
-    CONSTRAINT fk_registro_onibus FOREIGN KEY (fk_sensor) REFERENCES sensor(id_sensor)
+
+    CONSTRAINT ch_registro_entrada CHECK (
+        registro_entrada = 1
+    ),
+
+    CONSTRAINT fk_registro_sensor
+        FOREIGN KEY (fk_sensor)
+        REFERENCES sensor(id_sensor)
 );
 
-SELECT * FROM registro_sensor;
-
-
--- INSERÇÃO DE DADOS --
-
-INSERT INTO empresa (cnpj, codigo_verificacao, razao_social, nome_fantasia, regiao) VALUES
-	('00.000.000/0001-91', 'A7K9Q2', 'Mobi Brasil Mobilidade Urbana Ltda.', 'Mobi Brasil', 'Intermunicipal'),
-	('00.121.011/0041-31', 'M4X8P1', 'São Paulo Transporte S/A', 'SPTrans', 'Municipal'),
-	('00.011.011/0011-11', 'R6T3Z9', 'Viação Mobi Rios S.A.', 'MobiRio', 'Municipal'),
-	('12.713.901/1021-51', 'B2N7L5', 'Transcon Transportes e Concessões S.A.', 'TransCon', 'Intermunicipal');
-    
-INSERT INTO representante_empresa (nome, cpf, email, fk_empresa) VALUES
-    ('Carlos Eduardo Silva', '123.456.789-01', 'carlos.silva@mobibrasil.com.br', 1),
-    ('Mariana Alves Santos', '234.567.890-12', 'mariana.santos@sptrans.com.br', 2),
-    ('Rafael Oliveira Costa', '345.678.901-23', 'rafael.costa@mobirio.com.br', 3),
-    ('Fernanda Martins Souza', '456.789.012-34', 'fernanda.souza@transcon.com.br', 4);
-
-INSERT INTO usuario (nome, email, senha, tipo_perfil, fk_adm, fk_empresa) VALUES
-    ('João Pereira', 'joao@mobibrasil.com.br', 'Admin123', 'Administrador', NULL, 1),
-    ('Lucas Almeida', 'lucas@mobibrasil.com.br', 'Operador123', 'Operador', 1, 1),
-    ('Ana Souza', 'ana@sptrans.com.br', 'Operador456', 'Operador', 1, 2),
-    ('Pedro Costa', 'pedro@mobirio.com.br', 'Operador789', 'Operador', 1, 3);
-
-INSERT INTO linha (codigo, nome, tarifa, fk_empresa) VALUES
-	('607C-10', 'Jardim Miriam - Itaim Bibi', 5.30, 1),
-	('5106-10', 'Mar Paulista - São Francisco', 5.30, 2),
-	('8144-22', 'Penha - Ipanema', 5.00, 3),
-	('2019-AC', 'União - Serra', 6.25, 4);
-
-INSERT INTO onibus (placa, capacidade_maxima, status_onibus) VALUES
-	('ABC1134', 120, 'Ativo'),
-	('CBA1234', 120, 'Ativo'),
-	('JCC3412', 80, 'Desativado'),
-	('LEO6671', 80, 'Manutenção');
-    
-INSERT INTO viagem (data_hora_inicio, data_hora_fim, fk_onibus, fk_linha) VALUES
-    ('2026-09-28 06:00:00', '2026-09-28 07:30:00', 1, 1),
-    ('2026-09-28 08:00:00', '2026-09-28 09:30:00', 2, 2),
-    ('2026-09-28 10:00:00', '2026-09-28 11:30:00', 3, 3),
-    ('2026-09-28 14:00:00', '2026-09-28 15:30:00', 4, 4);
-
-INSERT INTO sensor (modelo, data_instalacao, status_sensor, fk_onibus) VALUES
-	('HC-SR04', '2026-09-21', 'Ativo', 1),
-	('HC-SR04', '2026-09-21', 'Ativo', 2),
-	('HC-SR04', '2026-09-21', 'Ativo', 3),
-	('HC-SR04', '2026-09-21', 'Ativo', 4);
-
-INSERT INTO registro_sensor (tipo_movimento, data_hora, passageiros_atual, fk_sensor) VALUES
-	(0, '2026-09-21 20:15:30', 80, 1),
-	(1, '2026-09-21 20:16:30', 80, 2),
-	(0, '2026-09-21 20:17:30', 100, 3),
-	(1, '2026-09-21 20:18:30', 100, 4);
-
-
--- CONSULTA DE DADOS --
-
+-- Listar os ônibus ativos e a qual empresa pertencem
 SELECT 
-    registro_sensor.id_registro 'ID',
-    CASE
-        WHEN registro_sensor.tipo_movimento = 0 THEN 'Entrada'
-        ELSE 'Saída'
-    END 'Tipo de registro',
-    onibus.placa 'Placa',
-    DATE_FORMAT(registro_sensor.data_hora, '%d/%m/%Y %H:%i:%s') 'Data e hora'
-FROM registro_sensor
-JOIN sensor ON registro_sensor.fk_sensor = sensor.id_sensor
-JOIN onibus ON sensor.fk_onibus = onibus.id_onibus;
+    onibus.placa AS 'Placa do Ônibus',
+    onibus.capacidade_maxima AS 'Capacidade Máxima',
+    onibus.status_onibus AS 'Status',
+    empresa.nome_fantasia AS 'Nome da Empresa'
+FROM onibus
+JOIN empresa ON onibus.fk_empresa = empresa.id_empresa
+WHERE onibus.status_onibus = 'Ativo';
 
+-- Quantidade de ônibus por status da frota (Para gráficos ou cards)
+SELECT 
+    status_onibus AS 'Status do Ônibus',
+    COUNT(id_onibus) AS 'Total de Veículos'
+FROM onibus
+GROUP BY status_onibus;
 
-SELECT
-    CONCAT(
-        empresa.nome_fantasia,
-        ' - Linha ', linha.codigo,
-        ' - Tarifa R$ ', linha.tarifa
-    ) 'Informações da linha'
-FROM empresa
-JOIN linha ON empresa.id_empresa = linha.fk_empresa;
+-- Relatório de Operações (Qual ônibus está rodando em qual linha)
+SELECT 
+    operacao.dt_operacao AS 'Data da Operação',
+    linha.codigo AS 'Código da Linha',
+    linha.nome AS 'Nome da Linha',
+    onibus.placa AS 'Placa do Ônibus'
+FROM operacao
+JOIN linha ON operacao.fk_linha = linha.id_linha
+JOIN onibus ON operacao.fk_onibus = onibus.id_onibus;
+
+-- Linhas de ônibus e o total de passageiros projetados/registrados
+SELECT 
+    linha.codigo AS 'Código da Linha',
+    linha.nome AS 'Nome da Linha',
+    linha.hora_inicio AS 'Início',
+    linha.hora_fim AS 'Fim',
+    linha.total_passageiros AS 'Total de Passageiros',
+    empresa.nome_fantasia AS 'Empresa Responsável'
+FROM linha
+JOIN empresa ON linha.fk_empresa = empresa.id_empresa;
+
+-- Linhas com maior demanda de passageiros 
+SELECT 
+    linha.codigo AS 'Código da Linha',
+    linha.nome AS 'Nome da Linha',
+    linha.total_passageiros AS 'Total de Passageiros'
+FROM linha
+ORDER BY linha.total_passageiros DESC;
+
