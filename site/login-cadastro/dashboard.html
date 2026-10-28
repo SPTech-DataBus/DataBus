@@ -102,6 +102,49 @@
                         <canvas id="grafico_ocupacao_por_linha"></canvas>
                     </div>
                 </div>
+
+                <div class="grafico-tamanho">
+                    <div class="grafico-cabecalho">
+                        <h2>Distribuição das linhas por faixa de ocupação</h2>
+                        <p>Quantidade de linhas em cada faixa de ocupação média do dia.</p>
+                    </div>
+
+                    <div class="distribuicao-conteudo">
+                        <div class="grafico-rosca-container">
+                            <canvas id="grafico_distribuicao_das_linhas"></canvas>
+
+                            <!-- texto que fica no meio da rosca -->
+                            <div class="total-no-centro">
+                                <h2>15</h2>
+                                <p>linhas</p>
+                            </div>
+                        </div>
+
+                        <!-- legenda do gráfico -->
+                        <ul class="legenda-rosca">
+                            <li>
+                                <span class="bolinha" style="background-color: #C0392B;"></span>
+                                <span class="legenda-nome">Alta ocupação (acima de 85%)</span>
+                                <b>4 (27%)</b>
+                            </li>
+                            <li>
+                                <span class="bolinha" style="background-color: #FCA814;"></span>
+                                <span class="legenda-nome">Atenção (60% – 85%)</span>
+                                <b>2 (13%)</b>
+                            </li>
+                            <li>
+                                <span class="bolinha" style="background-color: #0050A0;"></span>
+                                <span class="legenda-nome">Adequada (35% – 60%)</span>
+                                <b>4 (27%)</b>
+                            </li>
+                            <li>
+                                <span class="bolinha" style="background-color: #2A9D8F;"></span>
+                                <span class="legenda-nome">Baixa ocupação (abaixo de 35%)</span>
+                                <b>5 (33%)</b>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -169,6 +212,41 @@
                                 grid: {
                                     display: false //tira as linhas horizontais atras das barras
                                 }
+                            }
+                        }
+                    }
+                });
+
+                // dados do gráfico de distribuição das linhas por faixa de ocupação
+                const nomesDasFaixasDeOcupacao = ['Alta ocupação', 'Atenção', 'Adequada', 'Baixa ocupação'];
+                const quantidadeDeLinhasPorFaixa = [4, 2, 4, 5]; // total: 15 linhas
+                const coresDasFaixas = [
+                    '#C0392B', // vermelho: alta ocupação
+                    '#FCA814', // laranja: atenção
+                    '#0050A0', // azul: adequada
+                    '#2A9D8F'  // verde: baixa ocupação
+                ];
+
+                const canvasGraficoDistribuicaoDasLinhas = document.getElementById('grafico_distribuicao_das_linhas');
+                new Chart(canvasGraficoDistribuicaoDasLinhas, {
+                    type: 'doughnut', // gráfico de rosca
+                    data: {
+                        labels: nomesDasFaixasDeOcupacao,
+                        datasets: [{
+                            label: 'Quantidade de linhas',
+                            data: quantidadeDeLinhasPorFaixa,
+                            backgroundColor: coresDasFaixas,
+                            borderColor: 'white', // espaço branco entre as fatias
+                            borderWidth: 2
+                        }]
+                    },
+
+                    options: {
+                        cutout: '65%', // tamanho do buraco no meio da rosca
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false // a legenda foi feita no HTML, ao lado do gráfico
                             }
                         }
                     }
