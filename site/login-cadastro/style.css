@@ -752,6 +752,16 @@ button:hover {
     border-radius: 12px;
 }
 
+.grafico-cabecalho h2 {
+    color: #163B57;
+    font-size: 18px;
+}
+
+.grafico-cabecalho p {
+    font-size: 13px;
+    margin-top: 4px;
+}
+
 .chart-container {
     position: relative;
     width: 100%;

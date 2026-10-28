@@ -93,11 +93,13 @@
 
             <div class="graficos">
                 <div class="grafico-tamanho">
-                    <h2>Ocupação média por linha</h2>
-                    <p>Laranja indica atenção: abaixo de 35% ou acima de 85%</p>
+                    <div class="grafico-cabecalho">
+                        <h2>Ocupação por linha</h2>
+                        <p>Ocupação média do dia, colorida pela faixa de ocupação.</p>
+                    </div>
 
                     <div class="chart-container">
-                        <canvas id="grafico_barra"></canvas>
+                        <canvas id="grafico_ocupacao_por_linha"></canvas>
                     </div>
                 </div>
             </div>
@@ -105,7 +107,7 @@
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
             <script>
-                // KPI: dados mocados (depois virão do banco de dados)
+                // dados da KPI
                 const oportunidadesRemanejamento = 5;
                 const linhasBaixaOcupacao = 5;
                 const linhasAltaOcupacao = 4;
@@ -116,28 +118,38 @@
                 document.getElementById('kpi_alta_ocupacao').innerHTML = linhasAltaOcupacao;
                 document.getElementById('kpi_comparativo').innerHTML = '+' + comparativoHistorico + '%';
 
-                const ctxBarra = document.getElementById('grafico_barra');
-                new Chart(ctxBarra, {
+                // dados do gráfico de ocupação por linha
+                const nomesDasLinhas = ['2019-AC', '1721-10', '3016-21', '407M-10', '607C-10'];
+                const porcentagemDeOcupacaoDasLinhas = [92, 87, 64, 52, 31];
+                const coresDasBarras = [
+                    '#C0392B', // vermelho: alta ocupação (acima de 85%)
+                    '#C0392B', // vermelho: alta ocupação (acima de 85%)
+                    '#FCA814', // laranja: atenção (60% a 85%)
+                    '#0050A0', // azul: adequada (35% a 60%)
+                    '#2A9D8F'  // verde: baixa ocupação (abaixo de 35%)
+                ];
+
+                const canvasGraficoOcupacaoPorLinha = document.getElementById('grafico_ocupacao_por_linha');
+                new Chart(canvasGraficoOcupacaoPorLinha, {
                     type: 'bar',
                     data: {
-                        labels: ['2019-AC', '5106-10', '8144-22', '7702-10', '607C-10'],
+                        labels: nomesDasLinhas,
                         datasets: [{
-                            label: 'Ocupação média',
-                            data: [93, 87, 48, 41, 34],
-                            backgroundColor: [
-                                '#FCA814',
-                                '#FCA814',
-                                '#0050A0',
-                                '#0050A0',
-                                '#FCA814'
-                            ],
+                            label: 'Ocupação média (%)',
+                            data: porcentagemDeOcupacaoDasLinhas,
+                            backgroundColor: coresDasBarras,
                             borderRadius: 5
-
                         }]
                     },
 
                     options: {
                         indexAxis: 'y', // transforma em barras horizontais
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false // esconde a legenda em cima do gráfico
+                            }
+                        },
                         scales: {
                             x: {
                                 beginAtZero: true,
