@@ -115,15 +115,16 @@ h2 {
     display: flex;
     justify-content: space-between;
     align-items: center;           
-    padding: 18px 80px;
+    padding: 15px 80px;
     background-color: #FFF;
+    height: 8vh;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 26px;
+    gap: 10px;
+    font-size: 22px;
     font-weight: 800;
     color: #0879D1;
 }
@@ -132,20 +133,28 @@ h2 {
     color: #FFC329;
 }
 
+.navbar .logo {
+    color: #176BB8;
+}
+
+.navbar .logo span {
+    color: #F2B84F;
+}
+
 .menu {
     display: flex;
-    gap: 40px;
+    gap: 30px;
 }
 
 .menu a {
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 600;
-    color: #063B70;
+    color: #0A3158;
     transition: 0.5s all;
 }
 
 .menu a:hover {
-    color: #FFC329;
+    color: #F2B84F;
 }
 
 
@@ -176,6 +185,7 @@ h2 {
     font-size: 58px;
     line-height: 1.15;
     font-weight: 800;
+    text-shadow: 2px 4px 12px rgba(0, 0, 0, 0.6);
 }
 
 .hero_texto {

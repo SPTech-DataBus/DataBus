@@ -21,9 +21,10 @@ main {
     align-items: center;
     gap: 10px;
     padding: 20px;
-    width: 60%;
+    width: 50%;
     height: 100%;
     background-color: #F4F6F9;
+    background-image: linear-gradient(135deg, #F4F8FC 0%, #E1EEFA 100%);
 }
 
 .section_form {
@@ -36,14 +37,6 @@ main {
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
-.section_container.cadastro {
-    width: 100%;
-    min-height: 92vh;
-    background-image: url("imgs/background-cadastro.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
 
 .section_form .section_div div {
     display: block;
@@ -52,24 +45,51 @@ main {
 
 .section_imagem {
     display: flex;
-    justify-content: center;
     flex-direction: column;
-    align-items: center;
-    height: 95vh;
-    width: 40%;
-    gap: 50px;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    width: 47%;
+    padding: 60px 50px;
     background-color: #0A3158;
+    background-image:
+        linear-gradient(180deg, rgba(7, 33, 72, 0.7) 0%, rgba(7, 33, 72, 0) 55%),
+        linear-gradient(90deg, rgba(7, 33, 72, 0.8) 0%, rgba(7, 33, 72, 0.35) 60%, rgba(7, 33, 72, 0.1) 100%),
+        url("imgs/Hero.png");
+    background-size: cover;
+    background-position: 35% center;
 }
 
-.img img {
-    width: 500px;
-    height: fit-content;
+/* onda azul no canto inferior esquerdo */
+.section_imagem::after {
+    content: '';
+    position: absolute;
+    left: -190px;
+    bottom: -150px;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: linear-gradient(160deg, #2F7BEA 0%, #0B4DB3 100%);
+    opacity: 0.6;
+}
+
+.tag {
+    width: fit-content;
+    padding: 7px 16px;
+    border-radius: 20px;
+    background-color: rgba(23, 107, 184, 0.55);
+    color: #E6EEF7;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
 }
 
 .text {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: 16px;
 }
 
 .text.h6 {
@@ -78,9 +98,16 @@ main {
 }
 
 .text .h1 {
+    margin-top: 6px;
     font-size: 42px;
+    font-weight: 700;
+    line-height: 1.12;
     color: #FFF;
-    width: 450px;
+}
+
+.text .h1 span {
+    display: block;
+    color: #F2B84F;
 }
 
 .text.h2 {
@@ -91,13 +118,313 @@ main {
 
 .text .h4 {
     font-size: 17px;
-    color: #C6D8E8;
-    width: 450px;
-    line-height: 1.5;
+    color: #DCE6F2;
+    max-width: 450px;
+    line-height: 1.6;
 }
 
 .section_form {
     width: 400px;
+}
+
+
+/* LOGIN */
+
+.login_layout {
+    background-color: #EAF3FD;
+    background-image: url("imgs/background-login.png");
+    background-size: cover;
+    background-position: left center;
+    background-repeat: no-repeat;
+}
+
+.section_container.login {
+    width: 100%;
+    justify-content: flex-end;
+    padding-right: 8%;
+    padding-bottom: 70px;
+    background: none;
+}
+
+/* esconde a área de mensagem enquanto estiver vazia */
+#msg:empty {
+    display: none;
+}
+
+.section_container.painel_form .section_form {
+    position: relative;
+    z-index: 1;
+    width: 420px;
+    max-width: 100%;
+    gap: 20px;
+    padding: 38px 36px;
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(10, 49, 88, 0.08);
+}
+
+.section_container.painel_form h3 {
+    color: #0A2A5C;
+    font-size: 30px;
+}
+
+.form_titulo p {
+    margin-top: 6px;
+}
+
+.campo_grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.section_container.painel_form label {
+    font-size: 14px;
+}
+
+.campo {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.campo_icone {
+    position: absolute;
+    left: 14px;
+    width: 20px;
+    height: 20px;
+    color: #0A2A5C;
+    pointer-events: none;
+}
+
+.section_container.painel_form .campo input {
+    width: 100%;
+    padding: 12px 46px;
+    border: 1px solid #D7E2EC;
+    font-size: 14px;
+    color: #0A2A5C;
+    transition: 0.3s all;
+}
+
+.section_container.painel_form .campo input:focus {
+    border-color: #176BB8;
+}
+
+.section_container.painel_form .btn_olho {
+    position: absolute;
+    right: 10px;
+    display: flex;
+    padding: 4px;
+    background: none;
+    color: #0A2A5C;
+}
+
+.btn_olho svg {
+    width: 20px;
+    height: 20px;
+}
+
+.btn_olho .olho_aberto,
+.btn_olho.mostrando .olho_fechado {
+    display: none;
+}
+
+.btn_olho.mostrando .olho_aberto {
+    display: block;
+}
+
+.section_container.painel_form .section_div {
+    align-items: center;
+}
+
+.lembrar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.section_container.painel_form .lembrar {
+    color: #0A2A5C;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.section_container.painel_form .lembrar input {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border: 2px solid #176BB8;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.section_container.painel_form .lembrar input:checked {
+    background-color: #176BB8;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+    background-size: 12px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.section_container.painel_form .section_div a {
+    font-weight: 700;
+}
+
+.botao_entrar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+}
+
+.botao_entrar svg {
+    width: 18px;
+    height: 18px;
+}
+
+.section_container.painel_form .hr {
+    border: none;
+    border-top: 1px solid #E3EBF2;
+}
+
+.section_container.painel_form .section_p {
+    font-size: 13px;
+}
+
+.section_container.painel_form .section_a {
+    font-weight: 500;
+}
+
+
+.section_container.login .section_form {
+    gap: 15px;
+    padding: 30px;
+}
+
+.section_container.login h3 {
+    font-size: 35px;
+}
+
+.section_container.login .form_titulo {
+    margin-bottom: 12px;
+}
+
+.section_container.login .botao_entrar {
+    padding: 13px;
+}
+
+
+/* CADASTRO */
+
+.cadastro_layout {
+    position: relative;
+    height: auto;
+    min-height: 92vh;
+    background-color: #EAF3FD;
+}
+
+/* círculo azul-claro no canto direito */
+.cadastro_layout::before {
+    content: '';
+    position: absolute;
+    right: -220px;
+    bottom: -260px;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background-color: rgba(8, 121, 209, 0.07);
+}
+
+.section_imagem.cadastro_imagem {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 55%;
+    height: auto;
+    padding: 70px 65px;
+    background-image:
+        linear-gradient(180deg, rgba(7, 33, 72, 0.95) 0%, rgba(11, 55, 120, 0.75) 30%, rgba(11, 55, 120, 0.45) 50%, rgba(11, 55, 120, 0) 75%),
+        linear-gradient(90deg, rgba(7, 33, 72, 0.5) 0%, rgba(7, 33, 72, 0) 60%),
+        url("imgs/background-cadastro.png");
+    background-size: auto, auto, auto 110%;
+    background-position: center, center, left bottom;
+    background-repeat: no-repeat;
+    /* borda direita curva */
+    clip-path: ellipse(100% 112% at 0% 55%);
+}
+
+.section_imagem.cadastro_imagem::after {
+    display: none;
+}
+
+.section_container.cadastro {
+    position: relative;
+    z-index: 1;
+    width: 58%;
+    height: auto;
+    min-height: 92vh;
+    margin-left: 42%;
+    padding: 30px 20px;
+    background: none;
+}
+
+.section_container.cadastro .section_form {
+    width: 434px;
+    gap: 12px;
+    padding: 28px 34px;
+}
+
+.section_container.cadastro .campo_grupo {
+    gap: 6px;
+}
+
+.section_container.cadastro .campo input {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.section_container.cadastro .botao_entrar {
+    padding: 14px;
+}
+
+
+.section_container.painel_form .dica {
+    font-size: 12px;
+}
+
+.section_container.cadastro .lembrar {
+    align-items: flex-start;
+    line-height: 1.5;
+}
+
+.section_container.cadastro .lembrar input {
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.section_container.cadastro .lembrar span {
+    font-size: 13px;
+}
+
+.divisor {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.divisor::before,
+.divisor::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid #E3EBF2;
+}
+
+.section_container.painel_form .divisor {
+    font-size: 13px;
+    text-align: center;
 }
 
 .section_container h3 {
@@ -237,7 +564,7 @@ button:hover {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 800;
     color: #176BB8;
 }
@@ -270,7 +597,7 @@ button:hover {
 }
 
 .menu a {
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
     text-decoration: none;
     color: #0A3158;

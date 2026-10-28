@@ -23,46 +23,76 @@
         </nav>
     </header>
 
-    <main>
-        <section class="section_imagem">
-            <div class="text">
-                <p class="h1">Dados claros para uma mobilidade melhor</p>
-
-                <p class="h4">Acesse seu ambiente DATABUS para acompanhar <br> informações da operação e apoiar decisões
-                    da equipe</p>
-            </div>
-
-            <div class="img">
-                <img src="../img/img_login.png" alt="">
-            </div>
-        </section>
-
-        <section class="section_container">
+    <main class="login_layout">
+        <section class="section_container login painel_form">
             <section class="section_form">
-                <h3>Bem-vindo de volta</h3>
+                <div class="form_titulo">
+                    <h3>Bem-vindo de volta</h3>
+                    <p>Entre com seus dados para acessar a plataforma</p>
+                </div>
 
-                <p>Entre com seus dados para acessar a plataforma</p>
+                <div class="campo_grupo">
+                    <label for="ipt_email">E-mail</label>
+                    <div class="campo">
+                        <svg class="campo_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                            <path d="m22 7-10 6L2 7"></path>
+                        </svg>
+                        <input type="text" id="ipt_email" placeholder="nome@empresa.com">
+                    </div>
+                </div>
 
-                <label for="ipt_email">E-mail</label>
-                <input type="text" id="ipt_email" placeholder="nome@empresa.com">
+                <div class="campo_grupo">
+                    <label for="ipt_senha">Senha</label>
+                    <div class="campo">
+                        <svg class="campo_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="11" width="16" height="10" rx="2"></rect>
+                            <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+                            <circle cx="12" cy="16" r="1"></circle>
+                        </svg>
+                        <input type="password" id="ipt_senha" placeholder="Digite sua senha">
 
-                <label for="ipt_senha">Senha</label>
-                <input type="password" id="ipt_senha" placeholder="Digite sua senha">
+                        <button type="button" class="btn_olho" id="btn_olho" onclick="mostrarSenha()"
+                            aria-label="Mostrar senha">
+                            <svg class="olho_fechado" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10.7 5.1A10 10 0 0 1 12 5c7 0 10 7 10 7a13 13 0 0 1-1.7 2.7"></path>
+                                <path d="M6.6 6.6A13 13 0 0 0 2 12s3 7 10 7a9.7 9.7 0 0 0 5.4-1.6"></path>
+                                <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path>
+                                <path d="m2 2 20 20"></path>
+                            </svg>
+                            <svg class="olho_aberto" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
 
                 <section class="section_div">
-                    <div>
+                    <label class="lembrar">
                         <input type="checkbox"> Lembrar acesso
-                    </div>
+                    </label>
 
                     <a href="">Esqueci minha senha</a>
                 </section>
 
-                <button onclick="realizarLogin()">ENTRAR</button>
+                <button class="botao_entrar" onclick="realizarLogin()">
+                    ENTRAR
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14"></path>
+                        <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                </button>
 
-                <span class="hr"></span>
+                <p class="divisor">ou</p>
 
                 <p class="section_p">Ainda não tem acesso? <a href="cadastro.html" class="section_a">Cadastre seu
-                        interesse</a> </p>
+                        interesse</a></p>
 
                 <span id="msg"></span>
             </section>
@@ -74,6 +104,17 @@
 
 <script>
     let tentativas = 0;
+
+    // mostra ou esconde a senha ao clicar no olho
+    function mostrarSenha() {
+        if (ipt_senha.type == 'password') {
+            ipt_senha.type = 'text';
+            btn_olho.classList.add('mostrando');
+        } else {
+            ipt_senha.type = 'password';
+            btn_olho.classList.remove('mostrando');
+        }
+    }
 
     function realizarLogin() {
         let email = ipt_email.value.toLowerCase();
