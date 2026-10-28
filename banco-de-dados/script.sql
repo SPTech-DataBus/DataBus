@@ -138,3 +138,50 @@ CREATE TABLE registro_sensor (
         FOREIGN KEY (fk_sensor)
         REFERENCES sensor(id_sensor)
 );
+
+-- Listar os ônibus ativos e a qual empresa pertencem
+SELECT 
+    onibus.placa AS 'Placa do Ônibus',
+    onibus.capacidade_maxima AS 'Capacidade Máxima',
+    onibus.status_onibus AS 'Status',
+    empresa.nome_fantasia AS 'Nome da Empresa'
+FROM onibus
+JOIN empresa ON onibus.fk_empresa = empresa.id_empresa
+WHERE onibus.status_onibus = 'Ativo';
+
+-- Quantidade de ônibus por status da frota (Para gráficos ou cards)
+SELECT 
+    status_onibus AS 'Status do Ônibus',
+    COUNT(id_onibus) AS 'Total de Veículos'
+FROM onibus
+GROUP BY status_onibus;
+
+-- Relatório de Operações (Qual ônibus está rodando em qual linha)
+SELECT 
+    operacao.dt_operacao AS 'Data da Operação',
+    linha.codigo AS 'Código da Linha',
+    linha.nome AS 'Nome da Linha',
+    onibus.placa AS 'Placa do Ônibus'
+FROM operacao
+JOIN linha ON operacao.fk_linha = linha.id_linha
+JOIN onibus ON operacao.fk_onibus = onibus.id_onibus;
+
+-- Linhas de ônibus e o total de passageiros projetados/registrados
+SELECT 
+    linha.codigo AS 'Código da Linha',
+    linha.nome AS 'Nome da Linha',
+    linha.hora_inicio AS 'Início',
+    linha.hora_fim AS 'Fim',
+    linha.total_passageiros AS 'Total de Passageiros',
+    empresa.nome_fantasia AS 'Empresa Responsável'
+FROM linha
+JOIN empresa ON linha.fk_empresa = empresa.id_empresa;
+
+-- Linhas com maior demanda de passageiros 
+SELECT 
+    linha.codigo AS 'Código da Linha',
+    linha.nome AS 'Nome da Linha',
+    linha.total_passageiros AS 'Total de Passageiros'
+FROM linha
+ORDER BY linha.total_passageiros DESC;
+
