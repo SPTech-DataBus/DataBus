@@ -46,11 +46,46 @@
             <div class="kpis">
                 <div class="kpi kpi-amarela">
                     <div class="kpi-titulo">
-                        <span class="kpi-icone icone-amarelo">🚌</span>
+                        <span class="kpi-icone icone-amarelo">
+                            <img src="imgs/icone-onibus.svg" alt="Ônibus" width="24" height="24">
+                        </span>
                         <h4>Oportunidades de remanejamento</h4>
                     </div>
                     <h2 id="kpi_remanejamento"></h2>
                     <p>Realocações para amanhã que aliviam linhas lotadas sem aumentar a frota.</p>
+                </div>
+
+                <div class="kpi kpi-verde">
+                    <div class="kpi-titulo">
+                        <span class="kpi-icone icone-verde">
+                            <img src="imgs/icone-seta-baixo.svg" alt="Seta para baixo" width="24" height="24">
+                        </span>
+                        <h4>Alertas de baixa ocupação</h4>
+                    </div>
+                    <h2 id="kpi_baixa_ocupacao"></h2>
+                    <p>Linhas abaixo de 35% de utilização.</p>
+                </div>
+
+                <div class="kpi kpi-vermelha">
+                    <div class="kpi-titulo">
+                        <span class="kpi-icone icone-vermelho">
+                            <img src="imgs/icone-seta-cima.svg" alt="Seta para cima" width="24" height="24">
+                        </span>
+                        <h4>Alertas de alta ocupação</h4>
+                    </div>
+                    <h2 id="kpi_alta_ocupacao"></h2>
+                    <p>Linhas acima de 85% de utilização.</p>
+                </div>
+
+                <div class="kpi kpi-roxa">
+                    <div class="kpi-titulo">
+                        <span class="kpi-icone icone-roxo">
+                            <img src="imgs/icone-grafico.svg" alt="Gráfico" width="24" height="24">
+                        </span>
+                        <h4>Comparativo histórico</h4>
+                    </div>
+                    <h2 id="kpi_comparativo" class="texto-roxo"></h2>
+                    <p>Ocupação média do dia acima da média dos últimos 7 dias.</p>
                 </div>
             </div>
 
@@ -72,7 +107,14 @@
             <script>
                 // KPI: dados mocados (depois virão do banco de dados)
                 const oportunidadesRemanejamento = 5;
+                const linhasBaixaOcupacao = 5;
+                const linhasAltaOcupacao = 4;
+                const comparativoHistorico = 18; // em porcentagem
+
                 document.getElementById('kpi_remanejamento').innerHTML = oportunidadesRemanejamento;
+                document.getElementById('kpi_baixa_ocupacao').innerHTML = linhasBaixaOcupacao;
+                document.getElementById('kpi_alta_ocupacao').innerHTML = linhasAltaOcupacao;
+                document.getElementById('kpi_comparativo').innerHTML = '+' + comparativoHistorico + '%';
 
                 const ctxBarra = document.getElementById('grafico_barra');
                 new Chart(ctxBarra, {

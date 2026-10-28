@@ -382,6 +382,34 @@ button:hover {
     background-color: #FCA814;
 }
 
+.kpi-verde {
+    background-color: #E1F2EF;
+}
+
+.icone-verde {
+    background-color: #2A9D8F;
+}
+
+.kpi-vermelha {
+    background-color: #FDE8E6;
+}
+
+.icone-vermelho {
+    background-color: #C0392B;
+}
+
+.kpi-roxa {
+    background-color: #EFEBFB;
+}
+
+.icone-roxo {
+    background-color: #5B3FD6;
+}
+
+.kpi h2.texto-roxo {
+    color: #5B3FD6;
+}
+
 .graficos {
     display: grid;
     grid-template-columns: 1fr 1fr;
