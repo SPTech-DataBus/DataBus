@@ -147,8 +147,25 @@ main {
 }
 
 /* esconde a área de mensagem enquanto estiver vazia */
-#msg:empty {
+#msg:empty,
+#msg_codigo:empty,
+#msg_nome:empty,
+#msg_email:empty,
+#msg_senha:empty,
+#msg_confirmarSenha:empty {
     display: none;
+}
+
+/* erros do cadastro e do login: texto pequeno em vermelho, logo abaixo de cada campo */
+#msg_codigo,
+#msg_nome,
+#msg_email,
+#msg_senha,
+#msg_confirmarSenha {
+    margin-top: -6px;
+    color: #b42318;
+    font-size: 12px;
+    text-align: left;
 }
 
 .section_container.painel_form .section_form {

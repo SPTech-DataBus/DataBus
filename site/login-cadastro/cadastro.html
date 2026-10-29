@@ -43,6 +43,26 @@
                 </div>
 
                 <div class="campo_grupo">
+                    <label for="ipt_codigo">Código de verificação</label>
+
+                    <div class="campo">
+                        <svg class="campo_icone" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M76 112V82c0-29 23-52 52-52s52 23 52 52v30"></path>
+                            <rect x="58" y="104" width="140" height="112" rx="24"></rect>
+                            <rect x="84" y="132" width="138" height="58" rx="16" fill="#FFFFFF"></rect>
+                            <circle cx="112" cy="161" r="8" fill="currentColor" stroke="none"></circle>
+                            <circle cx="140" cy="161" r="8" fill="currentColor" stroke="none"></circle>
+                            <circle cx="168" cy="161" r="8" fill="currentColor" stroke="none"></circle>
+                            <circle cx="196" cy="161" r="8" fill="currentColor" stroke="none"></circle>
+                        </svg>
+
+                            <input type="text" id="ipt_codigo" placeholder="Digite o código de verificação">
+                    </div>
+                </div>
+
+                <span id="msg_codigo"></span>
+
+                <div class="campo_grupo">
                     <label for="ipt_nome">Nome completo</label>
                     <div class="campo">
                         <svg class="campo_icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -53,6 +73,8 @@
                         <input type="text" id="ipt_nome" placeholder="Digite seu nome completo">
                     </div>
                 </div>
+
+                <span id="msg_nome"></span>
 
                 <div class="campo_grupo">
                     <label for="ipt_email">E-mail</label>
@@ -66,6 +88,8 @@
                     </div>
                 </div>
 
+                <span id="msg_email"></span>
+
                 <div class="campo_grupo">
                     <label for="ipt_senha">Senha</label>
                     <div class="campo">
@@ -75,10 +99,12 @@
                             <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
                             <circle cx="12" cy="16" r="1"></circle>
                         </svg>
-                        <input type="password" id="ipt_senha" placeholder="Digite sua senha">
+                        <input type="text" id="ipt_senha" placeholder="Digite sua senha">
                     </div>
                     <p class="dica">Mínimo de 8 caracteres, com letras maiúsculas e minúsculas</p>
                 </div>
+
+                <span id="msg_senha"></span>
 
                 <div class="campo_grupo">
                     <label for="ipt_confirmarSenha">Confirmar senha</label>
@@ -89,9 +115,11 @@
                             <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
                             <circle cx="12" cy="16" r="1"></circle>
                         </svg>
-                        <input type="password" id="ipt_confirmarSenha" placeholder="Confirme sua senha">
+                        <input type="text" id="ipt_confirmarSenha" placeholder="Confirme sua senha">
                     </div>
                 </div>
+
+                <span id="msg_confirmarSenha"></span>
 
                 <section class="section_div">
                     <label class="lembrar">
@@ -127,11 +155,29 @@
         let senha = ipt_senha.value;
         let nome = ipt_nome.value;
         let confirmarSenha = ipt_confirmarSenha.value;
+        let codigo = ipt_codigo.value;
 
-        msg.innerHTML = '';
+        // limpa as mensagens da tentativa anterior
+        msg_codigo.innerHTML = '';
+        msg_nome.innerHTML = '';
+        msg_email.innerHTML = '';
+        msg_senha.innerHTML = '';
+        msg_confirmarSenha.innerHTML = '';
 
         let email_salvo = 'contato@databus.com';
         let senha_salva = 'Urubu100';
+
+        // VALIDAÇÃO DO CÓDIGO
+
+        if (codigo == '') {
+            msg_codigo.innerHTML = `Informe o código de verificação.`;
+        }
+
+        // VALIDAÇÃO DE NOME
+
+        if (nome == '') {
+            msg_nome.innerHTML = `Informe seu nome completo.`;
+        }
 
         // VALIDAÇÃO DE EMAIL
 
@@ -143,48 +189,41 @@
 
         let terminaValido = email.endsWith(".com") || email.endsWith(".br");
 
-        if (indiceArroba != -1 && comecaArroba == false && contemEspaco == false && terminaValido) {
-            msg.innerHTML += `E-mail válido<br>`;
-        } else {
-            msg.innerHTML += `E-mail inválido<br>`;
+        if (indiceArroba == -1 || comecaArroba == true || contemEspaco == true || terminaValido == false) {
+            msg_email.innerHTML = `E-mail inválido`;
         }
-
 
         // VALIDAÇÃO DE SENHA
 
+        let errosSenha = '';
+
         if (senha.length < 8) {
-            msg.innerHTML += `A senha precisa ter pelo menos 8 caracteres.<br>`;
+            errosSenha += `A senha precisa ter pelo menos 8 caracteres.<br>`;
         }
 
         if (senha == senha.toLowerCase()) {
-            msg.innerHTML += `A senha precisa ter pelo menos uma letra maiúscula.<br>`;
+            errosSenha += `A senha precisa ter pelo menos uma letra maiúscula.<br>`;
         }
 
         if (senha == senha.toUpperCase()) {
-            msg.innerHTML += `A senha precisa ter pelo menos uma letra minúscula.<br>`;
+            errosSenha += `A senha precisa ter pelo menos uma letra minúscula.<br>`;
         }
 
-        if (senha.length >= 8 && senha != senha.toLowerCase() && senha != senha.toUpperCase()) {
-            msg.innerHTML += `Senha válida!<br>`;
+        if (errosSenha != '') {
+            msg_senha.innerHTML = errosSenha;
         }
 
         // COMPARAÇÃO DE SENHA
 
-        if (senha === confirmarSenha) {
-            msg.innerHTML += `Senha confirmada com sucesso<br>`;
-        } else {
-            msg.innerHTML += `As senhas são diferentes, verifique e tente novamente<br>`;
+        if (senha != confirmarSenha) {
+            msg_confirmarSenha.innerHTML = `As senhas são diferentes, verifique e tente novamente`;
         }
 
         // REDIRECIONAMENTO PARA A PAGINA LOGIN
 
-        let emailValido = indiceArroba != -1 && comecaArroba == false && contemEspaco == false && terminaValido;
-
-        let senhaValida = senha.length >= 8 && senha != senha.toLowerCase() && senha != senha.toUpperCase();
-
-        let senhasIguais = senha === confirmarSenha;
-
-        if (emailValido && senhaValida && senhasIguais && nome.trim() != "") {
+        // só redireciona se nenhum campo tiver mensagem de erro
+        if (msg_codigo.innerHTML == '' && msg_nome.innerHTML == '' && msg_email.innerHTML == '' &&
+            msg_senha.innerHTML == '' && msg_confirmarSenha.innerHTML == '') {
             location.href = "login.html";
         }
 

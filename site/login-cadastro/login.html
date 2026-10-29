@@ -44,6 +44,8 @@
                     </div>
                 </div>
 
+                <span id="msg_email"></span>
+
                 <div class="campo_grupo">
                     <label for="ipt_senha">Senha</label>
                     <div class="campo">
@@ -56,6 +58,8 @@
                         <input type="password" id="ipt_senha" placeholder="Digite sua senha">
                     </div>
                 </div>
+
+                <span id="msg_senha"></span>
 
                 <section class="section_div">
                     <label class="lembrar">
@@ -94,54 +98,48 @@
         let email = ipt_email.value.toLowerCase();
         let senha = ipt_senha.value;
 
-        msg.innerHTML = '';
-        let erros = '';
+        // limpa as mensagens da tentativa anterior
+        msg_email.innerHTML = '';
+        msg_senha.innerHTML = '';
 
         let email_salvo = 'contato@databus.com';
         let senha_salva = 'Urubu100';
 
-        if (senha === senha_salva && email === email_salvo) {
-            msg.innerHTML += `Login realizado com sucesso<br>`;
-            tentativas = 0;
-            // redireciona para a pagina de dashboard quando o login estiver ok
-            location.href = "dashboard.html";
+        // VALIDAÇÃO DE EMAIL
 
-        } else {
-            tentativas ++;
+        if (email == '') {
+            msg_email.innerHTML = `Informe seu e-mail.`;
+        }
 
-            let restantes = 0;
+        // VALIDAÇÃO DE SENHA
 
-            for (let contador = tentativas; contador < 3; contador++) {
-                restantes ++;
-            }
+        if (senha == '') {
+            msg_senha.innerHTML = `Informe sua senha.`;
+        }
 
-            if (restantes > 0) {
-                msg.innerHTML = `
-                <div class="mensagem-erro">
-                    <b>Verifique os dados informados</b>
-                    
-                    <span>
-                        ${erros}
-                    </span>
-                        
-                    <span class="tentativas">
-                        Restam ${restantes} tentativa(s).
-                    </span>
-                </div>`;
+        // COMPARAÇÃO DE SENHA E EMAIL (só se nenhum campo tiver mensagem de erro)
+
+        if (msg_email.innerHTML == '' && msg_senha.innerHTML == '') {
+
+            if (senha == senha_salva && email == email_salvo) {
+                tentativas = 0;
+                // redireciona para a pagina de dashboard quando o login estiver ok
+                location.href = "dashboard.html";
+
             } else {
-                msg.innerHTML = `
-                    <div class="mensagem-erro">
-                        <b>Login bloqueado</b>
-                        
-                        <span>
-                            ${erros}
-                        </span>
-                        
-                        <span class="tentativas">
-                            Você atingiu o limite de 3 tentativas.
-                        </span>
-                    </div>`;
-                    
+                tentativas ++;
+
+                let restantes = 0;
+
+                for (let contador = tentativas; contador < 3; contador++) {
+                    restantes ++;
+                }
+
+                if (restantes > 0) {
+                    msg_senha.innerHTML = `E-mail ou senha incorretos. Restam ${restantes} tentativa(s).`;
+                } else {
+                    msg_senha.innerHTML = `Login bloqueado. Você atingiu o limite de 3 tentativas.`;
+
                     /* desabilita a pessoa clicar em email e senha, por estar bloqueado*/
                     ipt_email.disabled = true;
 
@@ -149,4 +147,5 @@
                 }
             }
         }
+    }
 </script>
