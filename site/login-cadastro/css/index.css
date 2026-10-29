@@ -242,7 +242,12 @@ h2 {
     height: 56px;
     border-radius: 10px;
     background-color: #EAF4FC;
-    font-size: 28px;
+    color: #063B70;
+}
+
+.icone svg {
+    width: 28px;
+    height: 28px;
 }
 
 .passo {
