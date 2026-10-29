@@ -622,45 +622,6 @@ button:hover { /* fica um amarelo mais escuro quando passa o mouse */
     color: #7d2a20;
 }
 
-
-/* RODAPÉ
-   Faixa creme convidando pro cadastro e, embaixo dela, o aviso de que o resultado é uma estimativa */
-
-.rodape_cadastro {
-    margin-top: 40px;
-    padding: 30px 36px;
-    background-color: #fdf1d8;
-    border-radius: 16px;
-    display: flex;
-    justify-content: space-between; /* texto na esquerda e botão na direita */
-    align-items: center;
-}
-
-.rodape_cadastro_titulo {
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-
-.rodape_cadastro_texto {
-    font-size: 15px;
-    color: #5b6b7c;
-}
-
-/* É um link, mas com cara de botão amarelo igual aos outros */
-.rodape_botao_cadastro {
-    padding: 16px 24px;
-    background-color: #f2b84b;
-    color: #0d3461;
-    font-size: 16px;
-    font-weight: bold;
-    text-decoration: none;
-    border-radius: 8px;
-}
-
-.rodape_botao_cadastro:hover {
-    background-color: #e5a632;
-}
-
 .rodape_aviso {
     margin-top: 24px;
     padding: 16px 20px;
