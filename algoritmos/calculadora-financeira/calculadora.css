@@ -1,5 +1,6 @@
 /*
-   Cores para consulta com base na nossa identidade visual (usei o hexadecimal pq quando ia pesquisar a cor do prototipo e da ideia, vinha na maioria das vezes em hexa ai preferi manter um padrão)
+   Cores para consulta com base na nossa identidade visual (usei o hexadecimal pq quando ia pesquisar 
+   a cor do prototipo e da ideia, vinha na maioria das vezes em hexa ai preferi manter um padrão)
    azul-marinho: #0d3461
    azul:         #1f6fc5
    amarelo:      #f2b84b
@@ -8,105 +9,90 @@
    cinza texto:  #5b6b7c
 */
 
-/* header compartilhado com as paginas do site (.menu, links do menu e barra de rolagem) */
-@import url('../../site/login-cadastro/css/header.css');
+/*
+   As classes começam com o nome da parte da tela que elas estilizam, na mesma
+   ordem em que aparecem neste arquivo: topo_, formulario_, como_funciona_,
+   aviso_inicial_, erro_, resumo_, contas_ e rodape_.
+   Os títulos em maiúsculo abaixo mostram onde começa cada parte.
+*/
+
+/* Traz a fonte Inter do Google Fonts, ela é usada só no cabeçalho pra ficar igual as outras páginas do site */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-/* PAGINA */
-
+/* Configuração da página toda. Tudo que não tiver uma cor ou fonte própria usa o que está aqui */
 body {
-    margin: 0;
+    margin: 0; /* tira o espaço branco que o navegador coloca em volta da página */
     background-color: #e9f1fa;
     font-family: Arial, Helvetica, sans-serif;
     color: #0d3461;
 }
 
-/* CABECALHO - mesmas medidas do .navbar do header.css */
 
-.cabecalho {
-    background-color: #ffffff;
+/* CABEÇALHO
+   O estilo do cabeçalho vem do header.css do site, ligado no <head> do HTML.
+   É o mesmo arquivo das outras páginas, então se mudarem o cabeçalho lá, muda aqui também.
+   Aqui ficam só duas coisas que as outras páginas já têm no CSS delas (no "*" do começo)
+   e que a calculadora não tem, pra o cabeçalho ficar igual */
+
+.navbar {
+    box-sizing: border-box; /* faz a altura de 8vh do header.css já contar o padding, como nas outras páginas */
     font-family: 'Inter', sans-serif;
 }
 
-.cabecalho_conteudo {
-    box-sizing: border-box;
-    height: 8vh;
-    padding: 15px 80px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* O nome DATABUS fica dentro de um <p>, que vem com margem em cima e embaixo, então zeramos */
+.logo p {
+    margin: 0;
 }
 
-.marca {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 22px;
-    font-weight: 800;
-}
 
-.logo {
-    width: 40px;
-    height: 40px;
-}
+/* TOPO
+   Faixa azul escura logo abaixo do cabeçalho, com o nome do simulador e a frase explicando pra que ele serve */
 
-.nome_data {
-    color: #176BB8;
-}
-
-.nome_bus {
-    color: #F2B84F;
-}
-
-.link_menu,
-.link_menu_ativo {
-    text-decoration: none; /* tira o sublinhado que todo link tem */
-}
-
-/* Faixa com o titulo */
-
-.faixa_titulo {
+.topo {
     background-color: #0d3461;
-    border-bottom: 5px solid #f2b84b;
+    border-bottom: 5px solid #f2b84b; /* risco amarelo embaixo da faixa */
 }
 
-.faixa_conteudo {
+.topo_conteudo {
     width: 1200px;
-    margin: 0 auto;
+    margin: 0 auto; /* o "auto" dos lados centraliza o conteúdo na tela */
     padding: 45px 0;
 }
 
-.etiqueta {
-    display: block;
+.topo_etiqueta {
+    display: block; /* o span normalmente fica na mesma linha, com block ele ocupa a linha dele */
     font-size: 12px;
     font-weight: bold;
     color: #f2b84b;
     margin-bottom: 10px;
 }
 
-.titulo_pagina {
+.topo_titulo {
     font-size: 32px;
     color: #ffffff;
     margin: 0 0 10px 0;
 }
 
-.subtitulo {
+.topo_subtitulo {
     font-size: 17px;
     color: #c8d7ea;
     margin: 0;
 }
 
-/* Conteudo */
 
-.conteudo {
+/* PARTE DO MEIO
+   Fica centralizada com 1200px de largura e é dividida em duas colunas,
+   o formulário na esquerda e o resultado na direita */
+
+.pagina_conteudo {
     width: 1200px;
     margin: 0 auto;
     padding: 40px 0;
 }
 
-.area_principal {
+.colunas {
     display: flex;
-    align-items: flex-start;
+    align-items: flex-start; /* cada coluna fica com a altura do seu conteúdo, sem esticar até a outra */
     gap: 32px;
 }
 
@@ -114,100 +100,88 @@ body {
     width: 476px;
 }
 
-.resultados {
+.coluna_direita {
     width: 692px;
 }
 
-/* Formulario */
 
-.cartao_form {
-    width: 418px;
+/* Esses quatro cards são brancos com borda cinza clara e cantos arredondados.
+   Como é igual em todos, juntamos aqui pra não repetir a mesma coisa quatro vezes */
+
+.formulario,
+.como_funciona,
+.resumo_frota,
+.contas {
     background-color: #ffffff;
     border: 1px solid #d3deeb;
-    border-top: 5px solid #1f6fc5;
     border-radius: 12px;
+}
+
+
+/* FORMULÁRIO
+   Card da coluna da esquerda onde a pessoa digita os dados da linha */
+
+.formulario {
+    width: 418px;
+    border-top: 5px solid #1f6fc5; /* borda azul mais grossa só em cima do card */
     padding: 28px;
 }
 
-.form_topo {
+/* Parte de cima do formulário e do passo a passo, que tem o título num canto e um botão no outro */
+.formulario_topo,
+.contas_topo {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
 
-.form_titulo {
+.formulario_titulo {
     font-size: 19px;
     font-weight: bold;
-    color: #0d3461;
 }
 
-.botao_exemplo {
-    width: auto;
-    padding: 7px 14px;
-    background-color: #eef4fc;
-    color: #1f6fc5;
-    font-size: 13px;
-    border-radius: 20px;
-}
-
-.botao_exemplo:hover {
-    background-color: #dde9f7;
-}
-
-.campo_inteiro {
+.formulario_codigo_da_linha {
     margin-bottom: 16px;
 }
 
-.linha_campos {
+/* Linha com dois campos lado a lado */
+.formulario_dois_campos {
     display: flex;
     gap: 18px;
     margin-bottom: 16px;
 }
 
-.campo {
+.formulario_bloco_do_campo {
     width: 200px;
 }
 
-.rotulo_campo {
+/* Nome que aparece em cima de cada campo */
+.formulario_nome_do_campo {
     display: block;
     font-size: 13px;
     font-weight: bold;
-    color: #0d3461;
     margin-bottom: 6px;
 }
 
-.entrada_inteira {
-    width: 392px;
-    padding: 12px;
-    border: 1px solid #c9d6e6;
-    border-radius: 8px;
-    background-color: #ffffff;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 15px;
-    color: #0d3461;
-}
-
-.entrada {
+/* Caixas onde a pessoa digita */
+.formulario_campo {
     width: 174px;
     padding: 12px;
     border: 1px solid #c9d6e6;
     border-radius: 8px;
-    background-color: #ffffff;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial, Helvetica, sans-serif; /* o input não pega a fonte do body sozinho, por isso repetimos */
     font-size: 15px;
     color: #0d3461;
 }
 
-.entrada_inteira:hover {
-    border: 1px solid #1f6fc5;
+/* O campo do código da linha fica sozinho na linha, então ele é mais largo que os outros */
+.formulario_campo_largo {
+    width: 392px;
 }
 
-.entrada:hover {
-    border: 1px solid #1f6fc5;
-}
-
-.premissas {
+/* Caixa cinza clarinha com as premissas que já vêm fixas no cálculo */
+.formulario_premissas {
     background-color: #f4f8fd;
     border: 1px solid #e0e9f4;
     border-radius: 10px;
@@ -216,21 +190,24 @@ body {
     font-size: 13px;
 }
 
-.premissas_titulo {
+.formulario_premissas_titulo {
     font-size: 12px;
     font-weight: bold;
     color: #5b6b7c;
     margin-bottom: 8px;
 }
 
-.premissas_linha {
+/* Cada premissa tem o nome na esquerda e o valor na direita */
+.formulario_premissa {
     display: flex;
     justify-content: space-between;
     padding: 3px 0;
-    color: #0d3461;
 }
 
-/* Botoes */
+
+/* BOTÕES
+   Aqui é o estilo que vale pra todos os botões da página. Eles são amarelos e ocupam a largura toda.
+   Os botões que são diferentes têm uma classe própria mais embaixo que muda só o necessário */
 
 button {
     width: 100%;
@@ -244,109 +221,142 @@ button {
     font-weight: bold;
 }
 
-button:hover {
+button:hover { /* fica um amarelo mais escuro quando passa o mouse */
     background-color: #e5a632;
 }
 
-.botao_detalhes {
+/* Botão "Preencher com exemplo", que é pequeno e redondinho */
+.formulario_botao_exemplo {
+    width: auto; /* fica só do tamanho do texto em vez de ocupar a largura toda */
+    padding: 7px 14px;
+    background-color: #eef4fc;
+    color: #1f6fc5;
+    font-size: 13px;
+    border-radius: 20px;
+}
+
+/* Botão "Ver o cálculo passo a passo" e botão "Voltar ao resumo", os dois são brancos com letra azul */
+.resumo_botao_ver_contas,
+.contas_botao_voltar {
     background-color: #ffffff;
     color: #1f6fc5;
     border: 2px solid #1f6fc5;
 }
 
-.botao_detalhes:hover {
-    background-color: #dde9f7;
-}
-
-.botao_voltar {
+/* O de voltar é menor e a borda é mais fina e cinza */
+.contas_botao_voltar {
     width: auto;
     padding: 10px 16px;
-    background-color: #ffffff;
-    color: #1f6fc5;
     border: 1px solid #c9d6e6;
     font-size: 14px;
 }
 
-.botao_voltar:hover {
+/* Quando passa o mouse nesses três botões claros o fundo fica azul clarinho */
+.formulario_botao_exemplo:hover,
+.resumo_botao_ver_contas:hover,
+.contas_botao_voltar:hover {
     background-color: #dde9f7;
 }
 
-/* Como funciona */
 
-.cartao_como {
+/* COMO FUNCIONA
+   Card embaixo do formulário que explica as três etapas do cálculo */
+
+.como_funciona {
     width: 418px;
-    background-color: #ffffff;
-    border: 1px solid #d3deeb;
-    border-radius: 12px;
     padding: 24px 28px 10px 28px;
     margin-top: 20px;
 }
 
-.como_titulo {
+.como_funciona_titulo {
     font-size: 16px;
     font-weight: bold;
-    color: #0d3461;
     margin-bottom: 18px;
 }
 
-.passo {
+/* Cada etapa tem a bolinha com o número e o texto do lado */
+.como_funciona_passo {
     display: flex;
     align-items: flex-start;
     gap: 14px;
     margin-bottom: 16px;
 }
 
-.numero_passo {
+/* Bolinha amarela com o número. Ela também é usada nos cards do passo a passo */
+.bolinha_numero {
     display: flex;
-    justify-content: center;
+    justify-content: center; /* esse e o de baixo deixam o número bem no meio da bolinha */
     align-items: center;
     width: 28px;
     height: 28px;
-    border-radius: 50%;
+    border-radius: 50%; /* com 50% o quadrado vira um círculo */
     background-color: #f2b84b;
-    color: #0d3461;
     font-size: 14px;
     font-weight: bold;
 }
 
-.texto_passo {
-    width: 376px;
+.como_funciona_texto {
     font-size: 14px;
     color: #5b6b7c;
 }
 
-/* Aviso antes de calcular e erro */
 
-.cartao_vazio {
+/* AVISO INICIAL
+   Bloco com borda tracejada que aparece na coluna da direita quando a página abre */
+
+.aviso_inicial {
     background-color: #f4f8fd;
-    border: 2px dashed #a9c1de;
+    border: 2px dashed #a9c1de; /* dashed é a borda tracejada */
     border-radius: 12px;
     padding: 60px 40px;
     text-align: center;
 }
 
-.logo_vazio {
-    width: 64px;
-    height: 64px;
-}
-
-.vazio_titulo {
+.aviso_inicial_titulo {
     font-size: 20px;
     font-weight: bold;
-    color: #0d3461;
     margin: 15px 0 8px 0;
 }
 
-.vazio_texto {
+.aviso_inicial_texto {
     font-size: 15px;
     color: #5b6b7c;
 }
 
-.cartao_erro {
-    display: none;
+
+/* CORES DO RESULTADO
+   O resultado pode dar três situações e cada uma tem uma cor. Verde quando sobra ônibus,
+   vermelho quando falta e azul quando a frota já está certa. O destaque do resumo e a caixa
+   de conclusão das contas usam a mesma cor, por isso ficam juntas aqui.
+   O card de erro usa o mesmo vermelho de quando falta ônibus */
+
+.erro,
+.resumo_destaque_falta,
+.contas_conclusao_falta {
     background-color: #fdecea;
     border: 1px solid #ecb3ab;
-    border-left: 6px solid #b3392b;
+    border-left: 6px solid #b3392b; /* a borda da esquerda é mais grossa e mais forte pra chamar atenção */
+}
+
+.resumo_destaque_sobra,
+.contas_conclusao_sobra {
+    background-color: #e6f4ec;
+    border: 1px solid #a8d8bb;
+    border-left: 6px solid #1e8a4c;
+}
+
+.resumo_destaque_certo,
+.contas_conclusao_certo {
+    background-color: #eef4fc;
+    border: 1px solid #b9cfeb;
+    border-left: 6px solid #1f6fc5;
+}
+
+
+/* ERRO
+   Aparece quando algum campo foi preenchido errado. O JavaScript coloca ele na área do resultado */
+
+.erro {
     border-radius: 12px;
     padding: 22px 24px;
 }
@@ -363,240 +373,153 @@ button:hover {
     color: #7d2a20;
 }
 
-/* Resumo */
 
-#div_resumo {
-    display: none;
-}
+/* RESUMO
+   Primeira coisa que aparece depois do cálculo. O JavaScript coloca ele na área do resultado */
 
-/* Faixa do resultado */
-
-.veredito_positivo {
+/* Caixa de destaque do resumo, com o texto explicando o resultado na esquerda e o valor grande na direita */
+.resumo_destaque {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 24px;
-    background-color: #e6f4ec;
-    border: 1px solid #a8d8bb;
-    border-left: 6px solid #1e8a4c;
     border-radius: 12px;
     padding: 24px;
 }
 
-.veredito_alerta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 24px;
-    background-color: #fdecea;
-    border: 1px solid #ecb3ab;
-    border-left: 6px solid #b3392b;
-    border-radius: 12px;
-    padding: 24px;
-}
-
-.veredito_neutro {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 24px;
-    background-color: #eef4fc;
-    border: 1px solid #b9cfeb;
-    border-left: 6px solid #1f6fc5;
-    border-radius: 12px;
-    padding: 24px;
-}
-
-.veredito_esquerda {
+.resumo_destaque_textos {
     width: 380px;
 }
 
-.veredito_etiqueta {
+/* O nome da linha no destaque do resumo e o título de cada card de frota têm o mesmo estilo */
+.resumo_destaque_linha,
+.resumo_frota_titulo {
     font-size: 12px;
     font-weight: bold;
     color: #4a5a6b;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
-.veredito_titulo {
+.resumo_destaque_titulo {
     font-size: 21px;
     font-weight: bold;
-    color: #0d3461;
 }
 
-.veredito_texto {
+.resumo_destaque_explicacao,
+.resumo_destaque_legenda {
     font-size: 14px;
     color: #4a5a6b;
     margin-top: 8px;
 }
 
-.veredito_direita {
+.resumo_destaque_valores {
     width: 233px;
     text-align: right;
 }
 
-.veredito_valor {
+/* Valor em destaque, que pode ser a economia em reais ou quantos ônibus faltam */
+.resumo_destaque_valor {
     font-size: 30px;
     font-weight: bold;
-    color: #0d3461;
 }
 
-.veredito_legenda {
-    font-size: 14px;
-    color: #4a5a6b;
-    margin-top: 2px;
-}
-
-.veredito_extra {
+.resumo_destaque_complemento {
     font-size: 13px;
     font-weight: bold;
-    color: #0d3461;
     margin-top: 10px;
 }
 
-/* Hoje x frota ideal */
 
-.comparacao {
+/* RESUMO: HOJE E FROTA IDEAL
+   Dois cards um do lado do outro pra comparar como a linha está hoje e como ficaria com a frota ideal */
+
+.resumo_frotas {
     display: flex;
     gap: 20px;
     margin: 20px 0;
 }
 
-.cartao_hoje {
+.resumo_frota {
     width: 286px;
-    background-color: #ffffff;
-    border: 1px solid #d3deeb;
-    border-radius: 12px;
     padding: 24px;
 }
 
-.cartao_ideal {
-    width: 286px;
+/* O card da frota ideal tem fundo azul clarinho pra se diferenciar do card de hoje */
+.resumo_frota_ideal {
     background-color: #eaf1fb;
     border: 1px solid #7fa6d9;
-    border-radius: 12px;
-    padding: 24px;
 }
 
-.cartao_titulo {
-    font-size: 12px;
-    font-weight: bold;
-    color: #4a5a6b;
-    margin-bottom: 12px;
-}
-
-.numero_hoje {
+/* Número grande com a quantidade de ônibus */
+.resumo_numero_onibus {
     font-size: 38px;
     font-weight: bold;
-    color: #0d3461;
 }
 
-.numero_ideal {
-    font-size: 38px;
-    font-weight: bold;
+/* No card da frota ideal o número fica azul */
+.resumo_numero_onibus_ideal {
     color: #1f6fc5;
 }
 
-.unidade {
+.resumo_palavra_onibus {
     font-size: 17px;
     color: #5b6b7c;
 }
 
-.linha_info {
+/* Linhas com o nome na esquerda e o valor na direita, uma da ocupação e outra do custo */
+.resumo_ocupacao,
+.resumo_custo {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     font-size: 14px;
     color: #5b6b7c;
     margin-top: 16px;
 }
 
-.linha_custo {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
-    color: #5b6b7c;
-    margin-top: 18px;
+/* A linha do custo tem um risco em cima pra separar da ocupação */
+.resumo_custo {
     padding-top: 14px;
     border-top: 1px solid #dde4ec;
 }
 
-.valor_custo {
+.resumo_custo_valor {
     font-size: 20px;
     color: #0d3461;
 }
 
-.trilho {
-    height: 8px;
-    background-color: #dde4ec;
-    border-radius: 4px;
-    margin-top: 8px;
-}
 
-.barra_normal {
-    height: 8px;
-    background-color: #8e9baa;
-    border-radius: 4px;
-}
+/* CONTAS
+   Tela que mostra todas as contas feitas. O JavaScript coloca ela na área do resultado
+   quando a pessoa clica no botão do resumo */
 
-.barra_atencao {
-    height: 8px;
-    background-color: #e5a632;
-    border-radius: 4px;
-}
-
-.barra_lotada {
-    height: 8px;
-    background-color: #d9534f;
-    border-radius: 4px;
-}
-
-.barra_ideal {
-    height: 8px;
-    background-color: #1f6fc5;
-    border-radius: 4px;
-}
-
-/* Passo a passo */
-
-.cartao_detalhes {
-    display: none;
-    background-color: #ffffff;
-    border: 1px solid #d3deeb;
-    border-radius: 12px;
+.contas {
     padding: 28px;
 }
 
-.detalhe_topo {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 18px;
-}
-
-.detalhe_etiqueta {
+/* Etiqueta creme no canto com o nome da linha */
+.contas_etiqueta_da_linha {
     background-color: #fdf1d8;
-    color: #0d3461;
     font-size: 13px;
     font-weight: bold;
     padding: 6px 14px;
     border-radius: 20px;
 }
 
-.detalhe_titulo {
+.contas_titulo {
     font-size: 22px;
     font-weight: bold;
-    color: #0d3461;
     margin-bottom: 18px;
 }
 
-.passos_linha {
+/* São quatro cards de conta, dois em cada linha */
+.contas_dois_passos {
     display: flex;
     gap: 14px;
     margin-bottom: 14px;
 }
 
-.passo_cartao {
+.contas_passo {
     width: 272px;
     background-color: #f7f9fc;
     border: 1px solid #e0e9f4;
@@ -604,162 +527,127 @@ button:hover {
     padding: 16px 18px;
 }
 
-.passo_topo {
+/* Título de cada card, com a bolinha do número do lado */
+.contas_passo_titulo {
     display: flex;
     align-items: center;
     gap: 10px;
     font-size: 15px;
     font-weight: bold;
-    color: #0d3461;
     margin-bottom: 8px;
 }
 
-.conta {
+/* Cada conta tem um risquinho embaixo pra separar da próxima */
+.contas_calculo {
     padding: 8px 0;
     border-bottom: 1px solid #e3e9f1;
 }
 
-.conta_final {
+/* A última conta do card é o resultado daquele passo, então ela ganha um fundo creme pra destacar */
+.contas_calculo_final {
     padding: 8px 10px;
     margin-top: 8px;
     background-color: #fdf1d8;
     border-radius: 8px;
 }
 
-.conta_texto {
+/* A conta em si fica em cinza e o resultado fica embaixo em negrito.
+   Os dois são span e b, que ficam na mesma linha, por isso o display block */
+.contas_calculo_operacao {
     display: block;
     font-size: 13px;
     color: #5b6b7c;
 }
 
-.conta_resultado {
+.contas_calculo_resultado {
     display: block;
     font-size: 15px;
-    color: #0d3461;
     margin-top: 2px;
 }
 
-/* Grafico de custo */
 
-.resultado_final {
+/* CONTAS: CUSTO POR MÊS
+   Bloco no final das contas comparando o custo de hoje com o custo da frota ideal */
+
+.contas_custo_mes {
     border: 1px solid #d3deeb;
     border-radius: 12px;
     padding: 18px 20px;
     margin-top: 4px;
 }
 
-.resultado_titulo {
+.contas_custo_mes_titulo {
     font-size: 15px;
     font-weight: bold;
-    color: #0d3461;
     margin-bottom: 14px;
 }
 
-.barra_linha {
+.contas_custo_mes_item {
     display: flex;
-    align-items: center;
-    gap: 12px;
+    justify-content: space-between;
+    font-size: 15px;
+    color: #5b6b7c;
     margin-bottom: 12px;
 }
 
-.barra_nome {
-    width: 90px;
-    font-size: 13px;
-    color: #5b6b7c;
-}
-
-.barra_trilho {
-    width: 370px;
-    height: 14px;
-    background-color: #e6edf5;
-    border-radius: 7px;
-}
-
-.barra_custo_hoje {
-    height: 14px;
-    background-color: #8e9baa;
-    border-radius: 7px;
-}
-
-.barra_custo_ideal {
-    height: 14px;
-    background-color: #1f6fc5;
-    border-radius: 7px;
-}
-
-.barra_valor {
-    width: 100px;
-    font-size: 15px;
-    text-align: right;
+/* O valor em reais fica dentro de um <b> e ganha a cor azul escura */
+.contas_custo_mes_item b {
     color: #0d3461;
 }
 
-.resultado_diferenca {
+/* Frase final dizendo quanto economiza ou quanto custa a mais */
+.contas_custo_mes_diferenca {
     font-size: 16px;
     font-weight: bold;
-    color: #0d3461;
     text-align: right;
     border-top: 1px solid #e3e9f1;
     padding-top: 12px;
 }
 
-/* Conclusao */
-
-.conclusao_positiva {
-    background-color: #e6f4ec;
-    border-left: 4px solid #1e8a4c;
+/* Caixa com a conclusão no fim das contas. A cor de fundo vem das regras de CORES DO RESULTADO */
+.contas_conclusao {
+    border-width: 0 0 0 4px; /* deixa só a borda da esquerda, com 4px, e some com as outras */
     border-radius: 8px;
     padding: 14px 18px;
     margin-top: 14px;
     font-size: 14px;
+}
+
+/* A letra da conclusão fica num tom mais escuro da mesma cor do fundo */
+.contas_conclusao_sobra {
     color: #1d5e38;
 }
 
-.conclusao_alerta {
-    background-color: #fdecea;
-    border-left: 4px solid #b3392b;
-    border-radius: 8px;
-    padding: 14px 18px;
-    margin-top: 14px;
-    font-size: 14px;
+.contas_conclusao_falta {
     color: #7d2a20;
 }
 
-.conclusao_neutra {
-    background-color: #eef4fc;
-    border-left: 4px solid #1f6fc5;
-    border-radius: 8px;
-    padding: 14px 18px;
-    margin-top: 14px;
-    font-size: 14px;
-    color: #0d3461;
-}
 
-/* Cadastro e aviso */
+/* RODAPÉ
+   Faixa creme convidando pro cadastro e, embaixo dela, o aviso de que o resultado é uma estimativa */
 
-.cartao_cadastro {
+.rodape_cadastro {
     margin-top: 40px;
     padding: 30px 36px;
     background-color: #fdf1d8;
     border-radius: 16px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* texto na esquerda e botão na direita */
     align-items: center;
 }
 
-.cadastro_titulo {
+.rodape_cadastro_titulo {
     font-size: 24px;
-    color: #0d3461;
     margin-bottom: 10px;
 }
 
-.cadastro_texto {
+.rodape_cadastro_texto {
     font-size: 15px;
     color: #5b6b7c;
 }
 
-.botao_cadastro {
-    display: inline-block;
+/* É um link, mas com cara de botão amarelo igual aos outros */
+.rodape_botao_cadastro {
     padding: 16px 24px;
     background-color: #f2b84b;
     color: #0d3461;
@@ -769,11 +657,11 @@ button:hover {
     border-radius: 8px;
 }
 
-.botao_cadastro:hover {
+.rodape_botao_cadastro:hover {
     background-color: #e5a632;
 }
 
-.aviso {
+.rodape_aviso {
     margin-top: 24px;
     padding: 16px 20px;
     background-color: #dbe6f3;
