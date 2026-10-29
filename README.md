@@ -1,14 +1,8 @@
-<p align="center">
-  <img src="algoritmos/calculadora-financeira/logo.png" alt="Logo DataBus" width="96">
-</p>
+<img src="docs/logo-databus.svg" alt="DataBus" width="380">
 
-<h1 align="center">DataBus</h1>
+Monitoramento da ocupação de ônibus por linha e horário
 
-<p align="center">
-  Monitoramento da ocupação de ônibus por linha e horário
-</p>
-
-<p align="center">
+<p>
   <img src="https://img.shields.io/badge/Arduino-00878F?style=flat&logo=arduino&logoColor=white" alt="Arduino">
   <img src="https://img.shields.io/badge/Node.js-339933?style=flat&logo=nodedotjs&logoColor=white" alt="Node.js">
   <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white" alt="MySQL">
@@ -73,20 +67,6 @@ Uma troca só é sugerida quando a linha de origem continua abaixo de 70% depois
 | Banco de dados | MySQL em máquina virtual Linux |
 | Front-end | HTML, CSS, JavaScript, Chart.js |
 | Gestão | Trello, GitHub |
-
-## Estrutura do repositório
-
-```
-DataBus/
-├── algoritmos/
-│   └── calculadora-financeira/   Simulador financeiro
-├── banco-de-dados/               Script SQL e modelo lógico (DER)
-├── sensor/
-│   ├── api/                      API de leitura e gráfico em tempo real
-│   └── script/                   Código do Arduino
-└── site/
-    └── login-cadastro/           Site institucional, login, cadastro e dashboard
-```
 
 ## Equipe
 

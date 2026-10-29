@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="120" viewBox="0 0 440 120">
+  <path d="M4 60 A56 56 0 0 1 116 60" fill="none" stroke="#1A5DBF" stroke-width="4.5"/>
+  <path d="M4 60 A56 56 0 0 0 116 60" fill="none" stroke="#F2B04A" stroke-width="4.5"/>
+  <rect x="15" y="35" width="7" height="18" rx="3" fill="#1A5DBF"/>
+  <rect x="98" y="35" width="7" height="18" rx="3" fill="#1A5DBF"/>
+  <path d="M25 30 Q25 23 32 23 H88 Q95 23 95 30 V68 H25 Z" fill="#1A5DBF"/>
+  <rect x="32" y="30" width="56" height="32" rx="4" fill="#fff"/>
+  <path d="M25 67 H95 V85 Q95 90 90 90 H30 Q25 90 25 85 Z" fill="#F2B04A"/>
+  <path d="M25 74 H33 Q38 74 38 79 Q38 84 33 84 H25 Z" fill="#fff"/>
+  <path d="M95 74 H87 Q82 74 82 79 Q82 84 87 84 H95 Z" fill="#fff"/>
+  <rect x="32" y="92" width="13" height="10" rx="2" fill="#1A5DBF"/>
+  <rect x="75" y="92" width="13" height="10" rx="2" fill="#1A5DBF"/>
+  <text x="140" y="78" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="54" font-weight="800" fill="#176BB8">DATA<tspan fill="#F2B84F">BUS</tspan></text>
+</svg>
