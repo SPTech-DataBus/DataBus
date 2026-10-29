@@ -209,29 +209,6 @@ main {
     border-color: #176BB8;
 }
 
-.section_container.painel_form .btn_olho {
-    position: absolute;
-    right: 10px;
-    display: flex;
-    padding: 4px;
-    background: none;
-    color: #0A2A5C;
-}
-
-.btn_olho svg {
-    width: 20px;
-    height: 20px;
-}
-
-.btn_olho .olho_aberto,
-.btn_olho.mostrando .olho_fechado {
-    display: none;
-}
-
-.btn_olho.mostrando .olho_aberto {
-    display: block;
-}
-
 .section_container.painel_form .section_div {
     align-items: center;
 }

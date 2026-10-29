@@ -76,22 +76,6 @@
                             <circle cx="12" cy="16" r="1"></circle>
                         </svg>
                         <input type="password" id="ipt_senha" placeholder="Digite sua senha">
-
-                        <button type="button" class="btn_olho" onclick="mostrarSenha(ipt_senha, this)"
-                            aria-label="Mostrar senha">
-                            <svg class="olho_fechado" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M10.7 5.1A10 10 0 0 1 12 5c7 0 10 7 10 7a13 13 0 0 1-1.7 2.7"></path>
-                                <path d="M6.6 6.6A13 13 0 0 0 2 12s3 7 10 7a9.7 9.7 0 0 0 5.4-1.6"></path>
-                                <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path>
-                                <path d="m2 2 20 20"></path>
-                            </svg>
-                            <svg class="olho_aberto" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </button>
                     </div>
                     <p class="dica">Mínimo de 8 caracteres, com letras maiúsculas e minúsculas</p>
                 </div>
@@ -106,22 +90,6 @@
                             <circle cx="12" cy="16" r="1"></circle>
                         </svg>
                         <input type="password" id="ipt_confirmarSenha" placeholder="Confirme sua senha">
-
-                        <button type="button" class="btn_olho" onclick="mostrarSenha(ipt_confirmarSenha, this)"
-                            aria-label="Mostrar senha">
-                            <svg class="olho_fechado" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M10.7 5.1A10 10 0 0 1 12 5c7 0 10 7 10 7a13 13 0 0 1-1.7 2.7"></path>
-                                <path d="M6.6 6.6A13 13 0 0 0 2 12s3 7 10 7a9.7 9.7 0 0 0 5.4-1.6"></path>
-                                <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path>
-                                <path d="m2 2 20 20"></path>
-                            </svg>
-                            <svg class="olho_aberto" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </button>
                     </div>
                 </div>
 
@@ -154,17 +122,6 @@
 </html>
 
 <script>
-    // mostra ou esconde a senha do campo ao clicar no olho
-    function mostrarSenha(campo, botao) {
-        if (campo.type == 'password') {
-            campo.type = 'text';
-            botao.classList.add('mostrando');
-        } else {
-            campo.type = 'password';
-            botao.classList.remove('mostrando');
-        }
-    }
-
     function cadastrar() {
         let email = ipt_email.value.toLowerCase();
         let senha = ipt_senha.value;
