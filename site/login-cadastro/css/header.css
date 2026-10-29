@@ -1,11 +1,5 @@
 /* HEADER - compartilhado por index, login, cadastro e dashboard */
 
-/* reserva o espaço da barra de rolagem em todas as páginas,
-   para o header ter a mesma largura com ou sem rolagem */
-html {
-    scrollbar-gutter: stable;
-}
-
 .navbar {
     display: flex;
     justify-content: space-between;
