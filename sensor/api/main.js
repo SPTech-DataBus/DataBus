@@ -66,7 +66,7 @@ const serial = async (
             
             if (movimento == '1') {
                 await poolBancoDados.execute(
-                   'INSERT INTO registro_sensor (tipo_movimento, fk_sensor) VALUES (?, ?)',
+                   'INSERT INTO registro_sensor (registro_entrada, fk_sensor) VALUES (?, ?)',
                    [movimento, 1]
                );
             }
