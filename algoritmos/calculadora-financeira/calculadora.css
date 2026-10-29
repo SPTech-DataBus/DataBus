@@ -8,6 +8,10 @@
    cinza texto:  #5b6b7c
 */
 
+/* header compartilhado com as paginas do site (.menu, links do menu e barra de rolagem) */
+@import url('../../site/login-cadastro/css/header.css');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 /* PAGINA */
 
 body {
@@ -17,17 +21,17 @@ body {
     color: #0d3461;
 }
 
-/* CABECALHO */
+/* CABECALHO - mesmas medidas do .navbar do header.css */
 
 .cabecalho {
     background-color: #ffffff;
-    border-bottom: 1px solid #d3deeb;
+    font-family: 'Inter', sans-serif;
 }
 
 .cabecalho_conteudo {
-    width: 1200px;
-    margin: 0 auto;
-    padding: 12px 0;
+    box-sizing: border-box;
+    height: 8vh;
+    padding: 15px 80px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -37,48 +41,26 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+    font-size: 22px;
+    font-weight: 800;
 }
 
 .logo {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
 }
 
 .nome_data {
-    font-size: 24px;
-    font-weight: bold;
-    color: #1f6fc5;
+    color: #176BB8;
 }
 
 .nome_bus {
-    font-size: 24px;
-    font-weight: bold;
-    color: #f2b84b;
+    color: #F2B84F;
 }
 
-.menu {
-    display: flex;
-    gap: 40px;
-}
-
-.link_menu {
-    font-size: 15px;
-    font-weight: bold;
-    color: #0d3461;
-    text-decoration: none; /* tira o sublinhado que todo link tem */
-}
-
-.link_menu:hover { /* "hover" deixa a palavra com a cor ao passar o mouse em cima */
-    color: #1f6fc5;
-}
-
+.link_menu,
 .link_menu_ativo {
-    font-size: 15px;
-    font-weight: bold;
-    color: #0d3461;
-    text-decoration: none;
-    border-bottom: 3px solid #f2b84b;
-    padding-bottom: 4px;
+    text-decoration: none; /* tira o sublinhado que todo link tem */
 }
 
 /* Faixa com o titulo */

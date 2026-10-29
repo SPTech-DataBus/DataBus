@@ -1,0 +1,57 @@
+/* HEADER - compartilhado por index, login, cadastro e dashboard */
+
+/* reserva o espaço da barra de rolagem em todas as páginas,
+   para o header ter a mesma largura com ou sem rolagem */
+html {
+    scrollbar-gutter: stable;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 80px;
+    background-color: #FFF;
+    height: 8vh;
+}
+
+.navbar a {
+    text-decoration: none;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: 800;
+    color: #0879D1;
+}
+
+.logo span {
+    color: #FFC329;
+}
+
+.navbar .logo {
+    color: #176BB8;
+}
+
+.navbar .logo span {
+    color: #F2B84F;
+}
+
+.menu {
+    display: flex;
+    gap: 30px;
+}
+
+.menu a {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0A3158;
+    transition: 0.5s all;
+}
+
+.menu a:hover {
+    color: #F2B84F;
+}

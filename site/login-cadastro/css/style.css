@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 * {
     margin: 0;
     padding: 0;
-    font-family: 'Inter';
+    font-family: 'Inter', sans-serif;
     box-sizing: border-box;
 }
 
@@ -132,7 +132,7 @@ main {
 
 .login_layout {
     background-color: #EAF3FD;
-    background-image: url("imgs/background-login.png");
+    background-image: url('../imgs/background-login.png');
     background-size: cover;
     background-position: left center;
     background-repeat: no-repeat;
@@ -348,7 +348,7 @@ main {
     background-image:
         linear-gradient(180deg, rgba(7, 33, 72, 0.95) 0%, rgba(11, 55, 120, 0.75) 30%, rgba(11, 55, 120, 0.45) 50%, rgba(11, 55, 120, 0) 75%),
         linear-gradient(90deg, rgba(7, 33, 72, 0.5) 0%, rgba(7, 33, 72, 0) 60%),
-        url("imgs/background-cadastro.png");
+        url('../imgs/background-cadastro.png');
     background-size: auto, auto, auto 110%;
     background-position: center, center, left bottom;
     background-repeat: no-repeat;
@@ -531,16 +531,7 @@ button:hover {
 }
 
 
-/* HEADER */
-
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 80px;
-    background-color: #FFF;
-    height: 8vh;
-}
+/* HEADER DO DASHBOARD (o header padrão fica em header.css) */
 
 .navbar.dashboard {
     display: flex;
@@ -554,28 +545,6 @@ button:hover {
 .navbar.dashboard .menu a {
     font-size: 16px;
     font-weight: 600;
-}
-
-.navbar a {
-    text-decoration: none;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 22px;
-    font-weight: 800;
-    color: #176BB8;
-}
-
-.logo span {
-    color: #F2B84F;
-}
-
-.menu {
-    display: flex;
-    gap: 30px;
 }
 
 .menu-dashboard {
@@ -594,18 +563,6 @@ button:hover {
 
 .menu.dashboard a {
     color: white;
-}
-
-.menu a {
-    font-size: 15px;
-    font-weight: 600;
-    text-decoration: none;
-    color: #0A3158;
-    transition: 0.5s all;
-}
-
-.menu a:hover {
-    color: #F2B84F;
 }
 
 .hr {
