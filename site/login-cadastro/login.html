@@ -100,83 +100,53 @@
         let email_salvo = 'contato@databus.com';
         let senha_salva = 'Urubu100';
 
+        if (senha === senha_salva && email === email_salvo) {
+            msg.innerHTML += `Login realizado com sucesso<br>`;
+            tentativas = 0;
+            // redireciona para a pagina de dashboard quando o login estiver ok
+            location.href = "dashboard.html";
 
-        // VALIDAÇÃO DE EMAIL
-
-        let indiceArroba = email.indexOf("@");
-        let comecaArroba = email.startsWith("@");
-        let contemEspaco = email.includes(" ");
-        let terminaValido = email.endsWith(".com") || email.endsWith(".br");
-
-        if (indiceArroba == -1 || comecaArroba == true ||
-            contemEspaco == true || terminaValido == false) {
-            erros += `E-mail inválido<br>`;
-        }
-
-        // VALIDAÇÃO DE SENHA
-
-        if (senha.length < 8) {
-            erros += `A senha precisa ter pelo menos 8 caracteres.<br>`;
-        }
-
-        if (senha == senha.toLowerCase()) {
-            erros += `A senha precisa ter pelo menos uma letra maiúscula.<br>`;
-        }
-
-        if (senha == senha.toUpperCase()) {
-            erros += `A senha precisa ter pelo menos uma letra minúscula.<br>`;
-        }
-
-        if (erros != '') {
-            msg.innerHTML = `
-            <div class="mensagem-erro">
-                <b>Verifique os dados informados</b>
-                <span>${erros}</span>
-            </div>`;
         } else {
+            tentativas ++;
 
-            // COMPARAÇÃO DE SENHA E EMAIL
+            let restantes = 0;
 
-            if (senha === senha_salva && email === email_salvo) {
-                msg.innerHTML += `Login realizado com sucesso<br>`;
-                tentativas = 0;
-                // redireciona para a pagina de dashboard quando o login estiver ok
-                location.href = "dashboard.html";
+            for (let contador = tentativas; contador < 3; contador++) {
+                restantes ++;
+            }
 
+            if (restantes > 0) {
+                msg.innerHTML = `
+                <div class="mensagem-erro">
+                    <b>Verifique os dados informados</b>
+                    
+                    <span>
+                        ${erros}
+                    </span>
+                        
+                    <span class="tentativas">
+                        Restam ${restantes} tentativa(s).
+                    </span>
+                </div>`;
             } else {
-                tentativas++;
-                let restantes = 0;
-                for (let contador = tentativas; contador < 3; contador++) {
-                    restantes++;
-                }
-
-                if (restantes > 0) {
-                    msg.innerHTML = `
+                msg.innerHTML = `
                     <div class="mensagem-erro">
-                        <b>Verifique os dados informados</b>
+                        <b>Login bloqueado</b>
+                        
                         <span>
                             ${erros}
                         </span>
+                        
                         <span class="tentativas">
-                            Restam ${restantes} tentativa(s).
+                            Você atingiu o limite de 3 tentativas.
                         </span>
                     </div>`;
-                } else {
-                    msg.innerHTML = `
-                        <div class="mensagem-erro">
-                            <b>Login bloqueado</b>
-                            <span>
-                                ${erros}
-                            </span>
-                            <span class="tentativas">
-                                 Você atingiu o limite de 3 tentativas.
-                            </span>
-                        </div>`;
+                    
                     /* desabilita a pessoa clicar em email e senha, por estar bloqueado*/
                     ipt_email.disabled = true;
+
                     ipt_senha.disabled = true;
                 }
             }
         }
-    }
 </script>
