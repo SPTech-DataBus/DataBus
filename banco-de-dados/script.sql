@@ -1,4 +1,3 @@
-
 CREATE DATABASE DataBus;
 USE DataBus;
 
@@ -192,38 +191,46 @@ SELECT
 FROM linha
 ORDER BY linha.total_passageiros DESC;
 
--- Lista as linhas (para mostrar quais são)
+-- KPI 2
 SELECT
-    codigo AS 'Código da Linha',
-    nome AS 'Nome da Linha',
-    total_passageiros AS 'Passageiros',
-    capacidade_total AS 'Capacidade',
-    CONCAT(ocupacao, '%') AS 'Ocupação'     -- CONCAT junta o número com o símbolo %
-FROM ocupacao_linha
-WHERE dt_operacao = '2026-09-28'
-  AND ocupacao < 35;
+    linha.codigo AS 'Código da Linha',
+    linha.nome AS 'Nome da Linha',
+    linha.total_passageiros AS 'Passageiros',
+    SUM(onibus.capacidade_maxima) AS 'Capacidade',      -- soma dos lugares dos ônibus da linha
+    ROUND(linha.total_passageiros / SUM(onibus.capacidade_maxima) * 100, 1) AS ocupacao -- ocupação em %
+FROM linha
+JOIN operacao ON operacao.fk_linha = linha.id_linha     -- liga a linha com as operações dela
+JOIN onibus ON onibus.id_onibus = operacao.fk_onibus    -- liga cada operação com o ônibus usado
+WHERE operacao.dt_operacao = '2026-09-28'               -- só as operações do dia
+GROUP BY linha.id_linha, linha.codigo, linha.nome, linha.total_passageiros
+HAVING ocupacao < 35;
 
--- Conta as linhas (o número que vai no card)
-SELECT COUNT(*) AS 'Total Linhas Baixa Ocupação'
-FROM ocupacao_linha
-WHERE dt_operacao = '2026-09-28'
-  AND ocupacao < 35;
+-- KPI 3
+SELECT
+    linha.codigo AS 'Código da Linha',
+    linha.nome AS 'Nome da Linha',
+    linha.total_passageiros AS 'Passageiros',
+    SUM(onibus.capacidade_maxima) AS 'Capacidade',
+    ROUND(linha.total_passageiros / SUM(onibus.capacidade_maxima) * 100, 1) AS ocupacao
+FROM linha
+JOIN operacao ON operacao.fk_linha = linha.id_linha
+JOIN onibus ON onibus.id_onibus = operacao.fk_onibus
+WHERE operacao.dt_operacao = '2026-09-28'
+GROUP BY linha.id_linha, linha.codigo, linha.nome, linha.total_passageiros
+HAVING ocupacao > 85;
 
-
-SELECT COUNT(*) AS 'Total Linhas Alta Ocupação'
-FROM ocupacao_linha
-WHERE dt_operacao = '2026-09-28'
-  AND ocupacao > 85;
-
-
-
+-- KPI 4
 -- Média de hoje
-SELECT ROUND(AVG(ocupacao), 1) AS 'Ocupação Média do Dia'
-FROM ocupacao_linha
-WHERE dt_operacao = '2026-09-28';
+SELECT ROUND(AVG(linha.total_passageiros / onibus.capacidade_maxima * 100), 1) AS 'Ocupação Média do Dia'
+FROM linha
+JOIN operacao ON operacao.fk_linha = linha.id_linha
+JOIN onibus ON onibus.id_onibus = operacao.fk_onibus
+WHERE operacao.dt_operacao = '2026-09-28';
 
 -- Média dos 7 dias anteriores
 -- (fica NULL enquanto não houver operações cadastradas nesses dias)
-SELECT ROUND(AVG(ocupacao), 1) AS 'Média dos 7 Dias Anteriores'
-FROM ocupacao_linha
-WHERE dt_operacao BETWEEN '2026-09-21' AND '2026-09-27';
+SELECT ROUND(AVG(linha.total_passageiros / onibus.capacidade_maxima * 100), 1) AS 'Média dos 7 Dias Anteriores'
+FROM linha
+JOIN operacao ON operacao.fk_linha = linha.id_linha
+JOIN onibus ON onibus.id_onibus = operacao.fk_onibus
+WHERE operacao.dt_operacao BETWEEN '2026-09-21' AND '2026-09-27';
