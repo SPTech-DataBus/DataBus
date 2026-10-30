@@ -128,6 +128,17 @@ INSERT INTO operacao (dt_operacao, fk_linha, fk_onibus) VALUES
 ('2026-09-28', 4, 4),
 ('2026-09-28', 5, 5);
 
+-- OPERAÇÕES DOS 7 DIAS ANTERIORES (21 a 27/09), usadas no comparativo histórico da KPI 4
+-- Seg a sex (21 a 25): linhas 1, 2, 3 e 4 | Sáb e dom (26 e 27): linhas 1, 2 e 3
+INSERT INTO operacao (dt_operacao, fk_linha, fk_onibus) VALUES
+('2026-09-21', 1, 1), ('2026-09-21', 2, 2), ('2026-09-21', 3, 3), ('2026-09-21', 4, 4),
+('2026-09-22', 1, 1), ('2026-09-22', 2, 2), ('2026-09-22', 3, 3), ('2026-09-22', 4, 4),
+('2026-09-23', 1, 1), ('2026-09-23', 2, 2), ('2026-09-23', 3, 3), ('2026-09-23', 4, 4),
+('2026-09-24', 1, 1), ('2026-09-24', 2, 2), ('2026-09-24', 3, 3), ('2026-09-24', 4, 4),
+('2026-09-25', 1, 1), ('2026-09-25', 2, 2), ('2026-09-25', 3, 3), ('2026-09-25', 4, 4),
+('2026-09-26', 1, 1), ('2026-09-26', 2, 2), ('2026-09-26', 3, 3),
+('2026-09-27', 1, 1), ('2026-09-27', 2, 2), ('2026-09-27', 3, 3);
+
 
 -- SENSORES
 INSERT INTO sensor (modelo, data_instalacao, status_sensor, fk_onibus) VALUES
@@ -192,7 +203,9 @@ SELECT
 FROM linha
 ORDER BY linha.total_passageiros DESC;
 
--- KPI 2
+-- KPI 2: Alertas de baixa ocupação (linhas abaixo de 35%)
+
+-- Lista as linhas (para mostrar quais são)
 SELECT
     linha.codigo AS 'Código da Linha',
     linha.nome AS 'Nome da Linha',
@@ -206,7 +219,18 @@ WHERE operacao.dt_operacao = '2026-09-28'               -- só as operações do
 GROUP BY linha.id_linha, linha.codigo, linha.nome, linha.total_passageiros
 HAVING ocupacao < 35;
 
--- KPI 3
+-- Conta as linhas (o número que vai no card)
+SELECT COUNT(*) AS 'Total Linhas Baixa Ocupação'
+FROM linha
+JOIN operacao ON operacao.fk_linha = linha.id_linha
+JOIN onibus ON onibus.id_onibus = operacao.fk_onibus
+WHERE operacao.dt_operacao = '2026-09-28'
+  AND ROUND(linha.total_passageiros / onibus.capacidade_maxima * 100, 1) < 35;
+
+
+-- KPI 3: Alertas de alta ocupação (linhas acima de 85%)
+
+-- Lista as linhas (para mostrar quais são)
 SELECT
     linha.codigo AS 'Código da Linha',
     linha.nome AS 'Nome da Linha',
@@ -220,29 +244,17 @@ WHERE operacao.dt_operacao = '2026-09-28'
 GROUP BY linha.id_linha, linha.codigo, linha.nome, linha.total_passageiros
 HAVING ocupacao > 85;
 
--- KPI 4
-SELECT
-    codigo AS 'Código da Linha',
-    nome AS 'Nome da Linha',
-    total_passageiros AS 'Passageiros',
-    capacidade_total AS 'Capacidade',
-    CONCAT(ocupacao, '%') AS 'Ocupação'     -- CONCAT junta o número com o símbolo %
-FROM ocupacao_linha
-WHERE dt_operacao = '2026-09-28'
-  AND ocupacao < 35;
-
 -- Conta as linhas (o número que vai no card)
-SELECT COUNT(*) AS 'Total Linhas Baixa Ocupação'
-FROM ocupacao_linha
-WHERE dt_operacao = '2026-09-28'
-  AND ocupacao < 35;
-
-
 SELECT COUNT(*) AS 'Total Linhas Alta Ocupação'
-FROM ocupacao_linha
-WHERE dt_operacao = '2026-09-28'
-  AND ocupacao > 85;
-  
+FROM linha
+JOIN operacao ON operacao.fk_linha = linha.id_linha
+JOIN onibus ON onibus.id_onibus = operacao.fk_onibus
+WHERE operacao.dt_operacao = '2026-09-28'
+  AND ROUND(linha.total_passageiros / onibus.capacidade_maxima * 100, 1) > 85;
+
+
+-- KPI 4: Comparativo histórico (média de hoje x média dos 7 dias anteriores)
+
 -- Média de hoje
 SELECT ROUND(AVG(linha.total_passageiros / onibus.capacidade_maxima * 100), 1) AS 'Ocupação Média do Dia'
 FROM linha
@@ -257,8 +269,3 @@ FROM linha
 JOIN operacao ON operacao.fk_linha = linha.id_linha
 JOIN onibus ON onibus.id_onibus = operacao.fk_onibus
 WHERE operacao.dt_operacao BETWEEN '2026-09-21' AND '2026-09-27';
-
-SELECT ROUND(AVG(ocupacao), 1) AS 'Média dos 7 Dias Anteriores'
-FROM ocupacao_linha
-WHERE dt_operacao BETWEEN '2026-09-21' AND '2026-09-27';
-
