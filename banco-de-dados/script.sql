@@ -1,4 +1,4 @@
-DROP DATABASE IF EXISTS DataBus;
+
 CREATE DATABASE DataBus;
 USE DataBus;
 
@@ -192,193 +192,38 @@ SELECT
 FROM linha
 ORDER BY linha.total_passageiros DESC;
 
-
--- CONSULTAS DAS KPIs
-
--- Linhas com baixa ocupação (abaixo de 35%)
+-- Lista as linhas (para mostrar quais são)
 SELECT
     codigo AS 'Código da Linha',
     nome AS 'Nome da Linha',
-    total_passageiros AS 'Total de Passageiros',
-    capacidade_total AS 'Capacidade da Linha',
-    CONCAT(ocupacao, '%') AS 'Taxa de Ocupação'
-FROM (
-    SELECT
-        operacao.dt_operacao,
-        linha.id_linha,
-        linha.codigo,
-        linha.nome,
-        linha.hora_inicio,
-        linha.hora_fim,
-        linha.fk_empresa,
-        linha.total_passageiros,
-        COUNT(onibus.id_onibus) AS qtd_onibus,
-        SUM(onibus.capacidade_maxima) AS capacidade_total,
-        ROUND(linha.total_passageiros / SUM(onibus.capacidade_maxima) * 100, 1) AS ocupacao
-    FROM linha
-    JOIN operacao ON operacao.fk_linha = linha.id_linha
-    JOIN onibus ON onibus.id_onibus = operacao.fk_onibus
-    GROUP BY operacao.dt_operacao, linha.id_linha, linha.codigo, linha.nome,
-             linha.hora_inicio, linha.hora_fim, linha.fk_empresa, linha.total_passageiros
-) AS ocupacao_linha
+    total_passageiros AS 'Passageiros',
+    capacidade_total AS 'Capacidade',
+    CONCAT(ocupacao, '%') AS 'Ocupação'     -- CONCAT junta o número com o símbolo %
+FROM ocupacao_linha
 WHERE dt_operacao = '2026-09-28'
   AND ocupacao < 35;
 
--- Oportunidades de Remanejamento
--- Origem abaixo de 35% que fica abaixo de 70% sem 1 ônibus; destino acima de 85% que cai
--- pelo menos 10 p.p. com 1 ônibus a mais; mesma empresa e mesmo horário
-SELECT * FROM (
-    SELECT
-        origem.codigo AS origem,
-        origem.ocupacao AS origem_hoje,
-        ROUND(origem.total_passageiros / (origem.capacidade_total - origem.capacidade_total / origem.qtd_onibus) * 100, 1) AS origem_depois,
-        destino.codigo AS destino,
-        destino.ocupacao AS destino_hoje,
-        ROUND(destino.total_passageiros / (destino.capacidade_total + destino.capacidade_total / destino.qtd_onibus) * 100, 1) AS destino_depois
-    FROM (
-        SELECT
-            operacao.dt_operacao,
-            linha.id_linha,
-            linha.codigo,
-            linha.nome,
-            linha.hora_inicio,
-            linha.hora_fim,
-            linha.fk_empresa,
-            linha.total_passageiros,
-            COUNT(onibus.id_onibus) AS qtd_onibus,
-            SUM(onibus.capacidade_maxima) AS capacidade_total,
-            ROUND(linha.total_passageiros / SUM(onibus.capacidade_maxima) * 100, 1) AS ocupacao
-        FROM linha
-        JOIN operacao ON operacao.fk_linha = linha.id_linha
-        JOIN onibus ON onibus.id_onibus = operacao.fk_onibus
-        GROUP BY operacao.dt_operacao, linha.id_linha, linha.codigo, linha.nome,
-                 linha.hora_inicio, linha.hora_fim, linha.fk_empresa, linha.total_passageiros
-    ) AS origem
-    JOIN (
-        SELECT
-            operacao.dt_operacao,
-            linha.id_linha,
-            linha.codigo,
-            linha.nome,
-            linha.hora_inicio,
-            linha.hora_fim,
-            linha.fk_empresa,
-            linha.total_passageiros,
-            COUNT(onibus.id_onibus) AS qtd_onibus,
-            SUM(onibus.capacidade_maxima) AS capacidade_total,
-            ROUND(linha.total_passageiros / SUM(onibus.capacidade_maxima) * 100, 1) AS ocupacao
-        FROM linha
-        JOIN operacao ON operacao.fk_linha = linha.id_linha
-        JOIN onibus ON onibus.id_onibus = operacao.fk_onibus
-        GROUP BY operacao.dt_operacao, linha.id_linha, linha.codigo, linha.nome,
-                 linha.hora_inicio, linha.hora_fim, linha.fk_empresa, linha.total_passageiros
-    ) AS destino
-        ON destino.dt_operacao = origem.dt_operacao
-       AND destino.fk_empresa = origem.fk_empresa
-       AND destino.hora_inicio = origem.hora_inicio
-       AND destino.hora_fim = origem.hora_fim
-    WHERE origem.dt_operacao = '2026-09-28'
-      AND origem.ocupacao < 35
-      AND destino.ocupacao > 85
-      AND origem.qtd_onibus > 1
-) AS pares
-WHERE origem_depois < 70
-  AND destino_hoje - destino_depois >= 10;
-
--- Alertas de Baixa Ocupação (Contagem de linhas abaixo de 35%)
-SELECT
-    COUNT(*) AS 'Total Linhas Baixa Ocupação'
-FROM (
-    SELECT
-        operacao.dt_operacao,
-        linha.id_linha,
-        linha.codigo,
-        linha.nome,
-        linha.hora_inicio,
-        linha.hora_fim,
-        linha.fk_empresa,
-        linha.total_passageiros,
-        COUNT(onibus.id_onibus) AS qtd_onibus,
-        SUM(onibus.capacidade_maxima) AS capacidade_total,
-        ROUND(linha.total_passageiros / SUM(onibus.capacidade_maxima) * 100, 1) AS ocupacao
-    FROM linha
-    JOIN operacao ON operacao.fk_linha = linha.id_linha
-    JOIN onibus ON onibus.id_onibus = operacao.fk_onibus
-    GROUP BY operacao.dt_operacao, linha.id_linha, linha.codigo, linha.nome,
-             linha.hora_inicio, linha.hora_fim, linha.fk_empresa, linha.total_passageiros
-) AS ocupacao_linha
+-- Conta as linhas (o número que vai no card)
+SELECT COUNT(*) AS 'Total Linhas Baixa Ocupação'
+FROM ocupacao_linha
 WHERE dt_operacao = '2026-09-28'
   AND ocupacao < 35;
 
--- Alertas de Alta Ocupação (Contagem de linhas acima de 85%)
-SELECT
-    COUNT(*) AS 'Total Linhas Alta Ocupação'
-FROM (
-    SELECT
-        operacao.dt_operacao,
-        linha.id_linha,
-        linha.codigo,
-        linha.nome,
-        linha.hora_inicio,
-        linha.hora_fim,
-        linha.fk_empresa,
-        linha.total_passageiros,
-        COUNT(onibus.id_onibus) AS qtd_onibus,
-        SUM(onibus.capacidade_maxima) AS capacidade_total,
-        ROUND(linha.total_passageiros / SUM(onibus.capacidade_maxima) * 100, 1) AS ocupacao
-    FROM linha
-    JOIN operacao ON operacao.fk_linha = linha.id_linha
-    JOIN onibus ON onibus.id_onibus = operacao.fk_onibus
-    GROUP BY operacao.dt_operacao, linha.id_linha, linha.codigo, linha.nome,
-             linha.hora_inicio, linha.hora_fim, linha.fk_empresa, linha.total_passageiros
-) AS ocupacao_linha
+
+SELECT COUNT(*) AS 'Total Linhas Alta Ocupação'
+FROM ocupacao_linha
 WHERE dt_operacao = '2026-09-28'
   AND ocupacao > 85;
 
--- Comparativo Histórico (ocupação média do dia x média dos 7 dias anteriores)
--- Fica NULL enquanto não houver operações nos 7 dias anteriores
-SELECT
-    dia.media AS 'Ocupação Média do Dia',
-    semana.media AS 'Média dos 7 Dias Anteriores',
-    CONCAT(ROUND((dia.media / semana.media - 1) * 100), '%') AS 'Comparativo'
-FROM
-    (SELECT ROUND(AVG(ocupacao), 1) AS media FROM (
-        SELECT
-            operacao.dt_operacao,
-            linha.id_linha,
-            linha.codigo,
-            linha.nome,
-            linha.hora_inicio,
-            linha.hora_fim,
-            linha.fk_empresa,
-            linha.total_passageiros,
-            COUNT(onibus.id_onibus) AS qtd_onibus,
-            SUM(onibus.capacidade_maxima) AS capacidade_total,
-            ROUND(linha.total_passageiros / SUM(onibus.capacidade_maxima) * 100, 1) AS ocupacao
-        FROM linha
-        JOIN operacao ON operacao.fk_linha = linha.id_linha
-        JOIN onibus ON onibus.id_onibus = operacao.fk_onibus
-        GROUP BY operacao.dt_operacao, linha.id_linha, linha.codigo, linha.nome,
-                 linha.hora_inicio, linha.hora_fim, linha.fk_empresa, linha.total_passageiros
-     ) AS ocupacao_linha
-     WHERE dt_operacao = '2026-09-28') AS dia,
-    (SELECT ROUND(AVG(ocupacao), 1) AS media FROM (
-        SELECT
-            operacao.dt_operacao,
-            linha.id_linha,
-            linha.codigo,
-            linha.nome,
-            linha.hora_inicio,
-            linha.hora_fim,
-            linha.fk_empresa,
-            linha.total_passageiros,
-            COUNT(onibus.id_onibus) AS qtd_onibus,
-            SUM(onibus.capacidade_maxima) AS capacidade_total,
-            ROUND(linha.total_passageiros / SUM(onibus.capacidade_maxima) * 100, 1) AS ocupacao
-        FROM linha
-        JOIN operacao ON operacao.fk_linha = linha.id_linha
-        JOIN onibus ON onibus.id_onibus = operacao.fk_onibus
-        GROUP BY operacao.dt_operacao, linha.id_linha, linha.codigo, linha.nome,
-                 linha.hora_inicio, linha.hora_fim, linha.fk_empresa, linha.total_passageiros
-     ) AS ocupacao_linha
-     WHERE dt_operacao BETWEEN '2026-09-21' AND '2026-09-27') AS semana;
+
+
+-- Média de hoje
+SELECT ROUND(AVG(ocupacao), 1) AS 'Ocupação Média do Dia'
+FROM ocupacao_linha
+WHERE dt_operacao = '2026-09-28';
+
+-- Média dos 7 dias anteriores
+-- (fica NULL enquanto não houver operações cadastradas nesses dias)
+SELECT ROUND(AVG(ocupacao), 1) AS 'Média dos 7 Dias Anteriores'
+FROM ocupacao_linha
+WHERE dt_operacao BETWEEN '2026-09-21' AND '2026-09-27';

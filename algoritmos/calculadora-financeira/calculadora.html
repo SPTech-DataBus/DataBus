@@ -12,29 +12,7 @@
 </head>
 
 <body>
-
-  <!--
-    Como os nomes estão organizados nesta página:
-
-    As classes começam com o nome da parte da tela onde ficam:
-      topo_          faixa azul com o título, logo abaixo do cabeçalho
-      formulario_    bloco da esquerda, onde a pessoa digita os dados
-      como_funciona_ bloco embaixo do formulário que explica o cálculo
-      aviso_inicial_ aviso que aparece antes do primeiro cálculo
-      erro_          aviso de quando algum campo está errado
-      resumo_        resultado da simulação, a primeira coisa que aparece depois de calcular
-      contas_        todas as contas feitas, passo a passo
-      rodape_        convite pro cadastro e o aviso no fim da página
-
-    Os ids dizem o que o JavaScript faz com o elemento:
-      campo_   caixa onde a pessoa digita, o JavaScript lê o valor dela
-      area_resultado   parte da direita, onde o JavaScript troca o que aparece
-
-    A palavra "linha" sempre quer dizer linha de ônibus.
-  -->
-
-  <!-- Cabeçalho do site. Na esquerda fica o logo, que leva de volta pra página inicial,
-       e na direita o menu com os links pras outras páginas -->
+  
   <header class="navbar"> <!-- barra branca do topo, com o logo num canto e o menu no outro -->
     <a href="../../site/login-cadastro/index.html" class="logo"> <!-- deixa a imagem e o nome lado a lado, sem sublinhado -->
       <img src="logo.png" alt="Logo DATABUS" width="40" height="40">
@@ -77,7 +55,7 @@
 
           <div class="formulario_topo"> <!-- título num canto e botão no outro -->
             <span class="formulario_titulo">Dados da linha</span> <!-- título do card em negrito -->
-            <button class="formulario_botao_exemplo" onclick="preencherCamposComExemplo()">Preencher com exemplo</button> <!-- botão pequeno, redondinho e azul claro -->
+            <button class="formulario_botao_exemplo" onclick="preencherExemplo()">Preencher com exemplo</button> <!-- botão pequeno, redondinho e azul claro -->
           </div>
 
           <div class="formulario_codigo_da_linha"> <!-- dá um espaço embaixo do campo do código -->
@@ -140,8 +118,8 @@
             </div>
           </div>
 
-          <!-- Quando clica aqui roda a função calcularEMostrarResultado(), que está lá no script no final do arquivo -->
-          <button onclick="calcularEMostrarResultado()">Calcular simulação</button>
+          <!-- Quando clica aqui roda a função calcular(), que está lá no script no final do arquivo -->
+          <button onclick="calcular()">Calcular simulação</button>
 
         </div>
 
@@ -213,17 +191,10 @@
 
 <script>
 
-  /* O HTML do resumo e o das contas ficam guardados aqui fora das funções.
-     A função principal monta os dois, e os botões "Ver o cálculo passo a passo"
-     e "Voltar ao resumo" usam eles depois pra trocar o que aparece na tela */
-  let html_do_resumo = ""
-  let html_das_contas = ""
+  let html_resumo = ""
+  let html_contas = ""
 
-
-  /* Roda quando clica em "Preencher com exemplo". Coloca os dados de uma linha de exemplo
-     em cada campo, pra dar pra testar a calculadora sem ter que digitar tudo */
-  function preencherCamposComExemplo() {
-
+  function preencherExemplo() {
     campo_codigo_linha.value = "175"
     campo_passageiros_por_dia.value = "3120"
     campo_onibus_hoje.value = "10"
@@ -231,406 +202,154 @@
     campo_viagens_por_onibus.value = "10"
     campo_km_por_viagem.value = "12"
     campo_custo_por_km.value = "10.93"
-
   }
 
+  function calcular() {
+    let codigo = campo_codigo_linha.value
+    let passageiros = Number(campo_passageiros_por_dia.value)
+    let onibus = Number(campo_onibus_hoje.value)
+    let lugares = Number(campo_lugares_por_onibus.value)
+    let viagens = Number(campo_viagens_por_onibus.value)
+    let km = Number(campo_km_por_viagem.value)
+    let custo_km = Number(campo_custo_por_km.value)
 
-  /* Essa é a função principal, ela roda quando clica em "Calcular simulação".
-     Ela está dividida em partes, sempre nesta ordem:
-       1. Ler o que foi digitado
-       2. Conferir se os campos estão certos
-       3. Calcular como a linha está hoje
-       4. Calcular a frota ideal
-       5. Comparar os custos
-       6. Escolher os textos e a cor do resultado
-       7. Montar o HTML do resumo
-       8. Montar o HTML das contas passo a passo
-       9. Mostrar o resumo na tela
-     Se algum campo estiver errado, pula direto pro else no final e mostra o erro */
-  function calcularEMostrarResultado() {
+    // Campo vazio vira 0 e letra vira NaN, então a comparação dá falso e cai no else
+    if (passageiros > 0 && onibus > 0 && lugares > 0 && viagens > 0 && km > 0 && custo_km > 0) {
 
-    // 1. LER O QUE FOI DIGITADO
+      // Passageiros que um ônibus cheio leva no dia
+      let capacidade = lugares * viagens
 
-    // O código da linha a gente só usa pra mostrar no título, por isso fica como texto mesmo
-    let codigo_linha = campo_codigo_linha.value
-
-    /* O .value sempre vem como texto, mesmo quando a pessoa digita um número.
-       Por isso usamos o Number() em cada campo, senão não dá pra fazer as contas */
-    let passageiros_por_dia = Number(campo_passageiros_por_dia.value)
-    let onibus_hoje = Number(campo_onibus_hoje.value)
-    let lugares_por_onibus = Number(campo_lugares_por_onibus.value)
-    let viagens_por_onibus = Number(campo_viagens_por_onibus.value)
-    let km_por_viagem = Number(campo_km_por_viagem.value)
-    let custo_por_km = Number(campo_custo_por_km.value)
-
-    // Consideramos que a linha roda todos os 30 dias do mês
-    let dias_no_mes = 30
-
-
-    // 2. CONFERIR SE OS CAMPOS ESTÃO CERTOS
-
-    /* Só faz o cálculo se todos os campos tiverem um número maior que zero.
-       Se o campo ficar vazio o Number() devolve 0, e se tiver letra devolve NaN.
-       Nos dois casos a comparação com zero dá falso e o código vai pro else mostrar o erro */
-    if (
-      passageiros_por_dia > 0 &&
-      onibus_hoje > 0 &&
-      lugares_por_onibus > 0 &&
-      viagens_por_onibus > 0 &&
-      km_por_viagem > 0 &&
-      custo_por_km > 0
-    ) {
-
-      // 3. CALCULAR COMO A LINHA ESTÁ HOJE
-
-      /* Ônibus vezes viagens dá quantas viagens a linha faz no dia, e com isso sai
-         quantos km ela roda e quanto isso custa no dia e no mês */
-      let viagens_por_dia_hoje = onibus_hoje * viagens_por_onibus
-      let km_por_dia_hoje = viagens_por_dia_hoje * km_por_viagem
-
-      let custo_por_dia_hoje = km_por_dia_hoje * custo_por_km
-      let custo_por_mes_hoje = custo_por_dia_hoje * dias_no_mes
-
-      /* A ocupação é quantos passageiros a linha leva dividido por quantos lugares ela oferece
-         no dia. Multiplicamos por 100 pra virar porcentagem */
-      let lugares_por_dia_hoje = viagens_por_dia_hoje * lugares_por_onibus
-      let ocupacao_hoje = (passageiros_por_dia / lugares_por_dia_hoje) * 100
-
-
-      // 4. CALCULAR A FROTA IDEAL
-
-      /* Vemos quantos ônibus bastariam se todos andassem cheios.
-         Um ônibus cheio leva no dia os lugares dele vezes as viagens que ele faz */
-      let passageiros_por_onibus_cheio = lugares_por_onibus * viagens_por_onibus
-
-      // Dividindo os passageiros por isso temos o número exato de ônibus, que quase sempre dá quebrado
-      let onibus_conta_exata = passageiros_por_dia / passageiros_por_onibus_cheio
-
-      /* Como não existe meio ônibus, a frota ideal é o menor número inteiro de ônibus
-         que leva todo mundo. Começamos com 1 ônibus e vamos somando mais um
-         enquanto ainda faltar lugar pros passageiros do dia */
-      let onibus_ideal = 1
-
-      while (onibus_ideal * passageiros_por_onibus_cheio < passageiros_por_dia) {
-        onibus_ideal = onibus_ideal + 1
+      // Soma um ônibus de cada vez até caber todo mundo
+      let ideal = 1
+      while (ideal * capacidade < passageiros) {
+        ideal = ideal + 1
       }
 
+      let ocupacao_hoje = (passageiros / (onibus * capacidade) * 100).toFixed(0)
+      let ocupacao_ideal = (passageiros / (ideal * capacidade) * 100).toFixed(0)
+      let custo_dia_hoje = onibus * viagens * km * custo_km
+      let custo_dia_ideal = ideal * viagens * km * custo_km
+      let custo_mes_hoje = custo_dia_hoje * 30
+      let custo_mes_ideal = custo_dia_ideal * 30
+      let diferenca = custo_mes_hoje - custo_mes_ideal
 
-      /* Com a quantidade ideal de ônibus, repetimos as mesmas contas de km, custo e ocupação
-         pra depois comparar com a situação de hoje */
-      let km_por_dia_ideal = onibus_ideal * viagens_por_onibus * km_por_viagem
-      let custo_por_dia_ideal = km_por_dia_ideal * custo_por_km
-      let custo_por_mes_ideal = custo_por_dia_ideal * dias_no_mes
-
-      let lugares_por_dia_ideal = onibus_ideal * viagens_por_onibus * lugares_por_onibus
-      let ocupacao_ideal = (passageiros_por_dia / lugares_por_dia_ideal) * 100
-
-
-      // 5. COMPARAR OS CUSTOS
-
-      // Diferença entre o custo de hoje e o custo com a frota ideal, no mês e em um ano
-      let economia_por_mes = custo_por_mes_hoje - custo_por_mes_ideal
-      let economia_por_ano = economia_por_mes * 12
-
-
-      // 6. ESCOLHER OS TEXTOS E A COR DO RESULTADO
-
-      /* Se a pessoa não digitou o código da linha, o título fica genérico.
-         Se digitou, o código aparece no título do resumo e na etiqueta do passo a passo */
-      let nome_da_linha_no_resumo = ""
-      let nome_da_linha_nas_contas = ""
-
-      if (codigo_linha == "") {
-        nome_da_linha_no_resumo = "Resultado da simulação"
-        nome_da_linha_nas_contas = "Linha não informada"
-      } else {
-        nome_da_linha_no_resumo = "Resultado para a linha " + codigo_linha
-        nome_da_linha_nas_contas = "Linha " + codigo_linha
+      let nome = "Linha " + codigo
+      if (codigo == "") {
+        nome = "Linha não informada"
       }
 
-      /* Essas variáveis guardam os textos e as classes do CSS que mudam dependendo do resultado.
-         Elas começam vazias e cada um dos três if de baixo preenche do seu jeito.
-         As classes que terminam em _sobra, _falta e _certo são as que trocam a cor
-         (verde, vermelho ou azul) do destaque do resumo e da conclusão das contas */
-      let classe_cor_destaque = ""
-      let titulo_do_destaque = ""
-      let explicacao_do_destaque = ""
-      let valor_do_destaque = ""
-      let legenda_do_destaque = ""
-      let complemento_do_destaque = ""
-      let classe_cor_conclusao = ""
-      let frase_da_conclusao = ""
-      let frase_da_diferenca_de_custo = ""
+      // O tipo escolhe a cor: resumo_destaque_sobra, _falta ou _certo
+      let tipo = "certo"
+      let titulo = "A frota desta linha está no tamanho certo"
+      let valor = "0 ônibus"
+      let legenda = "para remanejar"
+      let custo = "Sem diferença de custo"
+      let conclusao = "Continue acompanhando: a demanda muda ao longo do ano, e os sensores do DataBus mostram quando for hora de ajustar."
 
-      /* Se a frota ideal é menor que a de hoje, a linha tem ônibus sobrando.
-         Nesse caso mostramos quanto dá pra economizar tirando esses ônibus */
-      if (onibus_ideal < onibus_hoje) {
-
-        let onibus_sobrando = onibus_hoje - onibus_ideal
-
-        classe_cor_destaque = "resumo_destaque_sobra"
-        titulo_do_destaque = "Esta linha pode liberar " + onibus_sobrando + " ônibus"
-        explicacao_do_destaque = "Com " + onibus_ideal + " ônibus, a ocupação média sobe de " +
-          ocupacao_hoje.toFixed(0) + "% para " + ocupacao_ideal.toFixed(0) +
-          "%. Os mesmos passageiros, com os ônibus mais cheios."
-        valor_do_destaque = "R$ " + economia_por_mes.toFixed(0)
-        legenda_do_destaque = "de economia por mês"
-        complemento_do_destaque = "R$ " + economia_por_ano.toFixed(0) + " em 12 meses"
-
-        classe_cor_conclusao = "contas_conclusao_sobra"
-        frase_da_conclusao = "Com os ônibus mais cheios, cada viagem rende mais. Os " + onibus_sobrando +
-          " ônibus liberados podem ir para linhas lotadas, sem a empresa comprar veículos novos."
-        frase_da_diferenca_de_custo = "Economia de R$ " + economia_por_mes.toFixed(0) + " por mês"
-
+      if (ideal < onibus) {
+        tipo = "sobra"
+        titulo = `Esta linha pode liberar ${onibus - ideal} ônibus`
+        valor = `${diferenca.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`
+        legenda = "de economia por mês"
+        custo = `${(diferenca * 12).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} em 12 meses`
+        conclusao = `Os ${onibus - ideal} ônibus liberados podem ir para linhas lotadas, sem a empresa comprar veículos novos.`
+      } else if (ideal > onibus) {
+        tipo = "falta"
+        titulo = `Esta linha precisa de mais ${ideal - onibus} ônibus`
+        valor = `+${ideal - onibus} ônibus`
+        legenda = "para atender a demanda"
+        custo = `Custo extra de ${(diferenca * -1).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} por mês`
+        conclusao = "Antes de comprar ônibus novos, vale trazer veículos de linhas com sobra. É isso que os dados do DataBus ajudam a encontrar."
       }
 
-      /* Se a frota ideal é maior, faltam ônibus e tem mais passageiro do que lugar.
-         Aqui não tem economia, então mostramos quanto custaria colocar os ônibus que faltam */
-      else if (onibus_ideal > onibus_hoje) {
-
-        let onibus_faltando = onibus_ideal - onibus_hoje
-        let custo_extra_por_mes = custo_por_mes_ideal - custo_por_mes_hoje
-
-        classe_cor_destaque = "resumo_destaque_falta"
-        titulo_do_destaque = "Esta linha precisa de mais " + onibus_faltando + " ônibus"
-        explicacao_do_destaque = "Hoje a ocupação média é de " + ocupacao_hoje.toFixed(0) +
-          "%: há mais passageiros do que lugares nos ônibus."
-        valor_do_destaque = "+" + onibus_faltando + " ônibus"
-        legenda_do_destaque = "para atender a demanda"
-        complemento_do_destaque = "Custo extra de R$ " + custo_extra_por_mes.toFixed(0) + " por mês"
-
-        classe_cor_conclusao = "contas_conclusao_falta"
-        frase_da_conclusao = "Antes de comprar ônibus novos, vale trazer veículos de linhas com sobra. " +
-          "É exatamente isso que os dados do DataBus ajudam a encontrar."
-        frase_da_diferenca_de_custo = "Custo extra de R$ " + custo_extra_por_mes.toFixed(0) + " por mês"
-
-      }
-
-      /* Se não é maior nem menor, a linha já está com a quantidade certa de ônibus
-         e não tem diferença de custo */
-      else {
-
-        classe_cor_destaque = "resumo_destaque_certo"
-        titulo_do_destaque = "A frota desta linha está no tamanho certo"
-        explicacao_do_destaque = "Com " + onibus_hoje + " ônibus, a ocupação média é de " +
-          ocupacao_hoje.toFixed(0) + "%. Com um ônibus a menos, faltaria lugar para os passageiros."
-        valor_do_destaque = "0 ônibus"
-        legenda_do_destaque = "para remanejar"
-        complemento_do_destaque = "Sem diferença de custo"
-
-        classe_cor_conclusao = "contas_conclusao_certo"
-        frase_da_conclusao = "Continue acompanhando: a demanda muda ao longo do ano, " +
-          "e os sensores do DataBus mostram quando for hora de ajustar."
-        frase_da_diferenca_de_custo = "Sem diferença de custo"
-
-      }
-
-
-      // 7. MONTAR O HTML DO RESUMO
-
-      /* Usamos template string: tudo que está dentro de ${} é trocado pelo valor da variável.
-         Primeiro vem a caixa de destaque e depois dois cards lado a lado,
-         um com a frota de hoje e outro com a frota ideal.
-         O HTML fica guardado na variável e só vai pra tela na parte 9 */
-      html_do_resumo = `
-        <div class="resumo_destaque ${classe_cor_destaque}"> <!-- caixa com texto na esquerda e valor na direita, a segunda classe troca a cor -->
-
-          <div class="resumo_destaque_textos"> <!-- largura da parte do texto -->
-            <div class="resumo_destaque_linha">${nome_da_linha_no_resumo}</div> <!-- texto pequeno e cinza em negrito -->
-            <div class="resumo_destaque_titulo">${titulo_do_destaque}</div> <!-- frase principal do resultado, grande e em negrito -->
-            <div class="resumo_destaque_explicacao">${explicacao_do_destaque}</div> <!-- explicação em cinza -->
+      html_resumo = `
+        <div class="resumo_destaque resumo_destaque_${tipo}">
+          <div class="resumo_destaque_textos">
+            <div class="resumo_destaque_linha">${nome}</div>
+            <div class="resumo_destaque_titulo">${titulo}</div>
+            <div class="resumo_destaque_explicacao">Ocupação média hoje: ${ocupacao_hoje}%. Com a frota ideal: ${ocupacao_ideal}%.</div>
           </div>
-
-          <div class="resumo_destaque_valores"> <!-- parte da direita, com o texto alinhado na direita -->
-            <div class="resumo_destaque_valor">${valor_do_destaque}</div> <!-- valor grande em destaque -->
-            <div class="resumo_destaque_legenda">${legenda_do_destaque}</div> <!-- o que o valor significa, em cinza -->
-            <div class="resumo_destaque_complemento">${complemento_do_destaque}</div> <!-- informação a mais em negrito -->
+          <div class="resumo_destaque_valores">
+            <div class="resumo_destaque_valor">${valor}</div>
+            <div class="resumo_destaque_legenda">${legenda}</div>
+            <div class="resumo_destaque_complemento">${custo}</div>
           </div>
-
         </div>
 
-        <div class="resumo_frotas"> <!-- coloca os dois cards lado a lado -->
-
-          <div class="resumo_frota"> <!-- card branco de uma frota -->
-            <div class="resumo_frota_titulo">HOJE</div> <!-- título pequeno e cinza em negrito -->
-            <span class="resumo_numero_onibus">${onibus_hoje}</span> <!-- número grande de ônibus -->
-            <span class="resumo_palavra_onibus">ônibus</span> <!-- a palavra ônibus em cinza do lado do número -->
-
-            <div class="resumo_ocupacao"> <!-- nome na esquerda e porcentagem na direita -->
-              <span>Ocupação média</span>
-              <b>${ocupacao_hoje.toFixed(0)}%</b>
-            </div>
-
-            <div class="resumo_custo"> <!-- igual a de cima, mas com um risco em cima separando -->
-              <span>Custo por mês</span>
-              <b class="resumo_custo_valor">R$ ${custo_por_mes_hoje.toFixed(0)}</b> <!-- valor em reais um pouco maior -->
-            </div>
+        <div class="resumo_frotas">
+          <div class="resumo_frota">
+            <div class="resumo_frota_titulo">HOJE</div>
+            <span class="resumo_numero_onibus">${onibus}</span> <span class="resumo_palavra_onibus">ônibus</span>
+            <div class="resumo_ocupacao"><span>Ocupação média</span><b>${ocupacao_hoje}%</b></div>
+            <div class="resumo_custo"><span>Custo por mês</span><b class="resumo_custo_valor">${custo_mes_hoje.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</b></div>
           </div>
-
-          <div class="resumo_frota resumo_frota_ideal"> <!-- resumo_frota_ideal troca o fundo pra azul clarinho -->
+          <div class="resumo_frota resumo_frota_ideal">
             <div class="resumo_frota_titulo">COM A FROTA IDEAL</div>
-            <span class="resumo_numero_onibus resumo_numero_onibus_ideal">${onibus_ideal}</span> <!-- resumo_numero_onibus_ideal deixa o número azul -->
-            <span class="resumo_palavra_onibus">ônibus</span>
-
-            <div class="resumo_ocupacao">
-              <span>Ocupação média</span>
-              <b>${ocupacao_ideal.toFixed(0)}%</b>
-            </div>
-
-            <div class="resumo_custo">
-              <span>Custo por mês</span>
-              <b class="resumo_custo_valor">R$ ${custo_por_mes_ideal.toFixed(0)}</b>
-            </div>
+            <span class="resumo_numero_onibus resumo_numero_onibus_ideal">${ideal}</span> <span class="resumo_palavra_onibus">ônibus</span>
+            <div class="resumo_ocupacao"><span>Ocupação média</span><b>${ocupacao_ideal}%</b></div>
+            <div class="resumo_custo"><span>Custo por mês</span><b class="resumo_custo_valor">${custo_mes_ideal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</b></div>
           </div>
-
         </div>
 
-        <button class="resumo_botao_ver_contas" onclick="mostrarContasDetalhadas()">Ver o cálculo passo a passo</button> <!-- botão branco com borda e letra azul -->
+        <button class="resumo_botao_ver_contas" onclick="mostrarContas()">Ver o cálculo passo a passo</button>
       `
 
+      html_contas = `
+        <div class="contas">
+          <div class="contas_topo">
+            <button class="contas_botao_voltar" onclick="mostrarResumo()">← Voltar ao resumo</button>
+            <span class="contas_etiqueta_da_linha">${nome}</span>
+          </div>
+          <div class="contas_titulo">Como chegamos nesse resultado</div>
 
-      // 8. MONTAR O HTML DAS CONTAS PASSO A PASSO
-
-      /* Mostra cada conta feita com os números que a pessoa digitou.
-         O HTML fica pronto aqui, mas só vai pra tela quando clica no botão do resumo */
-      html_das_contas = `
-        <div class="contas"> <!-- card branco que envolve todas as contas -->
-
-        <div class="contas_topo"> <!-- botão de voltar num canto e etiqueta no outro -->
-          <button class="contas_botao_voltar" onclick="mostrarResumo()">← Voltar ao resumo</button> <!-- botão branco menor, com borda fina -->
-          <span class="contas_etiqueta_da_linha">${nome_da_linha_nas_contas}</span> <!-- etiqueta creme com o nome da linha -->
-        </div>
-
-        <div class="contas_titulo">Como chegamos nesse resultado</div> <!-- título grande em negrito -->
-
-        <div class="contas_dois_passos"> <!-- deixa dois cards de conta lado a lado -->
-
-          <div class="contas_passo"> <!-- card cinza clarinho de cada passo -->
-            <div class="contas_passo_titulo"><span class="bolinha_numero">1</span> Quanto a linha custa hoje</div> <!-- bolinha do número e título lado a lado -->
-            <div class="contas_calculo"> <!-- uma conta, com um risco embaixo -->
-              <span class="contas_calculo_operacao">${onibus_hoje} ônibus × ${viagens_por_onibus} viagens × ${km_por_viagem} km</span> <!-- a conta em cinza -->
-              <b class="contas_calculo_resultado">= ${km_por_dia_hoje.toFixed(0)} km por dia</b> <!-- o resultado embaixo da conta -->
+          <div class="contas_dois_passos">
+            <div class="contas_passo">
+              <div class="contas_passo_titulo"><span class="bolinha_numero">1</span> Quanto a linha custa hoje</div>
+              <div class="contas_calculo"><span class="contas_calculo_operacao">${onibus} ônibus × ${viagens} viagens × ${km} km × ${custo_km.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span><b class="contas_calculo_resultado">= ${custo_dia_hoje.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} por dia</b></div>
+              <div class="contas_calculo_final"><span class="contas_calculo_operacao">${custo_dia_hoje.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} × 30 dias</span><b class="contas_calculo_resultado">= ${custo_mes_hoje.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} por mês</b></div>
             </div>
-            <div class="contas_calculo">
-              <span class="contas_calculo_operacao">${km_por_dia_hoje.toFixed(0)} km × R$ ${custo_por_km.toFixed(2)}</span>
-              <b class="contas_calculo_resultado">= R$ ${custo_por_dia_hoje.toFixed(2)} por dia</b>
-            </div>
-            <div class="contas_calculo_final"> <!-- última conta do card, com fundo creme pra destacar -->
-              <span class="contas_calculo_operacao">R$ ${custo_por_dia_hoje.toFixed(2)} × ${dias_no_mes} dias</span>
-              <b class="contas_calculo_resultado">= R$ ${custo_por_mes_hoje.toFixed(0)} por mês</b>
+            <div class="contas_passo">
+              <div class="contas_passo_titulo"><span class="bolinha_numero">2</span> Quão cheios estão os ônibus</div>
+              <div class="contas_calculo"><span class="contas_calculo_operacao">${onibus} ônibus × ${viagens} viagens × ${lugares} lugares</span><b class="contas_calculo_resultado">= ${onibus * capacidade} lugares por dia</b></div>
+              <div class="contas_calculo_final"><span class="contas_calculo_operacao">${passageiros} passageiros ÷ ${onibus * capacidade} lugares</span><b class="contas_calculo_resultado">= ${ocupacao_hoje}% ocupados</b></div>
             </div>
           </div>
 
-          <div class="contas_passo">
-            <div class="contas_passo_titulo"><span class="bolinha_numero">2</span> Quão cheios estão os ônibus</div>
-            <div class="contas_calculo">
-              <span class="contas_calculo_operacao">${onibus_hoje} ônibus × ${viagens_por_onibus} viagens × ${lugares_por_onibus} lugares</span>
-              <b class="contas_calculo_resultado">= ${lugares_por_dia_hoje.toFixed(0)} lugares por dia</b>
+          <div class="contas_dois_passos">
+            <div class="contas_passo">
+              <div class="contas_passo_titulo"><span class="bolinha_numero">3</span> Quantos ônibus bastam</div>
+              <div class="contas_calculo"><span class="contas_calculo_operacao">${passageiros} passageiros ÷ ${capacidade} por ônibus cheio</span><b class="contas_calculo_resultado">= ${(passageiros / capacidade).toFixed(2)} ônibus</b></div>
+              <div class="contas_calculo_final"><span class="contas_calculo_operacao">Arredondando para cima</span><b class="contas_calculo_resultado">= ${ideal} ônibus</b></div>
             </div>
-            <div class="contas_calculo_final">
-              <span class="contas_calculo_operacao">${passageiros_por_dia} passageiros ÷ ${lugares_por_dia_hoje.toFixed(0)} lugares</span>
-              <b class="contas_calculo_resultado">= ${ocupacao_hoje.toFixed(0)}% dos lugares ocupados</b>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="contas_dois_passos">
-
-          <div class="contas_passo">
-            <div class="contas_passo_titulo"><span class="bolinha_numero">3</span> Quantos ônibus bastam</div>
-            <div class="contas_calculo">
-              <span class="contas_calculo_operacao">${lugares_por_onibus} lugares × ${viagens_por_onibus} viagens (ônibus cheio)</span>
-              <b class="contas_calculo_resultado">= ${passageiros_por_onibus_cheio.toFixed(0)} passageiros por ônibus</b>
-            </div>
-            <div class="contas_calculo">
-              <span class="contas_calculo_operacao">${passageiros_por_dia} passageiros ÷ ${passageiros_por_onibus_cheio.toFixed(0)}</span>
-              <b class="contas_calculo_resultado">= ${onibus_conta_exata.toFixed(2)} ônibus</b>
-            </div>
-            <div class="contas_calculo_final">
-              <span class="contas_calculo_operacao">Arredondando para cima (não existe meio ônibus)</span>
-              <b class="contas_calculo_resultado">= ${onibus_ideal} ônibus</b>
+            <div class="contas_passo">
+              <div class="contas_passo_titulo"><span class="bolinha_numero">4</span> Quanto custaria</div>
+              <div class="contas_calculo"><span class="contas_calculo_operacao">${ideal} ônibus × ${viagens} viagens × ${km} km × ${custo_km.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span><b class="contas_calculo_resultado">= ${custo_dia_ideal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} por dia</b></div>
+              <div class="contas_calculo_final"><span class="contas_calculo_operacao">${custo_dia_ideal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} × 30 dias</span><b class="contas_calculo_resultado">= ${custo_mes_ideal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} por mês</b></div>
             </div>
           </div>
 
-          <div class="contas_passo">
-            <div class="contas_passo_titulo"><span class="bolinha_numero">4</span> Quanto custaria</div>
-            <div class="contas_calculo">
-              <span class="contas_calculo_operacao">${onibus_ideal} ônibus × ${viagens_por_onibus} viagens × ${km_por_viagem} km</span>
-              <b class="contas_calculo_resultado">= ${km_por_dia_ideal.toFixed(0)} km por dia</b>
-            </div>
-            <div class="contas_calculo">
-              <span class="contas_calculo_operacao">${km_por_dia_ideal.toFixed(0)} km × R$ ${custo_por_km.toFixed(2)}</span>
-              <b class="contas_calculo_resultado">= R$ ${custo_por_dia_ideal.toFixed(2)} por dia</b>
-            </div>
-            <div class="contas_calculo_final">
-              <span class="contas_calculo_operacao">R$ ${custo_por_dia_ideal.toFixed(2)} × ${dias_no_mes} dias</span>
-              <b class="contas_calculo_resultado">= R$ ${custo_por_mes_ideal.toFixed(0)} por mês</b>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="contas_custo_mes"> <!-- card com borda comparando os dois custos -->
-          <div class="contas_custo_mes_titulo">Custo por mês</div> <!-- título do card em negrito -->
-
-          <div class="contas_custo_mes_item"> <!-- nome na esquerda e valor na direita -->
-            <span>Hoje</span>
-            <b>R$ ${custo_por_mes_hoje.toFixed(0)}</b>
-          </div>
-
-          <div class="contas_custo_mes_item">
-            <span>Frota ideal</span>
-            <b>R$ ${custo_por_mes_ideal.toFixed(0)}</b>
-          </div>
-
-          <div class="contas_custo_mes_diferenca">${frase_da_diferenca_de_custo}</div> <!-- diferença em negrito na direita, com um risco em cima -->
-        </div>
-
-        <div class="contas_conclusao ${classe_cor_conclusao}">${frase_da_conclusao}</div> <!-- caixa com borda só na esquerda, a segunda classe troca a cor -->
-
+          <div class="contas_conclusao contas_conclusao_${tipo}">${conclusao}</div>
         </div>
       `
 
-      // 9. MOSTRAR O RESUMO NA TELA
-
-      // O que estava na área do resultado (o aviso inicial ou um erro) é trocado pelo resumo
-      area_resultado.innerHTML = html_do_resumo
+      area_resultado.innerHTML = html_resumo
 
     } else {
-
-      // CAMPOS ERRADOS: MOSTRAR O ERRO
-
-      /* Se chegou aqui é porque algum campo está vazio, tem letra ou é zero.
-         Então colocamos a mensagem de erro na área do resultado */
       area_resultado.innerHTML = `
-        <div class="erro"> <!-- card vermelho -->
-          <div class="erro_titulo">Confira os dados</div> <!-- título vermelho em negrito -->
-          <div class="erro_texto"> <!-- texto em vermelho escuro -->
-            Preencha todos os campos com números maiores que zero.
-            Para decimais, use ponto (ex: 10.93).
-          </div>
+        <div class="erro">
+          <div class="erro_titulo">Confira os dados</div>
+          <div class="erro_texto">Preencha todos os campos com números maiores que zero. Para decimais, use ponto (ex: 10.93).</div>
         </div>
       `
-
     }
-
   }
 
-
-  // Roda quando clica em "Ver o cálculo passo a passo". Troca o resumo pelas contas
-  function mostrarContasDetalhadas() {
-
-    area_resultado.innerHTML = html_das_contas
-
+  function mostrarContas() {
+    area_resultado.innerHTML = html_contas
   }
 
-
-  // Roda quando clica em "Voltar ao resumo". Coloca o resumo de volta no lugar das contas
   function mostrarResumo() {
-
-    area_resultado.innerHTML = html_do_resumo
-
+    area_resultado.innerHTML = html_resumo
   }
 
 </script>
