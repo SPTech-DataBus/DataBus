@@ -1,5 +1,5 @@
-
 CREATE DATABASE DataBus;
+
 USE DataBus;
 
 CREATE TABLE empresa (
@@ -214,8 +214,6 @@ SELECT COUNT(*) AS 'Total Linhas Alta Ocupação'
 FROM ocupacao_linha
 WHERE dt_operacao = '2026-09-28'
   AND ocupacao > 85;
-
-
 
 -- Média de hoje
 SELECT ROUND(AVG(ocupacao), 1) AS 'Ocupação Média do Dia'
