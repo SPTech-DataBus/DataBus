@@ -34,18 +34,18 @@ Sensor HC-SR04  →  Arduino Uno  →  API Node.js  →  MySQL  →  Site e Dash
 
 1. O sensor ultrassônico, instalado acima da porta, detecta a passagem de uma pessoa.
 2. O Arduino envia a leitura pela porta serial.
-3. A API recebe os dados, grava cada passagem no banco com data e hora e disponibiliza as leituras para o gráfico em tempo real.
-4. O banco, hospedado em uma máquina virtual Linux, calcula a ocupação de cada linha.
-5. A dashboard apresenta os indicadores e as sugestões de remanejamento.
+3. A API recebe os dados, grava cada passagem no banco com data e hora e disponibiliza as leituras para o gráfico de acompanhamento.
+4. O banco, hospedado em uma máquina virtual Linux, calcula a ocupação de cada linha, consolidada por dia.
+5. A dashboard apresenta os indicadores do dia e as sugestões de remanejamento para o dia seguinte.
 
 ## Funcionalidades
 
-- Leitura do sensor e gráfico de passagens em tempo real
+- Coleta contínua pelo sensor e gráfico de passagens, com análise consolidada por dia
 - Site institucional com apresentação da solução
 - Simulador financeiro que estima a economia com a frota ideal de uma linha
 - Cadastro e login com validação de campos e perfis de Administrador e Operador
 - Dashboard com alertas de baixa e alta ocupação, comparativo histórico e sugestões de remanejamento
-- Tela de monitoramento da frota com status de cada ônibus e sensor
+- Tela de monitoramento da frota com status de cada ônibus e sensor (em desenvolvimento)
 
 ## Faixas de ocupação
 
