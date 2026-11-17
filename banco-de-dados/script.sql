@@ -263,3 +263,42 @@ FROM (
     GROUP BY linha.fk_empresa, viagem.dt_viagem, linha.id_linha, linha.total_passageiros
 ) AS ocupacao_linha
 GROUP BY ocupacao_linha.fk_empresa, ocupacao_linha.dt_viagem;
+
+-- Sensor 1: ocupação adequada
+SELECT
+    fk_sensor,
+    SUM(movimento_entrada) AS entradas,
+    SUM(movimento_saida) AS saidas,
+    SUM(movimento_entrada) - SUM(movimento_saida) AS passageiros,
+    ROUND(
+        (SUM(movimento_entrada) - SUM(movimento_saida)) / 100 * 100, 1
+    ) AS percentual_ocupacao
+FROM registro_sensor
+WHERE fk_sensor = 1
+GROUP BY fk_sensor;
+
+-- Sensor 2: alta ocupação
+SELECT
+    fk_sensor,
+    SUM(movimento_entrada) AS entradas,
+    SUM(movimento_saida) AS saidas,
+    SUM(movimento_entrada) - SUM(movimento_saida) AS passageiros,
+    ROUND(
+        (SUM(movimento_entrada) - SUM(movimento_saida)) / 100 * 100, 1
+    ) AS percentual_ocupacao
+FROM registro_sensor
+WHERE fk_sensor = 2
+GROUP BY fk_sensor;
+
+-- Sensor 3: baixa ocupação
+SELECT
+    fk_sensor,
+    SUM(movimento_entrada) AS entradas,
+    SUM(movimento_saida) AS saidas,
+    SUM(movimento_entrada) - SUM(movimento_saida) AS passageiros,
+    ROUND(
+        (SUM(movimento_entrada) - SUM(movimento_saida)) / 100 * 100, 1
+    ) AS percentual_ocupacao
+FROM registro_sensor
+WHERE fk_sensor = 3
+GROUP BY fk_sensor;
