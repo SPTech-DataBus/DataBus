@@ -10,9 +10,18 @@ const SERVIDOR_PORTA = 3300;
 // habilita ou desabilita a inserção de dados no banco de dados
 const HABILITAR_OPERACAO_INSERIR = true;
 
+// identificação dos sensores
+const SENSOR_ADEQUADO = 1;
+const SENSOR_ALTA = 2;
+const SENSOR_BAIXA = 3;
+
+// Quantidade de passageiros em cada cenário
+let passageirosAdequado = 0;
+let passageirosAlta = 0;
+let passageirosBaixa = 0;
+
 // função para comunicação serial
 const serial = async (
-    valoresSensorAnalogico,
     valoresSensorDigital,
 ) => {
 
@@ -29,7 +38,9 @@ const serial = async (
 
     // lista as portas seriais disponíveis e procura pelo Arduino
     const portas = await serialport.SerialPort.list();
+
     const portaArduino = portas.find((porta) => porta.vendorId == 2341 && porta.productId == 43);
+
     if (!portaArduino) {
         throw new Error('O arduino não foi encontrado em nenhuma porta serial');
     }
@@ -44,7 +55,9 @@ const serial = async (
 
     // evento quando a porta serial é aberta
     arduino.on('open', () => {
-        console.log(`A leitura do arduino foi iniciada na porta ${portaArduino.path} utilizando Baud Rate de ${SERIAL_BAUD_RATE}`);
+        console.log(
+            `A leitura do arduino foi iniciada na porta ${portaArduino.path} utilizando Baud Rate de ${SERIAL_BAUD_RATE}`
+        );
     });
 
     // processa os dados recebidos do Arduino
@@ -52,7 +65,6 @@ const serial = async (
         console.log(data);
         const valores = data.split(';');
         const movimento = parseInt(valores[0]);
-        let passageiros_atual = 0;
 
         // armazena os valores dos sensores nos arrays correspondentes
         valoresSensorDigital.push(movimento);
@@ -60,28 +72,102 @@ const serial = async (
         // insere os dados no banco de dados (se habilitado)
         if (HABILITAR_OPERACAO_INSERIR) {
 
-            // este insert irá inserir os dados na tabela "medida"
-            
-            if (movimento == '1') {
-                await poolBancoDados.execute(
-                   'INSERT INTO registro_sensor (registro_entrada, fk_sensor) VALUES (?, ?)',
-                   [movimento, 1]
-               );
+            if (movimento == 1) {
+
+                // Sensor 1 - Ocupação adequada - gera 3 entradas a cada movimento == 1
+                for (let i = 0; i < 3; i++) {
+                    //quando chegar a 70, a taxa de ocupação será de 70%
+                    if (passageirosAdequado < 70) {
+                        await poolBancoDados.execute(
+                            'INSERT INTO registro_sensor (movimento_entrada, movimento_saida, fk_sensor) VALUES (?, ?, ?)',
+                            [1, 0, SENSOR_ADEQUADO]
+                        );
+
+                        passageirosAdequado++;
+                    }
+                }
+
+                // Sensor 2 - Alta ocupação - gera 5 entradas a cada movimento == 5
+                for (let i = 0; i < 5; i++) {
+                    //quando chegar a 110, a taxa de ocupação será de 110%
+                    if (passageirosAlta < 110) {
+                        await poolBancoDados.execute(
+                            'INSERT INTO registro_sensor (movimento_entrada, movimento_saida, fk_sensor) VALUES (?, ?, ?)',
+                            [1, 0, SENSOR_ALTA]
+                        );
+
+                        passageirosAlta++;
+                    }
+                }
+
+                // Sensor 3 - Baixa ocupação - gera 1 entrada a cada movimento == 1
+                if (passageirosBaixa < 24) {
+                    //quando chegar a 24, a taxa de ocupação será de 20%
+                    await poolBancoDados.execute(
+                        'INSERT INTO registro_sensor (movimento_entrada, movimento_saida, fk_sensor) VALUES (?, ?, ?)',
+                        [1, 0, SENSOR_BAIXA]
+                    );
+
+                    passageirosBaixa++;
+                }
+
+                console.log('Entrada detectada pelo Arduino!');
+                console.log('Adequada:', passageirosAdequado);
+                console.log('Alta:', passageirosAlta);
+                console.log('Baixa:', passageirosBaixa);
             }
-
-            console.log("valores inseridos no banco: ", movimento);
-
         }
 
     });
 
-    // evento para lidar com erros na comunicação serial
+    async function simularSaida() {
+
+        // Sensor 1 - Ocupação adequada (pra atingir entre 65 e 70% de ocupação)
+        if (passageirosAdequado > 65) {
+
+            await poolBancoDados.execute(
+                'INSERT INTO registro_sensor (movimento_entrada, movimento_saida, fk_sensor) VALUES (?, ?, ?)',
+                [0, 1, SENSOR_ADEQUADO]
+            );
+
+            passageirosAdequado--;
+        }
+
+        // Sensor 2 - Alta ocupação (pra atingir 95 a 110% de ocupação)
+        if (passageirosAlta > 95) {
+
+            await poolBancoDados.execute(
+                'INSERT INTO registro_sensor (movimento_entrada, movimento_saida, fk_sensor) VALUES (?, ?, ?)',
+                [0, 1, SENSOR_ALTA]
+            );
+
+            passageirosAlta--;
+        }
+
+        // Sensor 3 - Baixa ocupação (pra atingir de 10 a 20% de ocupação)
+        if (passageirosBaixa > 12) {
+
+            await poolBancoDados.execute(
+                'INSERT INTO registro_sensor (movimento_entrada, movimento_saida, fk_sensor) VALUES (?, ?, ?)',
+                [0, 1, SENSOR_BAIXA]
+            );
+
+            passageirosBaixa--;
+        }
+
+        console.log('Saídas simuladas!');
+        console.log('Adequada:', passageirosAdequado);
+        console.log('Alta:', passageirosAlta);
+        console.log('Baixa:', passageirosBaixa);
+    }
+
     arduino.on('error', (mensagem) => {
-        console.error(`Erro no arduino (Mensagem: ${mensagem}`)
+        console.error(`Erro no arduino (Mensagem: ${mensagem})`);
     });
+
+    setInterval(simularSaida, 3000);
 }
 
-// função para criar e configurar o servidor web
 const servidor = (
     valoresSensorAnalogico,
     valoresSensorDigital
@@ -116,10 +202,7 @@ const servidor = (
     const valoresSensorDigital = [];
 
     // inicia a comunicação serial
-    await serial(
-        valoresSensorAnalogico,
-        valoresSensorDigital
-    );
+    await serial(valoresSensorDigital);
 
     // inicia o servidor web
     servidor(

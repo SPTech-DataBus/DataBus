@@ -2,6 +2,10 @@ CREATE DATABASE DataBus;
 
 USE DataBus;
 
+-- Usuário usado pela API do sensor (sensor/api/main.js) para gravar os registros
+CREATE USER 'data_bus'@'localhost' IDENTIFIED BY 'data123';
+GRANT SELECT, INSERT ON DataBus.* TO 'data_bus'@'localhost';
+
 CREATE TABLE empresa (
     id_empresa INT PRIMARY KEY AUTO_INCREMENT,
     cnpj CHAR(18) NOT NULL UNIQUE,
@@ -88,7 +92,6 @@ CREATE TABLE registro_sensor (
     data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
     fk_sensor INT NOT NULL,
     PRIMARY KEY (id_registro, fk_sensor),
-    CONSTRAINT ch_movimento_entrada CHECK (movimento_entrada = 1),
     CONSTRAINT fk_registro_sensor FOREIGN KEY (fk_sensor)
 		REFERENCES sensor(id_sensor)
 );
