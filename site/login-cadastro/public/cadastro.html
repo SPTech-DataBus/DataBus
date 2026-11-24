@@ -165,68 +165,41 @@
         msg_senha.innerHTML = '';
         msg_confirmarSenha.innerHTML = '';
 
-        let email_salvo = 'contato@databus.com';
-        let senha_salva = 'Urubu100';
+        // Monta o objeto de dados para enviar ao backend
+        // O endpoint POST /usuarios/cadastrar será tratado pelo usuarioController.cadastrar()
+        // que utilizará o usuarioModel para inserir no banco de dados
+        let dadosCadastro = {
+            nomeServer: nome,
+            emailServer: email,
+            senhaServer: senha,
+            idEmpresaVincularServer: codigo !== '' ? parseInt(codigo) : 1
+        };
 
-        // VALIDAÇÃO DO CÓDIGO
+        fetch("/usuarios/cadastrar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(dadosCadastro)
+        })
+        .then(resposta => resposta.json())
+        .then(dados => {
+            // Registro bem-sucedido: retorna o ID do usuário criado
+            // dados.id vem do usuarioModel que executa INSERT e retorna os dados inseridos
+            if (dados.id) {
+                localStorage.setItem("usuarioLogado", JSON.stringify(dados));
+                location.href = "login.html";
+            } else {
+                // Falha no registro
+                msg.innerHTML = `Erro ao cadastrar: ${dados.mensagem || 'Tente novamente'}`;
+            }
+        })
+        .catch(erro => {
+            console.error("Erro no cadastro:", erro);
+            msg.innerHTML = `Erro de cadastro`;
+        });
 
-        if (codigo == '') {
-            msg_codigo.innerHTML = `Informe o código de verificação.`;
-        }
-
-        // VALIDAÇÃO DE NOME
-
-        if (nome == '') {
-            msg_nome.innerHTML = `Informe seu nome completo.`;
-        }
-
-        // VALIDAÇÃO DE EMAIL
-
-        let indiceArroba = email.indexOf("@");
-
-        let comecaArroba = email.startsWith("@");
-
-        let contemEspaco = email.includes(" ");
-
-        let terminaValido = email.endsWith(".com") || email.endsWith(".br");
-
-        if (indiceArroba == -1 || comecaArroba == true || contemEspaco == true || terminaValido == false) {
-            msg_email.innerHTML = `E-mail inválido`;
-        }
-
-        // VALIDAÇÃO DE SENHA
-
-        let errosSenha = '';
-
-        if (senha.length < 8) {
-            errosSenha += `A senha precisa ter pelo menos 8 caracteres.<br>`;
-        }
-
-        if (senha == senha.toLowerCase()) {
-            errosSenha += `A senha precisa ter pelo menos uma letra maiúscula.<br>`;
-        }
-
-        if (senha == senha.toUpperCase()) {
-            errosSenha += `A senha precisa ter pelo menos uma letra minúscula.<br>`;
-        }
-
-        if (errosSenha != '') {
-            msg_senha.innerHTML = errosSenha;
-        }
-
-        // COMPARAÇÃO DE SENHA
-
-        if (senha != confirmarSenha) {
-            msg_confirmarSenha.innerHTML = `As senhas são diferentes, verifique e tente novamente`;
-        }
-
-        // REDIRECIONAMENTO PARA A PAGINA LOGIN
-
-        // só redireciona se nenhum campo tiver mensagem de erro
-        if (msg_codigo.innerHTML == '' && msg_nome.innerHTML == '' && msg_email.innerHTML == '' &&
-            msg_senha.innerHTML == '' && msg_confirmarSenha.innerHTML == '') {
-            location.href = "login.html";
-        }
-
+        // Previne o envio padrão do formulário e o redirecionamento anterior
+        // Podemos usar se vocês quiserem porem é descartavel -- return false;
     }
 </script>

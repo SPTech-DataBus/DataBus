@@ -103,50 +103,45 @@
         msg_email.innerHTML = '';
         msg_senha.innerHTML = '';
 
-        let email_salvo = 'contato@databus.com';
-        let senha_salva = 'Data123';
-
-        // VALIDAÇÃO DE EMAIL
-
-        if (email == '') {
-            msg_email.innerHTML = `Informe seu e-mail.`;
-        }
-
-        // VALIDAÇÃO DE SENHA
-
-        if (senha == '') {
-            msg_senha.innerHTML = `Informe sua senha.`;
-        }
-
-        // COMPARAÇÃO DE SENHA E EMAIL (só se nenhum campo tiver mensagem de erro)
-
-        if (msg_email.innerHTML == '' && msg_senha.innerHTML == '') {
-
-            if (senha == senha_salva && email == email_salvo) {
-                tentativas = 0;
-                // redireciona para a pagina de dashboard quando o login estiver ok
+        // Envia os dados para o backend via API REST
+        // O endpoint POST /usuarios/autenticar será tratado pelo usuarioController.autenticar()
+        // que consulta o banco de dados usando o usuarioModel
+        fetch("/usuarios/autenticar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                emailServer: email,
+                senhaServer: senha
+            })
+        })
+        .then(resposta => resposta.json())
+        .then(dados => {
+            if (dados.id) {
+                // Login bem-sucedido: retorna o usuário autenticado e dados dos aquários
+                // dados vem do usuarioController que monta o objeto com id, email, nome, aquarios, etc.
+                localStorage.setItem("usuarioLogado", JSON.stringify(dados));
                 location.href = "dashboard.html";
-
             } else {
-                tentativas ++;
-
-                let restantes = 0;
-
-                for (let contador = tentativas; contador < 3; contador++) {
-                    restantes ++;
-                }
-
+                // Login falhou
+                tentativas++;
+                let restantes = 3 - tentativas;
                 if (restantes > 0) {
                     msg_senha.innerHTML = `E-mail ou senha incorretos. Restam ${restantes} tentativa(s).`;
                 } else {
                     msg_senha.innerHTML = `Login bloqueado. Você atingiu o limite de 3 tentativas.`;
-
-                    /* desabilita a pessoa clicar em email e senha, por estar bloqueado*/
                     ipt_email.disabled = true;
-
                     ipt_senha.disabled = true;
                 }
             }
-        }
+        })
+        .catch(erro => {
+            console.error("Erro no login:", erro);
+            msg_senha.innerHTML = `Erro de conexão com o servidor`;
+        });
+
+        // Previne o comportamento padrão do botão e mensagens locais
+        // return false; podemos usar se vocês quiserem porem é descartavel
     }
 </script>
