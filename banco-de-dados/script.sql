@@ -167,104 +167,87 @@ INSERT INTO registro_sensor (movimento_entrada, data_hora, fk_sensor) VALUES
 (1, '2026-09-28 07:25:00', 4);
 
 
--- ===== DADOS PARA AS KPIs (INSERTs) =====
+-- ====== VIEWs (KPI) ====== --
 
---   Linha 1 (8144-22) com 2 ônibus: 30 / 200 = 15% -> baixa ocupação e pode ceder 1 ônibus (30 / 100 = 30%)
---   Linha 6 (5110-10) com 130 passageiros em 1 ônibus de 100 lugares = 130% -> alta ocupação
-
--- Ônibus 6 e 7: Capacidade 100 (empresa 1)
-INSERT INTO onibus (placa, capacidade_maxima, status_onibus, fk_empresa) VALUES
-('DTB1A06', 100, 'Ativo', 1),
-('DTB1A07', 100, 'Ativo', 1);
-
--- Linha 6 (130 passageiros / ônibus 7, capacidade 100 = 130%) -> Alta ocupação (> 100%)
-INSERT INTO linha (codigo, nome, total_passageiros, regiao, fk_empresa) VALUES
-('5110-10', 'Lapa - Centro', 130, 'Intermunicipal', 1);
-
--- Ônibus 6 reforça a linha 1 e ônibus 7 roda na linha 6, no mesmo dia
-INSERT INTO viagem (dt_viagem, fk_linha, fk_onibus) VALUES
-('2026-09-28', 1, 6),
-('2026-09-28', 6, 7);
-
-
--- ===== KPIs (VIEWs) ===== --
-
--- KPI: Alertas de alta ocupação (linhas acima de 100% de utilização)
--- A VIEW lista as linhas em alerta; o número do card é a contagem dessas linhas:
--- SELECT COUNT(*) FROM vw_kpi_alta_ocupacao WHERE fk_empresa = 1 AND dt_viagem = '2026-09-28';
-CREATE VIEW vw_kpi_alta_ocupacao AS
+-- 1) Base das KPIs: ocupação de cada viagem finalizada (entradas - saídas no horário da viagem / capacidade)
+--    periodo: 'atual' = últimas 4 semanas | 'anterior' = as 4 semanas antes | NULL = fora dos dois
+CREATE VIEW vw_ocupacao_viagem AS
 SELECT
     linha.fk_empresa,
-    viagem.dt_viagem,
-    linha.codigo,
-    linha.nome,
-    ROUND(linha.total_passageiros / SUM(onibus.capacidade_maxima) * 100, 1) AS ocupacao
-FROM linha
-JOIN viagem ON viagem.fk_linha = linha.id_linha
+    linha.regiao,
+    linha.id_linha,
+    linha.codigo AS 'linha',
+    onibus.id_onibus,
+    viagem.id_viagem,
+    CASE
+        WHEN viagem.dt_viagem BETWEEN CURDATE() - INTERVAL 28 DAY AND CURDATE() - INTERVAL 1 DAY THEN 'atual'
+        WHEN viagem.dt_viagem BETWEEN CURDATE() - INTERVAL 56 DAY AND CURDATE() - INTERVAL 29 DAY THEN 'anterior'
+    END AS 'periodo',
+    onibus.capacidade_maxima AS 'capacidade',
+    SUM(registro_sensor.movimento_entrada) - SUM(COALESCE(registro_sensor.movimento_saida, 0)) AS 'passageiros',
+    ROUND((SUM(registro_sensor.movimento_entrada) - SUM(COALESCE(registro_sensor.movimento_saida, 0)))
+          / onibus.capacidade_maxima * 100, 1) AS 'ocupacao'
+FROM viagem
+JOIN linha ON linha.id_linha = viagem.fk_linha
 JOIN onibus ON onibus.id_onibus = viagem.fk_onibus
-GROUP BY linha.fk_empresa, viagem.dt_viagem, linha.id_linha, linha.codigo, linha.nome, linha.total_passageiros
-HAVING ocupacao > 100;
+JOIN sensor ON sensor.fk_onibus = onibus.id_onibus
+JOIN registro_sensor ON registro_sensor.fk_sensor = sensor.id_sensor
+    AND registro_sensor.data_hora BETWEEN viagem.dt_hora_inicio AND viagem.dt_hora_fim
+GROUP BY linha.fk_empresa, linha.regiao, linha.id_linha, linha.codigo, onibus.id_onibus,
+         viagem.id_viagem, viagem.dt_viagem, onibus.capacidade_maxima;
 
--- KPI: Alertas de baixa ocupação (linhas abaixo de 60% de utilização)
--- SELECT COUNT(*) FROM vw_kpi_baixa_ocupacao WHERE fk_empresa = 1 AND dt_viagem = '2026-09-28';
-CREATE VIEW vw_kpi_baixa_ocupacao AS
-SELECT
-    linha.fk_empresa,
-    viagem.dt_viagem,
-    linha.codigo,
-    linha.nome,
-    ROUND(linha.total_passageiros / SUM(onibus.capacidade_maxima) * 100, 1) AS ocupacao
-FROM linha
-JOIN viagem ON viagem.fk_linha = linha.id_linha
-JOIN onibus ON onibus.id_onibus = viagem.fk_onibus
-GROUP BY linha.fk_empresa, viagem.dt_viagem, linha.id_linha, linha.codigo, linha.nome, linha.total_passageiros
-HAVING ocupacao < 60;
-
--- KPI: Total de alertas (alta + baixa ocupação), comparado ao mesmo dia da semana anterior
--- SELECT COUNT(*) FROM vw_kpi_total_alertas WHERE fk_empresa = 1 AND dt_viagem = '2026-09-28';  -- hoje
--- SELECT COUNT(*) FROM vw_kpi_total_alertas WHERE fk_empresa = 1 AND dt_viagem = '2026-09-21';  -- semana passada
-CREATE VIEW vw_kpi_total_alertas AS
-SELECT
-    linha.fk_empresa,
-    viagem.dt_viagem,
-    linha.codigo,
-    linha.nome,
-    ROUND(linha.total_passageiros / SUM(onibus.capacidade_maxima) * 100, 1) AS ocupacao
-FROM linha
-JOIN viagem ON viagem.fk_linha = linha.id_linha
-JOIN onibus ON onibus.id_onibus = viagem.fk_onibus
-GROUP BY linha.fk_empresa, viagem.dt_viagem, linha.id_linha, linha.codigo, linha.nome, linha.total_passageiros
-HAVING ocupacao > 100 OR ocupacao < 60;
-
--- KPI: Oportunidades de remanejamento (realocações que aliviam linhas lotadas sem aumentar a frota)
-
+-- 2) KPI 1: linhas candidatas a origem (cedem 1 ônibus) ou destino (recebem 1 ônibus), por período
 CREATE VIEW vw_kpi_remanejamento AS
 SELECT
-    ocupacao_linha.fk_empresa,
-    ocupacao_linha.dt_viagem,
-    -- CASE vale 1 quando a condição é verdadeira e 0 quando não é; o SUM soma os 1 (= conta as linhas)
-    -- LEAST devolve o menor dos dois números
-    LEAST(
-        SUM(CASE WHEN ocupacao_linha.ocupacao < 60 AND ocupacao_linha.ocupacao_sem_1_onibus < 70 THEN 1 ELSE 0 END),  -- origens
-        SUM(CASE WHEN ocupacao_linha.ocupacao > 100 THEN 1 ELSE 0 END)                                                -- destinos
-    ) AS total_oportunidades_remanejamento
-FROM (
-    SELECT
-        linha.fk_empresa,
-        viagem.dt_viagem,
-        linha.id_linha,
-        linha.total_passageiros / SUM(onibus.capacidade_maxima) * 100 AS ocupacao,
-        -- tira o maior ônibus da linha (pior caso); se a linha só tem 1 ônibus, a divisão
-        -- é por 0, o resultado é NULL e a linha não conta como origem
-        linha.total_passageiros / (SUM(onibus.capacidade_maxima) - MAX(onibus.capacidade_maxima)) * 100 AS ocupacao_sem_1_onibus
-    FROM linha
-    JOIN viagem ON viagem.fk_linha = linha.id_linha
-    JOIN onibus ON onibus.id_onibus = viagem.fk_onibus
-    GROUP BY linha.fk_empresa, viagem.dt_viagem, linha.id_linha, linha.total_passageiros
-) AS ocupacao_linha
-GROUP BY ocupacao_linha.fk_empresa, ocupacao_linha.dt_viagem;
+    fk_empresa,
+    regiao,
+    periodo,
+    linha,
+    ROUND(SUM(passageiros) / SUM(capacidade) * 100, 1) AS 'ocupacao',
+    COUNT(DISTINCT id_onibus) AS 'qtd_onibus',
+    ROUND(SUM(passageiros) / SUM(capacidade) * 100 * COUNT(DISTINCT id_onibus) / (COUNT(DISTINCT id_onibus) - 1), 1) AS 'ocupacao_menos_1',
+    ROUND(SUM(passageiros) / SUM(capacidade) * 100 * COUNT(DISTINCT id_onibus) / (COUNT(DISTINCT id_onibus) + 1), 1) AS 'ocupacao_mais_1',
+    CASE WHEN SUM(passageiros) / SUM(capacidade) * 100 > 105 THEN 'Destino' ELSE 'Origem' END AS 'papel'
+FROM vw_ocupacao_viagem
+WHERE periodo IS NOT NULL
+GROUP BY fk_empresa, regiao, periodo, id_linha, linha
+HAVING ocupacao > 105 OR (ocupacao < 70 AND ocupacao_menos_1 <= 100);
 
--- Sensor 1: ocupação adequada
+-- 3) KPI 2: ocupação média de cada linha no período e se está fora da faixa adequada (70% a 100%)
+CREATE VIEW vw_kpi_linhas_fora_faixa AS
+SELECT
+    fk_empresa,
+    regiao,
+    periodo,
+    linha,
+    ROUND(SUM(passageiros) / SUM(capacidade) * 100, 1) AS 'ocupacao',
+    CASE
+        WHEN ROUND(SUM(passageiros) / SUM(capacidade) * 100, 1) < 70
+          OR ROUND(SUM(passageiros) / SUM(capacidade) * 100, 1) > 100 THEN 1
+        ELSE 0
+    END AS 'fora_faixa'
+FROM vw_ocupacao_viagem
+WHERE periodo IS NOT NULL
+GROUP BY fk_empresa, regiao, periodo, id_linha, linha;
+
+-- 4) KPI 3: cada viagem do período, marcada com 1 quando teve alerta (alta > 105% ou baixa < 70%)
+CREATE VIEW vw_kpi_alertas_viagem AS
+SELECT
+    fk_empresa,
+    regiao,
+    periodo,
+    linha,
+    id_onibus,
+    id_viagem,
+    ocupacao,
+    CASE WHEN ocupacao > 105 OR ocupacao < 70 THEN 1 ELSE 0 END AS 'alerta'
+FROM vw_ocupacao_viagem
+WHERE periodo IS NOT NULL;
+
+
+-- ====== SIMULAÇÃO SENSOR ====== --
+
+-- sensor 1: ocupação adequada
 SELECT
     fk_sensor,
     SUM(movimento_entrada) AS entradas,
@@ -290,7 +273,7 @@ FROM registro_sensor
 WHERE fk_sensor = 2
 GROUP BY fk_sensor;
 
--- Sensor 3: baixa ocupação
+-- sensor 3: baixa ocupação
 SELECT
     fk_sensor,
     SUM(movimento_entrada) AS entradas,
