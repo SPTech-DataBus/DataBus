@@ -1,31 +1,149 @@
-// importa os bibliotecas necessários
+// Importa as bibliotecas necessárias
 const serialport = require('serialport');
 const express = require('express');
 const mysql = require('mysql2');
 
-// constantes para configurações
+// Constantes para configurações
 const SERIAL_BAUD_RATE = 9600;
 const SERVIDOR_PORTA = 3300;
 
-// habilita ou desabilita a inserção de dados no banco de dados
+// Habilita ou desabilita a inserção de dados no banco de dados
 const HABILITAR_OPERACAO_INSERIR = true;
 
-// identificação dos sensores
+// Identificação dos sensores
 const SENSOR_ADEQUADO = 1;
 const SENSOR_ALTA = 2;
 const SENSOR_BAIXA = 3;
 
-// Quantidade de passageiros em cada cenário
-let passageirosAdequado = 0;
-let passageirosAlta = 0;
-let passageirosBaixa = 0;
+// Identificação dos movimentos
+const ENTRADA = 1;
+const SAIDA = 2;
 
-// função para comunicação serial
-const serial = async (
-    valoresSensorDigital,
-) => {
+// Quantidade inicial de passageiros em cada cenário
+let passageirosAdequado = 40;
+let passageirosAlta = 80;
+let passageirosBaixa = 28;
 
-    // conexão com o banco de dados MySQL
+// SIMULAÇÃO 1 - BAIXA OCUPAÇÃO
+
+async function simularBaixaOcupacao(movimento, poolBancoDados) {
+
+    // Simula a entrada de 1 passageiro
+    if (movimento == ENTRADA) {
+
+        if (passageirosBaixa < 45) {
+
+            await poolBancoDados.execute(
+                'INSERT INTO registro_sensor (movimento_entrada, movimento_saida, fk_sensor) VALUES (?, ?, ?)',
+                [1, 0, SENSOR_BAIXA]
+            );
+
+            passageirosBaixa++;
+        }
+    }
+
+    // Simula a saída de até 3 passageiros
+    if (movimento == SAIDA) {
+
+        for (let i = 0; i < 3; i++) {
+
+            if (passageirosBaixa > 25) {
+
+                await poolBancoDados.execute(
+                    'INSERT INTO registro_sensor (movimento_entrada, movimento_saida, fk_sensor) VALUES (?, ?, ?)',
+                    [0, 1, SENSOR_BAIXA]
+                );
+
+                passageirosBaixa--;
+            }
+        }
+    }
+
+    console.log('Baixa ocupação:', passageirosBaixa);
+}
+
+// SIMULAÇÃO 2 - OCUPAÇÃO ADEQUADA
+
+async function simularOcupacaoAdequada(movimento, poolBancoDados) {
+
+    // Simula a entrada de até 3 passageiros
+    if (movimento == ENTRADA) {
+
+        for (let i = 0; i < 2; i++) {
+
+            if (passageirosAdequado < 95) {
+
+                await poolBancoDados.execute(
+                    'INSERT INTO registro_sensor (movimento_entrada, movimento_saida, fk_sensor) VALUES (?, ?, ?)',
+                    [1, 0, SENSOR_ADEQUADO]
+                );
+
+                passageirosAdequado++;
+            }
+        }
+    }
+
+    // Simula a saída de até 2 passageiros
+    if (movimento == SAIDA) {
+
+        for (let i = 0; i < 2; i++) {
+
+            if (passageirosAdequado > 75) {
+
+                await poolBancoDados.execute(
+                    'INSERT INTO registro_sensor (movimento_entrada, movimento_saida, fk_sensor) VALUES (?, ?, ?)',
+                    [0, 1, SENSOR_ADEQUADO]
+                );
+
+                passageirosAdequado--;
+            }
+        }
+    }
+
+    console.log('Ocupação adequada:', passageirosAdequado);
+}
+
+// SIMULAÇÃO 3 - ALTA OCUPAÇÃO
+
+async function simularAltaOcupacao(movimento, poolBancoDados) {
+
+    // Simula a entrada de até 5 passageiros
+    if (movimento == ENTRADA) {
+
+        for (let i = 0; i < 3; i++) {
+
+            if (passageirosAlta < 115) {
+
+                await poolBancoDados.execute(
+                    'INSERT INTO registro_sensor (movimento_entrada, movimento_saida, fk_sensor) VALUES (?, ?, ?)',
+                    [1, 0, SENSOR_ALTA]
+                );
+
+                passageirosAlta++;
+            }
+        }
+    }
+
+    // Simula a saída de 1 passageiro
+    if (movimento == SAIDA) {
+
+        if (passageirosAlta > 95) {
+
+            await poolBancoDados.execute(
+                'INSERT INTO registro_sensor (movimento_entrada, movimento_saida, fk_sensor) VALUES (?, ?, ?)',
+                [0, 1, SENSOR_ALTA]
+            );
+
+            passageirosAlta--;
+        }
+    }
+
+    console.log('Cenário de alta ocupação:', passageirosAlta);
+}
+
+const serial = async (valoresSensorDigital) => {
+
+    // Conexão com o banco de dados MySQL
     let poolBancoDados = mysql.createPool(
         {
             host: 'localhost',
@@ -36,16 +154,22 @@ const serial = async (
         }
     ).promise();
 
-    // lista as portas seriais disponíveis e procura pelo Arduino
+    // Lista as portas seriais disponíveis
     const portas = await serialport.SerialPort.list();
 
-    const portaArduino = portas.find((porta) => porta.vendorId == 2341 && porta.productId == 43);
+    // Procura pelo Arduino
+    const portaArduino = portas.find(
+        (porta) => porta.vendorId == 2341 && porta.productId == 43
+    );
 
     if (!portaArduino) {
-        throw new Error('O arduino não foi encontrado em nenhuma porta serial');
+
+        throw new Error(
+            'O Arduino não foi encontrado em nenhuma porta serial'
+        );
     }
 
-    // configura a porta serial com o baud rate especificado
+    // Configura a porta serial
     const arduino = new serialport.SerialPort(
         {
             path: portaArduino.path,
@@ -53,158 +177,178 @@ const serial = async (
         }
     );
 
-    // evento quando a porta serial é aberta
+    // Evento quando a porta serial é aberta
     arduino.on('open', () => {
+
         console.log(
-            `A leitura do arduino foi iniciada na porta ${portaArduino.path} utilizando Baud Rate de ${SERIAL_BAUD_RATE}`
+            `A leitura do Arduino foi iniciada na porta ${portaArduino.path} utilizando Baud Rate de ${SERIAL_BAUD_RATE}`
         );
     });
 
-    // processa os dados recebidos do Arduino
-    arduino.pipe(new serialport.ReadlineParser({ delimiter: '\r\n' })).on('data', async (data) => {
-        console.log(data);
+    arduino.pipe(
+        new serialport.ReadlineParser({ delimiter: '\r\n' })
+    ).on('data', async (data) => {
+
+        console.log('Dado recebido:', data);
+
         const valores = data.split(';');
         const movimento = parseInt(valores[0]);
 
-        // armazena os valores dos sensores nos arrays correspondentes
+        // Armazena os valores recebidos
         valoresSensorDigital.push(movimento);
 
-        // insere os dados no banco de dados (se habilitado)
-        if (HABILITAR_OPERACAO_INSERIR) {
+        // O Arduino detecta apenas entradas
+        if (movimento == ENTRADA && HABILITAR_OPERACAO_INSERIR) {
 
-            if (movimento == 1) {
+            try {
 
-                // Sensor 1 - Ocupação adequada - gera 3 entradas a cada movimento == 1
-                for (let i = 0; i < 3; i++) {
-                    //quando chegar a 70, a taxa de ocupação será de 70%
-                    if (passageirosAdequado < 70) {
-                        await poolBancoDados.execute(
-                            'INSERT INTO registro_sensor (movimento_entrada, movimento_saida, fk_sensor) VALUES (?, ?, ?)',
-                            [1, 0, SENSOR_ADEQUADO]
-                        );
-
-                        passageirosAdequado++;
-                    }
-                }
-
-                // Sensor 2 - Alta ocupação - gera 5 entradas a cada movimento == 5
-                for (let i = 0; i < 5; i++) {
-                    //quando chegar a 110, a taxa de ocupação será de 110%
-                    if (passageirosAlta < 110) {
-                        await poolBancoDados.execute(
-                            'INSERT INTO registro_sensor (movimento_entrada, movimento_saida, fk_sensor) VALUES (?, ?, ?)',
-                            [1, 0, SENSOR_ALTA]
-                        );
-
-                        passageirosAlta++;
-                    }
-                }
-
-                // Sensor 3 - Baixa ocupação - gera 1 entrada a cada movimento == 1
-                if (passageirosBaixa < 24) {
-                    //quando chegar a 24, a taxa de ocupação será de 20%
-                    await poolBancoDados.execute(
-                        'INSERT INTO registro_sensor (movimento_entrada, movimento_saida, fk_sensor) VALUES (?, ?, ?)',
-                        [1, 0, SENSOR_BAIXA]
-                    );
-
-                    passageirosBaixa++;
-                }
-
+                console.log('-----------------------------');
                 console.log('Entrada detectada pelo Arduino!');
-                console.log('Adequada:', passageirosAdequado);
-                console.log('Alta:', passageirosAlta);
-                console.log('Baixa:', passageirosBaixa);
+
+                await simularBaixaOcupacao(
+                    ENTRADA,
+                    poolBancoDados
+                );
+
+                await simularOcupacaoAdequada(
+                    ENTRADA,
+                    poolBancoDados
+                );
+
+                await simularAltaOcupacao(
+                    ENTRADA,
+                    poolBancoDados
+                );
+
+                console.log('-----------------------------');
+
+            } catch (erro) {
+
+                console.error(
+                    'Erro ao registrar entrada:',
+                    erro
+                );
             }
         }
-
     });
 
-    async function simularSaida() {
+    if (HABILITAR_OPERACAO_INSERIR) {
 
-        // Sensor 1 - Ocupação adequada (pra atingir entre 65 e 70% de ocupação)
-        if (passageirosAdequado > 65) {
+        // Baixa ocupação: saídas a cada 5 segundos
+        setInterval(async () => {
 
-            await poolBancoDados.execute(
-                'INSERT INTO registro_sensor (movimento_entrada, movimento_saida, fk_sensor) VALUES (?, ?, ?)',
-                [0, 1, SENSOR_ADEQUADO]
-            );
+            try {
 
-            passageirosAdequado--;
-        }
+                await simularBaixaOcupacao(
+                    SAIDA,
+                    poolBancoDados
+                );
 
-        // Sensor 2 - Alta ocupação (pra atingir 95 a 110% de ocupação)
-        if (passageirosAlta > 95) {
+            } catch (erro) {
 
-            await poolBancoDados.execute(
-                'INSERT INTO registro_sensor (movimento_entrada, movimento_saida, fk_sensor) VALUES (?, ?, ?)',
-                [0, 1, SENSOR_ALTA]
-            );
+                console.error('Erro na saída de baixa ocupação:', erro);
+            }
 
-            passageirosAlta--;
-        }
+        }, 4000);
 
-        // Sensor 3 - Baixa ocupação (pra atingir de 10 a 20% de ocupação)
-        if (passageirosBaixa > 12) {
 
-            await poolBancoDados.execute(
-                'INSERT INTO registro_sensor (movimento_entrada, movimento_saida, fk_sensor) VALUES (?, ?, ?)',
-                [0, 1, SENSOR_BAIXA]
-            );
+        // Ocupação adequada: saídas a cada 8 segundos
+        setInterval(async () => {
 
-            passageirosBaixa--;
-        }
+            try {
 
-        console.log('Saídas simuladas!');
-        console.log('Adequada:', passageirosAdequado);
-        console.log('Alta:', passageirosAlta);
-        console.log('Baixa:', passageirosBaixa);
+                await simularOcupacaoAdequada(
+                    SAIDA,
+                    poolBancoDados
+                );
+
+            } catch (erro) {
+
+                console.error('Erro na saída de ocupação adequada:', erro);
+            }
+
+        }, 6000);
+
+
+        // Alta ocupação: saídas a cada 10 segundos
+        setInterval(async () => {
+
+            try {
+
+                await simularAltaOcupacao(
+                    SAIDA,
+                    poolBancoDados
+                );
+
+            } catch (erro) {
+
+                console.error('Erro na saída de alta ocupação:', erro);
+            }
+
+        }, 8000);
+
     }
 
+    // Tratamento de erros do Arduino
     arduino.on('error', (mensagem) => {
-        console.error(`Erro no arduino (Mensagem: ${mensagem})`);
-    });
 
-    setInterval(simularSaida, 3000);
+        console.error(
+            `Erro no Arduino (Mensagem: ${mensagem})`
+        );
+    });
 }
+
 
 const servidor = (
     valoresSensorAnalogico,
     valoresSensorDigital
 ) => {
+
     const app = express();
 
-    // configurações de requisição e resposta
+    // Configurações de requisição e resposta
     app.use((request, response, next) => {
+
         response.header('Access-Control-Allow-Origin', '*');
-        response.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept');
+
+        response.header(
+            'Access-Control-Allow-Headers',
+            'Origin, Content-Type, Accept'
+        );
+
         next();
     });
 
-    // inicia o servidor na porta especificada
+    // Inicia o servidor
     app.listen(SERVIDOR_PORTA, () => {
-        console.log(`API executada com sucesso na porta ${SERVIDOR_PORTA}`);
+
+        console.log(
+            `API executada com sucesso na porta ${SERVIDOR_PORTA}`
+        );
     });
 
-    // define os endpoints da API para cada tipo de sensor
+    // Endpoint para valores analógicos
     app.get('/sensores/analogico', (_, response) => {
+
         return response.json(valoresSensorAnalogico);
     });
+
+    // Endpoint para valores digitais
     app.get('/sensores/digital', (_, response) => {
+
         return response.json(valoresSensorDigital);
     });
 }
 
-// função principal assíncrona para iniciar a comunicação serial e o servidor web
 (async () => {
-    // arrays para armazenar os valores dos sensores
+
     const valoresSensorAnalogico = [];
     const valoresSensorDigital = [];
 
-    // inicia a comunicação serial
+    // Inicia a comunicação serial
     await serial(valoresSensorDigital);
 
-    // inicia o servidor web
+    // Inicia o servidor web
     servidor(
         valoresSensorAnalogico,
         valoresSensorDigital
