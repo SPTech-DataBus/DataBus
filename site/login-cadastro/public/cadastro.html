@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="./css/style.css">
 </head>
 
-<body>
+<body onload="listar()">
     <header class="navbar">
         <a href="index.html" class="logo">
             <img src="imgs/Símbolo.png" alt="Logo DATABUS" width="40" height="40">
@@ -151,55 +151,96 @@
 </html>
 
 <script>
+    let listaEmpresasCadastradas = [];
+
+    function listar() {
+        fetch("/empresas/listar", {
+            method: "GET"
+        })
+        .then(function (resposta) {
+            if (!resposta.ok) {
+                msg.innerHTML = 'Não foi possível carregar as empresas. Recarregue a página.';
+                return;
+            }
+            resposta.json().then((empresas) => {
+                empresas.forEach((empresa) => {
+                    listaEmpresasCadastradas.push(empresa);
+                });
+            });
+        })
+        .catch(function (erro) {
+            console.log(`#ERRO: ${erro}`);
+        });
+    }
+
     function cadastrar() {
         let email = ipt_email.value.toLowerCase();
         let senha = ipt_senha.value;
         let nome = ipt_nome.value;
         let confirmarSenha = ipt_confirmarSenha.value;
-        let codigo = ipt_codigo.value;
+        let codigo = ipt_codigo.value.toUpperCase();
+        let idEmpresaVincular;
 
-        // limpa as mensagens da tentativa anterior
-        msg_codigo.innerHTML = '';
-        msg_nome.innerHTML = '';
-        msg_email.innerHTML = '';
-        msg_senha.innerHTML = '';
-        msg_confirmarSenha.innerHTML = '';
+        msg.innerHTML = '';
 
-        // Monta o objeto de dados para enviar ao backend
-        // O endpoint POST /usuarios/cadastrar será tratado pelo usuarioController.cadastrar()
-        // que utilizará o usuarioModel para inserir no banco de dados
-        let dadosCadastro = {
-            nomeServer: nome,
-            emailServer: email,
-            senhaServer: senha,
-            idEmpresaVincularServer: codigo !== '' ? parseInt(codigo) : 1
-        };
+        if (nome == "" || email == "" || senha == "" || confirmarSenha == "" || codigo == "") {
+            msg.innerHTML = 'Preencha todos os campos';
+            return false;
+        }
+
+        if (senha.length < 8 || senha == senha.toLowerCase() || senha == senha.toUpperCase()) {
+            msg.innerHTML = 'A senha precisa de 8 caracteres, com maiúsculas e minúsculas';
+            return false;
+        }
+
+        if (senha != confirmarSenha) {
+            msg.innerHTML = 'As senhas não são iguais';
+            return false;
+        }
+
+        for (let i = 0; i < listaEmpresasCadastradas.length; i++) {
+            if (listaEmpresasCadastradas[i].codigo_ativacao == codigo) {
+                idEmpresaVincular = listaEmpresasCadastradas[i].id;
+                break;
+            }
+        }
+
+        if (idEmpresaVincular == undefined) {
+            msg.innerHTML = 'Código de verificação inválido';
+            return false;
+        }
 
         fetch("/usuarios/cadastrar", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(dadosCadastro)
+            body: JSON.stringify({
+                nomeServer: nome,
+                emailServer: email,
+                senhaServer: senha,
+                idEmpresaVincularServer: idEmpresaVincular
+            })
         })
-        .then(resposta => resposta.json())
-        .then(dados => {
-            // Registro bem-sucedido: retorna o ID do usuário criado
-            // dados.id vem do usuarioModel que executa INSERT e retorna os dados inseridos
-            if (dados.id) {
-                localStorage.setItem("usuarioLogado", JSON.stringify(dados));
-                location.href = "login.html";
+        .then(function (resposta) {
+            if (resposta.ok) {
+                msg.innerHTML = 'Cadastro realizado com sucesso! Redirecionando para a tela de Login...';
+
+                setTimeout(() => {
+                    window.location = "login.html";
+                }, 2000);
             } else {
-                // Falha no registro
-                msg.innerHTML = `Erro ao cadastrar: ${dados.mensagem || 'Tente novamente'}`;
+                resposta.text().then(texto => {
+                    console.error(texto);
+                    msg.innerHTML = 'Erro ao cadastrar: ' + texto;
+                });
             }
         })
-        .catch(erro => {
-            console.error("Erro no cadastro:", erro);
-            msg.innerHTML = `Erro de cadastro`;
+        .catch(function (erro) {
+            console.log(`#ERRO: ${erro}`);
+            msg.innerHTML = 'Erro ao cadastrar';
         });
 
-        // Previne o envio padrão do formulário e o redirecionamento anterior
-        // Podemos usar se vocês quiserem porem é descartavel -- return false;
+        return false;
     }
 </script>

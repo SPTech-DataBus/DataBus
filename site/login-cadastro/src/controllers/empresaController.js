@@ -11,6 +11,9 @@ function buscarPorCnpj(req, res) {
 function listar(req, res) {
   empresaModel.listar().then((resultado) => {
     res.status(200).json(resultado);
+  }).catch((erro) => {
+    console.log(erro);
+    res.status(500).json(erro.sqlMessage);
   });
 }
 

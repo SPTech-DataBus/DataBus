@@ -8,9 +8,10 @@
     <link rel="icon" type="image/png" href="imgs/Símbolo.png">
     <link rel="stylesheet" href="./css/header.css">
     <link rel="stylesheet" href="./css/style.css">
+    <script src="js/sessao.js"></script>
 </head>
 
-<body>
+<body onload="validarSessao()">
     <header class="navbar dashboard">
         <a href="index.html" class="logo">
             <img src="imgs/Símbolo.png" alt="Logo DATABUS" width="40" height="40">
@@ -26,7 +27,7 @@
     <div class="dashboard-layout">
         <section class="section dashboard">
             <div class="usuario">
-                <h2>Olá, João!</h2>
+                <h2>Olá, <span id="b_usuario">usuário</span>!</h2>
                 <h6 class="botao_amarelo">ADMINISTRADOR</h6>
                 <h6 class="text h6">Mobi Brasil</h6>
             </div>
@@ -37,7 +38,7 @@
                 <a href="monitoramento-frota.html">Monitoramento da frota</a>
                 <a class="botao_azul" href="usuarios.html">Usuários</a>
                 <hr>
-                <a href="login.html">Sair</a>
+                <a href="#" onclick="limparSessao(); return false;">Sair</a>
             </nav>
         </section>
 

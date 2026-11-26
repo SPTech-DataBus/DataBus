@@ -116,15 +116,15 @@
                 senhaServer: senha
             })
         })
-        .then(resposta => resposta.json())
-        .then(dados => {
-            if (dados.id) {
-                // Login bem-sucedido: retorna o usuário autenticado e dados dos aquários
-                // dados vem do usuarioController que monta o objeto com id, email, nome, aquarios, etc.
-                localStorage.setItem("usuarioLogado", JSON.stringify(dados));
-                location.href = "dashboard.html";
-            } else {
-                // Login falhou
+        .then(function (resposta) {
+            if (resposta.ok) {
+                resposta.json().then(json => {
+                    sessionStorage.EMAIL_USUARIO = json.email;
+                    sessionStorage.NOME_USUARIO = json.nome;
+                    sessionStorage.ID_USUARIO = json.id;
+                    window.location = "dashboard.html";
+                });
+            } else if (resposta.status == 403) {
                 tentativas++;
                 let restantes = 3 - tentativas;
                 if (restantes > 0) {
@@ -134,11 +134,16 @@
                     ipt_email.disabled = true;
                     ipt_senha.disabled = true;
                 }
+            } else {
+                resposta.text().then(texto => {
+                    console.error(texto);
+                    msg_senha.innerHTML = 'Erro no servidor';
+                });
             }
         })
-        .catch(erro => {
+        .catch(function (erro) {
             console.error("Erro no login:", erro);
-            msg_senha.innerHTML = `Erro de conexão com o servidor`;
+            msg_senha.innerHTML = 'Erro de conexão com o servidor';
         });
 
         // Previne o comportamento padrão do botão e mensagens locais
